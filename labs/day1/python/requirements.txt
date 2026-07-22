@@ -1,0 +1,7 @@
+# Day 1 lab — Python dependencies
+# Pinned for Cohort 1 (Aug–Oct 2026). See manifests/versions.md.
+
+agent-framework
+agent-framework-foundry
+azure-identity
+python-dotenv
