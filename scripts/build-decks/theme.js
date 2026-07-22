@@ -176,7 +176,7 @@ function addCode(slide, code, opts = {}) {
   const x = opts.x || 0.4;
   const w = opts.w || 9.2;
   // background panel
-  slide.addShape(1, {
+  slide.addShape("rect", {
     x, y, w, h,
     fill: { color: COLORS.panel }, line: { color: COLORS.border, width: 0.5 },
   });
@@ -227,7 +227,7 @@ function takeawaysSlide(pres, opts) {
   const b = bodySlide(pres, opts);
   addBullets(b.slide, opts.bullets, { y: b.contentTop, w: b.contentW, h: 3.4 });
   if (opts.next) {
-    b.slide.addShape(1, {
+    b.slide.addShape("rect", {
       x: 0.4, y: 4.75, w: 9.2, h: 0.5,
       fill: { color: COLORS.ice }, line: { type: "none" },
     });
