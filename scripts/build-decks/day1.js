@@ -41,18 +41,182 @@ function buildModule1() {
 
   {
     const { slide, contentTop, contentW } = T.bodySlide(pres, {
-      tag: "Day 1 · Module 1", title: "A one-line decision framework",
+      tag: "Day 1 · Module 1", title: "Same three ingredients across every surface",
     });
-    T.addBullets(slide, [
-      "Copilot Studio — when the maker is the audience and the destination is M365 / Teams. Not covered further.",
-      "Foundry alone — when you want to build, deploy, and share an agent from a portal with minimal code.",
-      "Foundry + MAF — when you're writing production code and want to control agent construction, orchestration, tools, and evaluation.",
-    ], { y: contentTop, w: contentW });
-    slide.addText("From Module 2 forward we assume Foundry + MAF.", {
-      x: 0.4, y: 4.5, w: 9.2, h: 0.4,
-      fontFace: T.FONTS.body, fontSize: T.SIZES.small, italic: true, color: T.COLORS.muted,
+    // Three surface cards along the top
+    const cardY = 1.3, cardH = 1.4, cardW = 2.9, gap = 0.25;
+    const startX = (10 - (3 * cardW + 2 * gap)) / 2;
+    const cards = [
+      { name: "Copilot Studio", note: "SaaS · low-code" },
+      { name: "Foundry Agent Service", note: "PaaS · managed runtime" },
+      { name: "MAF + containers", note: "IaaS · you own everything" },
+    ];
+    cards.forEach((c, i) => {
+      const x = startX + i * (cardW + gap);
+      slide.addShape("rect", {
+        x, y: cardY, w: cardW, h: cardH,
+        fill: { color: T.COLORS.white },
+        line: { color: T.COLORS.navy, width: 1 },
+      });
+      slide.addText(c.name, {
+        x: x + 0.1, y: cardY + 0.15, w: cardW - 0.2, h: 0.5,
+        fontFace: T.FONTS.title, fontSize: 18, bold: true, color: T.COLORS.navy, align: "center", margin: 0,
+      });
+      slide.addText(c.note, {
+        x: x + 0.1, y: cardY + 0.75, w: cardW - 0.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 13, color: T.COLORS.muted, align: "center", margin: 0,
+      });
     });
-    T.notes(slide, "This is the mental filter. Pause here for questions — some attendees will have already been sold on Copilot Studio; be respectful, redirect to appropriate resources after class.");
+    // "All need:" label
+    slide.addText("All three need:", {
+      x: 0.4, y: 3.05, w: 9.2, h: 0.35,
+      fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted, align: "center", margin: 0,
+    });
+    // Three ingredient pills
+    const pillY = 3.5, pillH = 0.8, pillW = 2.6, pillGap = 0.35;
+    const pillStartX = (10 - (3 * pillW + 2 * pillGap)) / 2;
+    ["Model", "Instructions", "Tools"].forEach((label, i) => {
+      const x = pillStartX + i * (pillW + pillGap);
+      slide.addShape("roundRect", {
+        x, y: pillY, w: pillW, h: pillH,
+        fill: { color: T.COLORS.navy }, line: { type: "none" }, rectRadius: 0.15,
+      });
+      slide.addText(label, {
+        x, y: pillY, w: pillW, h: pillH,
+        fontFace: T.FONTS.title, fontSize: 22, bold: true, color: T.COLORS.white, align: "center", valign: "middle", margin: 0,
+      });
+    });
+    slide.addText("Same ingredients everywhere. What changes is how much code you write and who owns the runtime.", {
+      x: 0.4, y: 4.7, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.navy, align: "center",
+    });
+    T.notes(slide, "Anchor slide. Emphasize that the problem shape is the same across all three; the layer of abstraction is what shifts. Sets up the next slide's spectrum framing.");
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 1", title: "A decision framework, visualized" });
+    // Top axis with two labels
+    slide.addText("More control, more code", {
+      x: 0.4, y: 1.25, w: 4.4, h: 0.35,
+      fontFace: T.FONTS.body, fontSize: 13, bold: true, color: T.COLORS.navy, align: "left", margin: 0,
+    });
+    slide.addText("Faster to build, less customization", {
+      x: 5.2, y: 1.25, w: 4.4, h: 0.35,
+      fontFace: T.FONTS.body, fontSize: 13, bold: true, color: T.COLORS.navy, align: "right", margin: 0,
+    });
+    // The bar itself — 3 segments across 8.8 inches
+    const barY = 1.8, barH = 0.7, barX = 0.6, barTotal = 8.8;
+    const segW = barTotal / 3;
+    const segments = [
+      { label: "IaaS", fill: "0F1A44" },   // deepest navy
+      { label: "PaaS", fill: T.COLORS.navy },
+      { label: "SaaS", fill: "6B7BB0" },   // lighter navy
+    ];
+    segments.forEach((s, i) => {
+      slide.addShape("rect", {
+        x: barX + i * segW, y: barY, w: segW, h: barH,
+        fill: { color: s.fill }, line: { color: T.COLORS.white, width: 1 },
+      });
+      slide.addText(s.label, {
+        x: barX + i * segW, y: barY, w: segW, h: barH,
+        fontFace: T.FONTS.title, fontSize: 22, bold: true, color: T.COLORS.white, align: "center", valign: "middle", margin: 0,
+      });
+    });
+    // Under-bar surface labels
+    const labels = [
+      "Containers + OSS frameworks",
+      "Foundry Agent Service + MAF",
+      "Copilot Studio",
+    ];
+    labels.forEach((label, i) => {
+      slide.addText(label, {
+        x: barX + i * segW, y: barY + barH + 0.1, w: segW, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 13, bold: true, color: T.COLORS.navy, align: "center", margin: 0,
+      });
+    });
+    // Descriptions
+    const descs = [
+      "You own everything. Not covered.",
+      "Managed runtime; you own the agent code. This workshop.",
+      "Portal-first, low-code. Not covered.",
+    ];
+    descs.forEach((d, i) => {
+      slide.addText(d, {
+        x: barX + i * segW + 0.1, y: barY + barH + 0.55, w: segW - 0.2, h: 1.4,
+        fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.ink, align: "center", valign: "top", margin: 0,
+      });
+    });
+    // Callout at bottom
+    slide.addShape("rect", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.5,
+      fill: { color: T.COLORS.ice }, line: { type: "none" },
+    });
+    slide.addText([
+      { text: "This workshop lives in PaaS territory. ", options: { bold: true } },
+      { text: "You write real code; you don't run the infrastructure." },
+    ], {
+      x: 0.55, y: 4.78, w: 8.9, h: 0.44,
+      fontFace: T.FONTS.body, fontSize: 14, color: T.COLORS.navy, margin: 0,
+    });
+    T.notes(slide, "Use the familiar IaaS/PaaS/SaaS trio — attendees already know it. This replaces a bullet list and lands harder. Emphasize 'this workshop = PaaS.'");
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 1", title: "When is an agent the right answer?" });
+    slide.addText("Not every LLM problem needs an agent. Match complexity to need.", {
+      x: 0.4, y: 1.2, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted, margin: 0,
+    });
+    // Three stops horizontally, connected by an arrow line
+    const stopY = 1.9, stopH = 2.5, stopW = 2.9, stopGap = 0.25;
+    const stopStartX = (10 - (3 * stopW + 2 * stopGap)) / 2;
+    // Arrow across the bottom of the stops
+    slide.addShape("line", {
+      x: stopStartX + 0.3, y: stopY + stopH + 0.15, w: 3 * stopW + 2 * stopGap - 0.6, h: 0,
+      line: { color: T.COLORS.navy, width: 2, endArrowType: "triangle" },
+    });
+    slide.addText("Reach for the leftmost pattern that actually solves your problem", {
+      x: stopStartX, y: stopY + stopH + 0.4, w: 3 * stopW + 2 * stopGap, h: 0.35,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted, align: "center", margin: 0,
+    });
+
+    const stops = [
+      {
+        name: "Direct LLM call",
+        eg: "\"Summarize this document.\"",
+        traits: "No tools · no iteration · cheap · easy to eval",
+      },
+      {
+        name: "Single agent with tools",
+        eg: "\"Answer with sources; open a ticket if needed.\"",
+        traits: "Iteration · tool calls · harder to eval",
+      },
+      {
+        name: "Multi-agent workflow",
+        eg: "\"Plan → retrieve → verify → act.\"",
+        traits: "Multiple roles · costly · new failure modes",
+      },
+    ];
+    stops.forEach((s, i) => {
+      const x = stopStartX + i * (stopW + stopGap);
+      slide.addShape("rect", {
+        x, y: stopY, w: stopW, h: stopH,
+        fill: { color: T.COLORS.white }, line: { color: T.COLORS.navy, width: 1 },
+      });
+      slide.addText(s.name, {
+        x: x + 0.15, y: stopY + 0.15, w: stopW - 0.3, h: 0.5,
+        fontFace: T.FONTS.title, fontSize: 16, bold: true, color: T.COLORS.navy, align: "center", margin: 0,
+      });
+      slide.addText(s.eg, {
+        x: x + 0.15, y: stopY + 0.75, w: stopW - 0.3, h: 0.9,
+        fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.ink, align: "center", valign: "top", margin: 0,
+      });
+      slide.addText(s.traits, {
+        x: x + 0.15, y: stopY + 1.75, w: stopW - 0.3, h: 0.7,
+        fontFace: T.FONTS.body, fontSize: 11, color: T.COLORS.muted, align: "center", valign: "top", margin: 0,
+      });
+    });
+    T.notes(slide, "This slide prevents the anti-pattern of building an agent for what should be a plain LLM call. Ask attendees which pattern their current use case actually needs.");
   }
 
   {
@@ -901,6 +1065,85 @@ result = await agent.run("What is Foundry IQ?")`, { y: 2.05, h: 2.7 });
       "Mixing credentials — all three use Azure identity; differences are in what the credential authenticates to.",
     ], { y: contentTop });
     T.notes(slide, "The first bullet is the terminology collision we surface all week. If attendees only remember one gotcha, this is it.");
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Same code, different destinations" });
+    slide.addText("A MAF agent you write on your laptop is portable. The hosting decision is separable from the agent code.", {
+      x: 0.4, y: 1.2, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted, margin: 0,
+    });
+    // Left card — local dev
+    const leftX = 0.4, leftW = 3.0, cardsY = 1.95, leftH = 2.4;
+    slide.addShape("rect", {
+      x: leftX, y: cardsY, w: leftW, h: leftH,
+      fill: { color: T.COLORS.white }, line: { color: T.COLORS.navy, width: 1 },
+    });
+    slide.addText("Local dev on your laptop", {
+      x: leftX + 0.15, y: cardsY + 0.15, w: leftW - 0.3, h: 0.4,
+      fontFace: T.FONTS.title, fontSize: 15, bold: true, color: T.COLORS.navy, align: "center", margin: 0,
+    });
+    slide.addText([
+      { text: "uv run from a terminal", options: { bullet: true, breakLine: true } },
+      { text: "F5 in VS Code", options: { bullet: true, breakLine: true } },
+      { text: "Fast iteration", options: { bullet: true, breakLine: true } },
+      { text: "No cloud round-trip for logic", options: { bullet: true } },
+    ], {
+      x: leftX + 0.2, y: cardsY + 0.7, w: leftW - 0.35, h: leftH - 0.85,
+      fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.ink, valign: "top", paraSpaceAfter: 4,
+    });
+
+    // Middle arrow with label
+    const arrY = cardsY + leftH / 2;
+    slide.addShape("line", {
+      x: leftX + leftW + 0.15, y: arrY, w: 1.4, h: 0,
+      line: { color: T.COLORS.navy, width: 3, endArrowType: "triangle" },
+    });
+    slide.addText("Same MAF code", {
+      x: leftX + leftW + 0.1, y: arrY - 0.4, w: 1.5, h: 0.3,
+      fontFace: T.FONTS.body, fontSize: 11, bold: true, italic: true, color: T.COLORS.navy, align: "center", margin: 0,
+    });
+    slide.addText("no rewrite", {
+      x: leftX + leftW + 0.1, y: arrY + 0.1, w: 1.5, h: 0.3,
+      fontFace: T.FONTS.body, fontSize: 10, italic: true, color: T.COLORS.muted, align: "center", margin: 0,
+    });
+
+    // Right — three stacked destination cards
+    const rightX = 5.4, rightW = 4.2, destH = 0.7, destGap = 0.15;
+    const dests = [
+      { name: "Foundry Agent Service", sub: "register as a PromptAgent or HostedAgent" },
+      { name: "Azure Container Apps or AKS", sub: "you own the container" },
+      { name: "Azure Functions", sub: "event-driven or HTTP triggers" },
+    ];
+    dests.forEach((d, i) => {
+      const y = cardsY + i * (destH + destGap);
+      slide.addShape("rect", {
+        x: rightX, y, w: rightW, h: destH,
+        fill: { color: T.COLORS.panel }, line: { color: T.COLORS.border, width: 0.5 },
+      });
+      slide.addText(d.name, {
+        x: rightX + 0.15, y: y + 0.06, w: rightW - 0.3, h: 0.3,
+        fontFace: T.FONTS.title, fontSize: 13, bold: true, color: T.COLORS.navy, margin: 0,
+      });
+      slide.addText(d.sub, {
+        x: rightX + 0.15, y: y + 0.35, w: rightW - 0.3, h: 0.3,
+        fontFace: T.FONTS.body, fontSize: 11, italic: true, color: T.COLORS.muted, margin: 0,
+      });
+    });
+
+    // Bottom caption
+    slide.addShape("rect", {
+      x: 0.4, y: 4.6, w: 9.2, h: 0.6,
+      fill: { color: T.COLORS.ice }, line: { type: "none" },
+    });
+    slide.addText([
+      { text: "Prototype and evaluate locally first — then pick a hosting destination. ", options: { bold: true } },
+      { text: "Foundry-specific features (PromptAgent versioning, IQ, portal connections) remain hosted-only." },
+    ], {
+      x: 0.55, y: 4.65, w: 8.9, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
+    });
+    T.notes(slide, "This is the anti-lock-in reassurance. Attendees debating client-side vs. hosted often worry about being trapped; this slide says the choice is reversible for agent code, but Foundry-specific *features* are the actual coupling.");
   }
 
   {

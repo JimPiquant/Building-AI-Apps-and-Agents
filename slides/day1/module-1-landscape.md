@@ -30,13 +30,41 @@ Copilot Studio and Foundry can be complementary. This workshop focuses on **Foun
 
 ---
 
-## A one-line decision framework
+## Same three ingredients across every surface
 
-- **Copilot Studio** — when the *maker* is the audience and the destination is Microsoft 365 / Teams. Not covered further in this workshop.
-- **Foundry alone** — when you want to build, deploy, and share an agent from a portal with minimal code.
-- **Foundry + MAF** — when you're writing production code and want to control agent construction, orchestration, tools, and evaluation.
+No matter which surface you pick, an agent needs the same three things:
 
-We assume **Foundry + MAF** from Module 2 forward.
+- **A model** — a deployed language model
+- **Instructions** — how the agent should behave
+- **Tools** — the things it can do beyond talking
+
+What changes across surfaces is **how much code you write** and **who owns the runtime**.
+
+---
+
+## A decision framework, visualized — control vs. ease of use
+
+The three surfaces sit on a familiar spectrum:
+
+| Bucket | Surface | Trade-off |
+|---|---|---|
+| **IaaS** (most control, most code) | Containers + OSS frameworks | You own everything. Not covered further. |
+| **PaaS** (managed platform) | **Foundry Agent Service + MAF** | Managed runtime, you own agent code and behavior. **This workshop.** |
+| **SaaS** (least code, most opinionated) | Copilot Studio | Portal-first, low-code, targets M365 / Teams. Not covered further. |
+
+We live in PaaS territory. When we say "the SDK is Python or C#," that's the P in PaaS talking — you write real code, but you don't run the infrastructure.
+
+---
+
+## When is an agent the right answer?
+
+Not every LLM problem needs an agent. Match complexity to need:
+
+- **Direct LLM call** — one-shot, narrow scope. Example: *"summarize this doc."* No tools, no iteration, no memory beyond the prompt.
+- **Single agent with tools** — iterative, scoped, needs to *do* something. Example: *"answer this question with sources; open a ticket if needed."* Days 1–3.
+- **Multi-agent workflow** — a task decomposes into distinct roles that hand off. Example: *"plan → retrieve → verify → act."* Day 4.
+
+Rule of thumb: **reach for the leftmost pattern that actually solves the problem.** Agents cost more per turn, are harder to evaluate, and fail in more interesting ways than a plain LLM call.
 
 ---
 

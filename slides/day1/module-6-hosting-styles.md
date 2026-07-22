@@ -140,6 +140,22 @@ You can and will mix — nothing stops you from having some client-side and some
 
 ---
 
+## Same code, different destinations — local-first, cloud-agnostic
+
+A MAF agent you write on your laptop is portable. The **hosting decision is separable from the agent code**.
+
+- **Local dev on your laptop** — `uv run` from a terminal or F5 in VS Code. Fast iteration, no cloud round-trip for logic.
+- **Same MAF code moves to** any of:
+  - **Foundry Agent Service** — managed runtime; register as a PromptAgent or HostedAgent
+  - **Azure Container Apps or AKS** — you own the container
+  - **Azure Functions** — event-driven or HTTP triggers
+
+**What this buys you:** you can prototype and evaluate on your laptop before you commit to a hosting decision. And you can change the hosting decision later without rewriting the agent.
+
+**What it does *not* mean:** portability off Azure. Foundry-specific features (PromptAgent versioning, Foundry IQ, portal-managed connections) are Foundry-hosted-only.
+
+---
+
 ## What you'll do in the lab
 
 In today's lab you'll:
