@@ -1,7 +1,8 @@
 # Curriculum overview
 
 ## What you'll be able to do by the end
-- Build client-side agents and Foundry-hosted agents (PromptAgent and HostedAgent) with the Microsoft Agent Framework.
+- Choose between the three ways to run an agent with Foundry — a **Prompt agent**, a **Hosted agent**, or your own code calling the **Responses API** — and know which fits which scenario.
+- Build agents with the Microsoft Agent Framework in Python and C#.
 - Ground agents on enterprise knowledge with Foundry IQ or your own RAG pipeline.
 - Attach Toolbox tools, custom function tools, and MCP servers.
 - Evaluate agents at retrieval, single-agent, and multi-agent layers.
@@ -13,7 +14,7 @@
 We refer to a five-layer stack every day:
 
 1. **Model** — a model deployed in your Foundry project.
-2. **Runtime** — where the agent lives. Either **client-side** (`Agent` + a chat client, in-process) or **Foundry-hosted** (a **PromptAgent** or **HostedAgent** created in the Foundry portal, connected via `FoundryAgent`).
+2. **Runtime** — where the agent runs. Three options with Foundry: a **Prompt agent** (portal-authored, no code, Foundry runs it), a **Hosted agent** (your code packaged as a container, Foundry runs it), or **your own code calling the Responses API** (your process runs your code; Foundry serves models and tools).
 3. **Actions** — how the agent *does* things: Foundry Toolbox tools, MCP servers, and custom function tools.
 4. **Knowledge** — how the agent *knows* things: Foundry IQ knowledge sources, or your own RAG on AI Search / a vector store.
 5. **Ops** — identity, tracing, evaluation, cost, deployment.

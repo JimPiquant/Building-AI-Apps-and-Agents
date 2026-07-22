@@ -1,28 +1,26 @@
 # Day 1 lab — C#
 
 ## Coverage in Cohort 1
-- **Part A — Client-side agent:** implemented here in [`PartA_ClientSideAgent/`](PartA_ClientSideAgent/).
-- **Part B — Foundry PromptAgent:** Python-only in Cohort 1. See notes below.
-- **Part C — Foundry HostedAgent:** Python-only in Cohort 1. See notes below.
+- **Part B — Your own code, calling the Responses API:** implemented here in [`PartB_ResponsesApi/`](PartB_ResponsesApi/).
+- **Part A — Prompt agent:** Python-only in Cohort 1.
+- **Part C — Hosted agent:** Python-only in Cohort 1.
 
-**Rationale:** MAF's .NET surface for the client-side agent path (`AIProjectClient.AsAIAgent(...)`) is stable and idiomatic — that's what Part A uses. The .NET SDK also supports Foundry-hosted agents (see the reference samples below), but the walkthrough content for Cohort 1 covers Parts B and C in Python only. This is scheduled to be revisited for Cohort 2.
-
-If you want to work through Parts B and C in C# anyway, the reference samples live in the `microsoft/agent-framework` repo:
+The MAF .NET surface for `AIProjectClient.AsAIAgent(...)` is stable and idiomatic — that's what Part B uses. The .NET SDK also supports connecting to Prompt agents and Hosted agents through `Microsoft.Agents.AI.Foundry`; the Cohort 1 walkthrough uses Python for those. Reference C# samples for Parts A and C live in the `microsoft/agent-framework` repo:
 
 - Basics — https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/02-agents/AgentProviders/foundry/Agent_Step01_Basics
 - Full lifecycle — https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/02-agents/AgentProviders/foundry/Agent_Step00_FoundryAgentLifecycle
 
-They map onto our Parts B and C. If you go that route, please contribute what you built back — a PR against this repo is welcome.
+If you want to work Parts A and C in C#, adapt from those samples. Contributions back to this repo via PR are welcome.
 
 ## Setup
 
 ```bash
-cd labs/day1/csharp/PartA_ClientSideAgent
+cd labs/day1/csharp/PartB_ResponsesApi
 dotnet restore
 dotnet run
 ```
 
-Make sure `.env` in `labs/day1/` is populated. This project reads `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL` from the process environment; on shells that don't auto-load `.env`, export them manually or use a helper:
+Make sure `../../.env` is populated. This project reads `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL` from the process environment; on shells that don't auto-load `.env`, export them manually or use a helper:
 
 ```bash
 set -a; source ../../.env; set +a

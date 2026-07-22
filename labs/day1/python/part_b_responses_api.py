@@ -1,14 +1,13 @@
 """
-Day 1 Lab — Part A — Client-side agent.
+Day 1 Lab — Part B — Your own code, calling the Responses API.
 
-Build an MAF client-side agent using `Agent` + `FoundryChatClient` against a
-Foundry-deployed model. Run non-streaming and streaming.
+Build an MAF app that runs in *your* process and calls Foundry's Responses API
+for models and platform tools. This is one of the three ways to run an agent
+with Foundry — the runtime is yours (laptop today, Container Apps / App Service
+/ AKS / Functions tomorrow), and Foundry serves the model plus platform tools.
 
-The agent object and its thread live entirely inside this Python process.
-
-Vocabulary reminder:
-    - "Client-side agent" = you construct Agent() in code (this file).
-    - "Foundry PromptAgent" / "Foundry HostedAgent" = server-hosted; see Parts B and C.
+The same MAF code you write here is what would run inside a **Hosted agent**
+(Part C) if you later chose to package it as a container. No rewrite required.
 """
 
 import asyncio
@@ -44,7 +43,8 @@ async def main() -> None:
             "before running this script."
         )
 
-    # Client-side agent: Agent + FoundryChatClient, in-process.
+    # Your code, calling the Responses API on your Foundry project endpoint.
+    # The Agent + FoundryChatClient pair runs in *this* process.
     agent = Agent(
         client=FoundryChatClient(
             project_endpoint=project_endpoint,
@@ -55,12 +55,12 @@ async def main() -> None:
         instructions=INSTRUCTIONS,
     )
 
-    # --- 1. Non-streaming run ---
+    # --- 1. Non-streaming ---
     print("--- Non-streaming ---")
     result = await agent.run("In two sentences, what is Microsoft Foundry?")
     print(f"Agent: {result}\n")
 
-    # --- 2. Streaming run ---
+    # --- 2. Streaming ---
     print("--- Streaming ---")
     print("Agent: ", end="", flush=True)
     async for chunk in agent.run(
@@ -71,7 +71,7 @@ async def main() -> None:
             print(chunk.text, end="", flush=True)
     print("\n")
 
-    # --- 3. Multi-turn: the agent remembers within this run session ---
+    # --- 3. Multi-turn ---
     print("--- Multi-turn ---")
     r1 = await agent.run("I am building a small internal docs assistant. Suggest 3 features.")
     print(f"Agent (turn 1): {r1}\n")
@@ -80,11 +80,13 @@ async def main() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Reflection prompts — save the transcript above; you'll cite it in reflection.md
+# Reflection prompts (save the transcript above; cite it in reflection.md)
 #
 # 1. Where did the thread state live during the multi-turn run?
-# 2. What would you have to change to persist the conversation across processes?
-# 3. If two apps needed to talk to the "same" agent, what would you need to add?
+# 2. This same code could run in Container Apps, App Service, AKS, or Functions.
+#    Which host would you pick for a real Publix scenario and why?
+# 3. What would you have to add to run *the same MAF code* as a Hosted agent
+#    (Part C) — and what does Foundry manage for you when you do?
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":

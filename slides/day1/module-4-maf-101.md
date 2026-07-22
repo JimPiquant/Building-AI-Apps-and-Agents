@@ -155,13 +155,11 @@ Full pinned versions live in [`manifests/versions.md`](../../manifests/versions.
 
 ## The bridge to the next two modules
 
-You've now seen a **client-side agent** — built with `Agent` + `FoundryChatClient` in Python, or `AIProjectClient.AsAIAgent(...)` in C#.
+You've now seen the MAF primitives that let your process call the Foundry **Responses API** — `Agent` + `FoundryChatClient` in Python, or `AIProjectClient.AsAIAgent(...)` in C#.
 
-There's another way to run an agent: **have Foundry host it for you**. That's a **PromptAgent** or a **HostedAgent** in Foundry, connected via `FoundryAgent`.
+That's one of **three ways to run an agent with Foundry**. The other two — **Prompt agents** (portal-authored, no code) and **Hosted agents** (your code, containerized, run by Foundry) — live inside Foundry Agent Service and are connected via `FoundryAgent`.
 
-Both matter. **Module 6** compares them.
-
-Before that, **Module 5** gives us the mental model that ties everything together.
+**Module 5** gives us the mental model that ties everything together. **Module 6** walks the three paths in detail.
 
 ---
 
@@ -170,6 +168,6 @@ Before that, **Module 5** gives us the mental model that ties everything togethe
 - MAF's primitives are small and stable: chat client, agent, thread, run, tool, message.
 - Python and C# APIs mirror each other closely.
 - Auth is Azure identity end-to-end. No keys.
-- The client-side agent you just saw is one of two hosting styles — hosted variants come in Module 6.
+- The pattern you just saw — your code calling the Responses API — is one of three ways to run an agent with Foundry. Module 6 covers all three.
 
 **Next:** the five-layer agent stack we'll refer to every day this week.

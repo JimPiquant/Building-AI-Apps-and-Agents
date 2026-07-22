@@ -3,24 +3,53 @@ marp: true
 paginate: true
 ---
 
-# Module 6 — Agent Hosting Styles
-### Client-side vs. Foundry-hosted (PromptAgent and HostedAgent)
+# Module 6 — Three ways to run an agent with Foundry
+### Prompt agents, Hosted agents, and calling the Responses API from your own code
 
 Day 1 · 35 minutes
 
 ---
 
-## Two places an agent can live
+## Foundry Agent Service — you choose how much of the platform you use
 
-**Client-side** — you build the agent in your app code with `Agent` + a chat client. In-process thread state. Your process owns the lifecycle.
+The **Responses API** is a single model + tools entry point behind every path. What changes is **where your agent code runs** and **how much of the runtime Foundry manages for you**.
 
-**Foundry-hosted** — the agent is created and configured in the Foundry portal (or via API). MAF connects to it over the wire. Foundry owns the lifecycle.
+| Path | Where the code runs | Who manages the runtime |
+|------|--------------------|-------------------------|
+| **A · Prompt agent** | Foundry Agent Service | Foundry (no code, no compute) |
+| **B · Your own code, calling the Responses API** | Your process (laptop, Container Apps, App Service, AKS, Functions) | You |
+| **C · Hosted agent** | Foundry Agent Service | Foundry (managed endpoint, autoscale, identity, observability) |
 
-MAF gives you a consistent API for both. You choose based on the scenario, not the SDK.
+Path B and Path C use the **same MAF code**. The difference is where that code executes.
 
 ---
 
-## Client-side agent — Python
+## Path A — Prompt agent
+
+A **Prompt agent** is authored entirely as configuration — instructions, model, tools. Author in the Foundry portal (portal-first) or via the SDK / REST (code-first, for CI/CD). Either way, **Foundry runs it**. No application code to maintain, no compute to pay for, no containers to patch.
+
+Connect to a Prompt agent from your app:
+
+```python
+from agent_framework.foundry import FoundryAgent
+from azure.identity import AzureCliCredential
+
+agent = FoundryAgent(
+    project_endpoint="https://<project>.services.ai.azure.com",
+    agent_name="docs-assistant",
+    agent_version="1.0",
+    credential=AzureCliCredential(),
+)
+result = await agent.run("What is Foundry IQ?")
+```
+
+**Best for:** fast start, internal tools, production agents that don't need custom orchestration logic.
+
+---
+
+## Path B — Your own code, calling the Responses API
+
+Write your agent as an MAF app in your own repo. Run it wherever you already run apps — on your laptop, in Azure Container Apps, App Service, AKS, or Functions. Your process calls Foundry's Responses API for models and platform tools; **you** manage the runtime.
 
 ```python
 from agent_framework import Agent
@@ -33,15 +62,16 @@ agent = Agent(
     instructions="You are a helpful docs assistant. Cite sources.",
     # tools=[...],
 )
-
 result = await agent.run("What is Foundry IQ?")
 ```
 
-The agent object lives entirely in your process. Kill the process, kill the thread.
+**Best for:** embedded assistants, prototyping, agents inside existing apps you already run somewhere, and any time you want full control over the runtime.
+
+**Important:** this is **additive** to Path C — the same code can be repackaged as a Hosted agent later without a rewrite.
 
 ---
 
-## Client-side agent — C#
+## Path B — C# equivalent
 
 ```csharp
 using Azure.AI.Projects;
@@ -58,121 +88,115 @@ AIAgent agent = new AIProjectClient(
 Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));
 ```
 
-Same shape — construct locally, run locally, no persisted server-side identity.
+Same shape. Same primitives. Same "your process calls Foundry's Responses API" pattern.
 
 ---
 
-## Foundry-hosted, flavor 1 — PromptAgent
+## Path C — Hosted agent
 
-**PromptAgent** is a *versioned*, portal-configured agent living inside Foundry. Instructions, model, tools, and knowledge sources are configured on the service.
+Take an agent you wrote with MAF (or LangGraph, or the OpenAI / Anthropic Agents SDK, or your own code). Package it as a container image, or as a zip of source (Foundry builds the image for you). Deploy to Foundry Agent Service. **Foundry runs the container** with:
+
+- A **managed endpoint** (a stable URL you or another agent can call)
+- **Autoscale** — container instances scale per session and request volume
+- A **dedicated Microsoft Entra identity** per agent
+- **End-to-end observability** — tracing, metrics, App Insights integration
+- **Content safety** — integrated guardrails and prompt-injection mitigation
+
+Connect to a Hosted agent from any client (including another agent):
 
 ```python
 from agent_framework.foundry import FoundryAgent
-from azure.identity import AzureCliCredential
 
 agent = FoundryAgent(
     project_endpoint="https://<project>.services.ai.azure.com",
-    agent_name="docs-assistant",
-    agent_version="1.0",           # PromptAgent is versioned
+    agent_name="docs-assistant-hosted",
     credential=AzureCliCredential(),
 )
-
-result = await agent.run("What is Foundry IQ?")
 ```
 
-**When to prefer PromptAgent:** you want the agent to be a *shipped artifact* your team can review, version, and deploy independently from app code.
+**Best for:** agents that call into your own custom code, custom orchestration, multi-agent systems, and any scenario where you want full control over agent logic while letting Foundry handle hosting, scaling, and identity.
 
 ---
 
-## Foundry-hosted, flavor 2 — HostedAgent
+## What Foundry manages *for* a Hosted agent
 
-**HostedAgent** is a Foundry-hosted agent without an explicit version number. Slightly simpler; still server-managed.
+Beyond running the container, Agent Service brings a bundle of managed capabilities every Hosted agent inherits:
 
-```python
-from agent_framework.foundry import FoundryAgent
-from azure.identity import AzureCliCredential
+- **Managed endpoint** — you call one URL; Foundry routes and scales
+- **Managed conversations / memory** — session state without you standing up a store (BYO memory store also supported)
+- **Foundry Toolbox** — a curated MCP-compatible catalog of tools (web search, code interpreter, file search, SharePoint, Fabric, MCP servers, custom skills)
+- **Foundry IQ** — enterprise knowledge / grounding (Day 2)
+- **Agent identity** — dedicated Entra identity; managed credential for tool auth
+- **Observability** — traces, metrics, dashboards
+- **Content safety** — RAI filters and XPIA mitigation
 
-agent = FoundryAgent(
-    project_endpoint="https://<project>.services.ai.azure.com",
-    agent_name="docs-assistant",
-    # no agent_version
-    credential=AzureCliCredential(),
-)
-
-result = await agent.run("What is Foundry IQ?")
-```
-
-**When to prefer HostedAgent:** you want a shared, server-hosted agent but versioning as a hard constraint isn't required for your scenario.
+This is the answer to "why not just run my own container somewhere?" — the answer is: **Foundry hosts your app runtime *and* the tooling around it in one place.**
 
 ---
 
-## Trade-offs at a glance
+## Compare at a glance
 
-| Concern | Client-side | Foundry PromptAgent | Foundry HostedAgent |
-|---------|:-----------:|:-------------------:|:-------------------:|
-| Where the agent identity lives | In your code | In Foundry | In Foundry |
-| Thread state | In-process | Server-managed | Server-managed |
-| Versioning built in | You handle it | **Yes** | No |
-| Shared across apps | Duplicate code | **Yes** | **Yes** |
-| Iteration speed | Fast (redeploy your app) | Portal + deploy new version | Fastest for portal edits |
-| Cost model | Per-token only | Per-token (+ any hosted tools) | Per-token (+ any hosted tools) |
-| Portability off Foundry | High | Lower | Lower |
-| Best for | Embedded / library / niche scenarios | Shared production agents that need version discipline | Shared agents where portal iteration wins |
+| Concern | Path A · Prompt agent | Path B · Your code + Responses API | Path C · Hosted agent |
+|---------|:---------------------:|:---------------------------------:|:---------------------:|
+| Runtime code to maintain | None | Yours | Yours |
+| Compute to manage | None (Foundry) | Yours | Container compute (Foundry-managed) |
+| Managed endpoint | Yes | You provide | Yes |
+| Autoscale | Yes | You handle | Yes |
+| Agent identity (Entra) | Yes | You handle | Yes, dedicated |
+| Iteration speed | Portal + publish | Fastest (edit + restart) | Portal upload / redeploy |
+| Portability off Foundry | Low | High | Medium (Foundry-managed features stay behind) |
+| Cost model | Per-call inference + tool usage | Per-call inference + tool usage + your own compute | Per-call inference + tool usage + container compute |
 
 ---
 
 ## Decision guide (rough cuts)
 
-- **Building a library or embedded assistant?** → Client-side.
-- **One agent used by 3+ apps or teams?** → Foundry-hosted.
-- **Regulated / auditable agent that needs immutable versions?** → PromptAgent.
-- **Prototyping quickly with portal edits?** → HostedAgent.
+- **Getting started or building a scoped internal tool with no custom logic?** → **Path A · Prompt agent**
+- **Embedding an agent inside an existing app you already run somewhere?** → **Path B · Your code + Responses API**
+- **Prototyping quickly on your laptop before you decide on hosting?** → **Path B**
+- **Shipping a production agent that calls your own code and you want managed hosting + Entra identity + observability?** → **Path C · Hosted agent**
+- **Regulated agent, needs managed content safety, single stable endpoint, and dedicated identity?** → **Path A** or **Path C**
 
-You can and will mix — nothing stops you from having some client-side and some Foundry-hosted agents in the same app.
+You can and will mix these in a real system.
 
 ---
 
 ## Common gotchas
 
-- **Confusing "PromptAgent" with "client-side."** PromptAgent is *hosted*. Client-side is the one that lives in your process. This trips people up because "prompt" sounds lightweight.
-- **Assuming portability.** A PromptAgent's configuration is Foundry-specific. Design your app so runtime choice is behind an interface.
-- **Mixing credentials.** All three use Azure identity — the differences are in *what* the credential authenticates *to* (your project endpoint, or a specific hosted agent).
+- **"Prompt agent = client-side"** — wrong. A Prompt agent is Foundry-managed; there's no client-side runtime for it at all. What sounds lightweight isn't the *runtime* — it's the *authoring*.
+- **"Hosted agent = my code running anywhere in Azure"** — wrong. Hosted agent specifically means your code as a container run by Foundry Agent Service. Your code running in your own App Service that calls the Responses API is Path B, not Path C.
+- **Assuming portability off Foundry** — Path A is Foundry-only by construction; Path C keeps Foundry-managed features (Toolbox, IQ, portal connections) behind the managed endpoint. Path B is the most portable.
+- **Mixing up authentication** — all three use Azure identity, but the credential authenticates to different things: your project endpoint (Path B), a specific Prompt-agent resource (Path A), or a Hosted-agent endpoint (Path C).
 
 ---
 
-## Same code, different destinations — local-first, cloud-agnostic
+## Same MAF code, different destinations
 
-A MAF agent you write on your laptop is portable. The **hosting decision is separable from the agent code**.
+The MAF code you write for Path B — the `Agent + FoundryChatClient` app running in your own process — can be **repackaged as a Hosted agent later** without a rewrite. That's the platform's design.
 
-- **Local dev on your laptop** — `uv run` from a terminal or F5 in VS Code. Fast iteration, no cloud round-trip for logic.
-- **Same MAF code moves to** any of:
-  - **Foundry Agent Service** — managed runtime; register as a PromptAgent or HostedAgent
-  - **Azure Container Apps or AKS** — you own the container
-  - **Azure Functions** — event-driven or HTTP triggers
+- **Local dev on your laptop** → `uv run` from a terminal, F5 in VS Code. Same code.
+- **Deploy to Container Apps / AKS / Functions** → Path B in production. Same code.
+- **Ship as a Hosted agent inside Foundry** → zip the code, upload via the Foundry portal (Foundry builds the container), Foundry runs it. Same code.
 
-**What this buys you:** you can prototype and evaluate on your laptop before you commit to a hosting decision. And you can change the hosting decision later without rewriting the agent.
-
-**What it does *not* mean:** portability off Azure. Foundry-specific features (PromptAgent versioning, Foundry IQ, portal-managed connections) are Foundry-hosted-only.
+Prototype locally. Decide the hosting later. Foundry-specific features (Toolbox skills, IQ connections, agent identity) become available when you promote to Path A or Path C.
 
 ---
 
 ## What you'll do in the lab
 
-In today's lab you'll:
-- **Part A** — build a **client-side agent** in your code
-- **Part B** — connect to a **Foundry PromptAgent** you create in the portal
-- **Part C (bonus)** — connect to a **Foundry HostedAgent**
-- Compare responses, thread persistence, and where each configuration lives
+- **Part A — Prompt agent.** Create a Prompt agent in the Foundry portal. Connect to it from your MAF app.
+- **Part B — Your own code + Responses API.** Build an MAF app in Python (or C#) that calls the Responses API from your process.
+- **Part C — Hosted agent.** Connect to a pre-deployed Hosted agent in the shared sandbox. Explore what Foundry manages: endpoint, tracing, agent identity, an attached Toolbox tool. **Stretch:** zip your Part B code and deploy it as your own Hosted agent.
 
-Same model, three hosting styles. You'll feel the trade-offs.
+Same underlying docs-assistant behavior three ways. You'll feel the trade-offs.
 
 ---
 
 ## Takeaways
 
-- Client-side agents live in **your process**; Foundry-hosted agents live in **Foundry**.
-- Foundry-hosted has two flavors: **PromptAgent** (versioned) and **HostedAgent** (non-versioned).
-- Pick based on **who owns lifecycle** and **who consumes the agent**, not the SDK.
-- Vocabulary matters — use the exact terms Foundry and MAF use.
+- Foundry gives you **three paths** to run an agent, with the **Responses API** as the shared entry point.
+- **Prompt agent** = configuration only. **Hosted agent** = your code, Foundry-run. **Path B** = your code, you run it.
+- Foundry Agent Service manages *more than models* — endpoint, identity, observability, Toolbox tools, memory, content safety.
+- Path B code is portable — you can promote to a Hosted agent later without a rewrite.
 
-**Next:** we walk through the lab and get you into your dev environment.
+**Next:** the lab walkthrough and environment check.

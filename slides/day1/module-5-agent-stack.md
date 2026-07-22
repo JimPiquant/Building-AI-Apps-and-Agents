@@ -39,12 +39,13 @@ We'll come back to model routing on Day 5 (small first, escalate on low confiden
 
 ## Layer 2 — Runtime
 
-Where the agent code and state live. Two choices:
+Where the agent code and state run. Three options with Foundry:
 
-- **Client-side** — `Agent` + `FoundryChatClient` in your app. In-process thread state.
-- **Foundry-hosted** — a **PromptAgent** or **HostedAgent**, connected from MAF via `FoundryAgent`. Server-managed state.
+- **Prompt agent** — portal- or SDK-authored, *no code*, Foundry runs it. Zero infrastructure to manage.
+- **Hosted agent** — *your code* (MAF or other frameworks), packaged as a container or zip; Foundry runs the container with a managed endpoint, autoscale, dedicated Entra identity, and observability.
+- **Your own code, calling the Responses API** — your MAF app runs in your process (laptop, Container Apps, App Service, AKS, Functions) and calls Foundry's Responses API for models and platform tools.
 
-Module 6 is entirely about this choice. Both are legitimate; each has a sweet spot.
+Module 6 walks the three paths in detail. All three are legitimate; each has a sweet spot.
 
 ---
 

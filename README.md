@@ -13,7 +13,7 @@ Professional developers, senior engineers, and solution architects with working 
 ## Weekly arc
 | Day | Theme | What you build |
 |-----|-------|----------------|
-| 1 | Foundations: Foundry + MAF + Toolbox + Foundry IQ | A client-side agent and a Foundry-hosted agent side-by-side |
+| 1 | Foundations: Foundry + MAF + Toolbox + Foundry IQ | A Prompt agent, your own code calling the Responses API, and a Hosted agent — the three ways to run an agent with Foundry |
 | 2 | Grounding & Tools | A grounded, tool-using docs assistant with a Foundry IQ knowledge source |
 | 3 | MAF Single Agent Deep Dive + MCP | The same agent, production-shaped, using the GitHub MCP server against real Issues |
 | 4 | Multi-Agent Patterns + Evaluation | A planner + retriever + summarizer + critic workflow with a trajectory eval |

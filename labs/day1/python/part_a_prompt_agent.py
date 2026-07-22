@@ -1,14 +1,23 @@
 """
-Day 1 Lab — Part B — Foundry PromptAgent.
+Day 1 Lab — Part A — Prompt agent.
 
-Connect to a *versioned*, portal-configured **PromptAgent** in your Foundry
-project. Instructions, model, and any hosted tools were configured in the portal
-during Part B setup; here we just connect and run.
+Connect from your app to a Prompt agent you authored in the Foundry portal.
 
-Vocabulary reminder:
-    A **PromptAgent** is a Foundry-hosted agent identified by (name, version).
-    Publishing a new version does not overwrite `1.0`; consumers pinning to `1.0`
-    keep the old behavior. This is the "shipped artifact" model.
+A **Prompt agent** is a Foundry-authored agent: instructions, model, and tools
+are defined as configuration. Foundry Agent Service runs it. There is no
+application code to maintain and no compute to manage on your side. The version
+you publish is what your consumers pin to.
+
+Portal setup (do this first):
+    1. Foundry portal → your project → Agents → New Prompt agent
+    2. Name it `docs-assistant`. Give it a short docs-assistant system prompt.
+    3. Attach a model deployment.
+    4. Publish version 1.0.
+
+Environment variables (set in labs/day1/.env):
+    FOUNDRY_PROJECT_ENDPOINT
+    FOUNDRY_PROMPT_AGENT_NAME=docs-assistant
+    FOUNDRY_PROMPT_AGENT_VERSION=1.0
 """
 
 import asyncio
@@ -35,7 +44,7 @@ async def main() -> None:
     if missing:
         raise SystemExit(f"Set the following in labs/day1/.env before running: {', '.join(missing)}")
 
-    # Foundry-hosted PromptAgent — versioned.
+    # Connect to a Foundry-hosted Prompt agent by name + version.
     agent = FoundryAgent(
         project_endpoint=project_endpoint,
         agent_name=agent_name,
@@ -43,8 +52,7 @@ async def main() -> None:
         credential=AzureCliCredential(),
     )
 
-    # Ask the same questions you asked in Part A so you can compare.
-    print(f"--- PromptAgent: {agent_name} v{agent_version} ---")
+    print(f"--- Prompt agent: {agent_name} v{agent_version} ---")
     for prompt in [
         "In two sentences, what is Microsoft Foundry?",
         "I am building a small internal docs assistant. Suggest 3 features.",
@@ -56,13 +64,15 @@ async def main() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Reflection prompts — save the transcript above; cite it in reflection.md
+# Reflection prompts (save the transcript above; cite it in reflection.md)
 #
-# 1. Where does the thread state live now (compared to Part A)?
-# 2. To publish a v1.1 of this PromptAgent, what would you change?
-# 3. If 3 different Publix apps consumed this PromptAgent, what benefits does
-#    "versioned in Foundry" give you over a client-side agent duplicated in
-#    each app?
+# 1. What did you *not* write to make this work? (Instructions, runtime, endpoint,
+#    scaling, identity — where does each live?)
+# 2. What would you change to publish a v1.1 of this Prompt agent, and what
+#    happens to existing consumers pinned to v1.0?
+# 3. If three different Publix apps consumed this Prompt agent, what benefits
+#    does "versioned in Foundry" give you over the same instructions duplicated
+#    across three codebases?
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":

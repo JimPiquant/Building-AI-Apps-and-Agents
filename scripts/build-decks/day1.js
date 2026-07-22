@@ -226,12 +226,13 @@ function buildModule1() {
     T.addBullets(slide, [
       "Model deployments (frontier and open models)",
       "Playgrounds — chat, agent, evaluation",
-      "Foundry Agent Service — server-hosted agents (PromptAgent, HostedAgent)",
+      "Foundry Agent Service — runtime for Prompt agents (portal-authored, no code) and Hosted agents (your code, containerized, Foundry-run)",
+      "Responses API — the single model + tools entry point; call it from your own code running anywhere",
       "Foundry Toolbox — curated tool/connector catalog, exposed via MCP",
       "Foundry IQ — enterprise knowledge and grounding layer",
       "Evaluators, tracing, and safety",
     ], { y: contentTop });
-    T.notes(slide, "Preview only. PromptAgent, HostedAgent, Toolbox, and Foundry IQ each get their own module or day. Don't dive into any of them here.");
+    T.notes(slide, "Preview only. Prompt agents, Hosted agents, Toolbox, and Foundry IQ each get their own module or day. Don't dive into any of them here.");
   }
 
   {
@@ -254,7 +255,7 @@ function buildModule1() {
     T.addTwoColumn(slide,
       [
         "Foundry (portal, deployments, connections)",
-        "MAF (client-side + Foundry-hosted agents)",
+        "MAF — three ways to run an agent (Prompt agent, Hosted agent, Responses API from your own code)",
         "Toolbox and Foundry IQ",
         "MCP consumption and (stretch) authoring",
         "Evaluation at every layer",
@@ -279,7 +280,7 @@ function buildModule1() {
     });
     T.addTable(slide, [
       ["Day", "Theme"],
-      ["1", "Foundations: the stack, both hosting styles, first working agents"],
+      ["1", "Foundations: the stack; the three ways to run an agent with Foundry; first working agents"],
       ["2", "Grounding (Foundry IQ + custom RAG) and tools in depth"],
       ["3", "Single-agent depth: memory, streaming, structured outputs, MCP"],
       ["4", "Multi-agent patterns + evaluation as a first-class activity"],
@@ -377,7 +378,7 @@ function buildModule2() {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Playgrounds" });
     T.addBullets(slide, [
       "Chat playground — test a deployed model interactively",
-      "Agent playground — test a PromptAgent or HostedAgent you've created in Foundry",
+      "Agent playground — test a Prompt agent or Hosted agent you've created in Foundry",
       "Prompt flow / evaluation playgrounds — for testing eval configurations",
       "Use playgrounds to sanity-check before writing agent code",
       "If it doesn't work in the playground, it won't work in MAF either",
@@ -579,7 +580,7 @@ agent = Agent(
         "- Say 'I don't know' when you don't.\\n"
     ),
 )`, { y: 1.2, h: 3.8 });
-    T.notes(slide, "For PromptAgent, the instructions live in the portal as a versioned artifact — set up in Module 6, seen again Part B of the lab.");
+    T.notes(slide, "For a Prompt agent, the instructions live in the portal as a versioned artifact — set up in Module 6, seen again in Part A of the lab.");
   }
 
   {
@@ -689,7 +690,7 @@ AIAgent agent = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredentia
                instructions: "You are a friendly assistant. Keep answers brief.");
 
 Console.WriteLine(await agent.RunAsync("What is the capital of France?"));`, { y: 1.2, h: 3.8 });
-    T.notes(slide, "Same shape as Python. Point out AIProjectClient.AsAIAgent(...) as the client-side pattern.");
+    T.notes(slide, "Same shape as Python. AIProjectClient.AsAIAgent(...) is C#'s way to write 'my code calling the Responses API'.");
   }
 
   {
@@ -721,7 +722,7 @@ r2 = await agent.run("What's my name?")   # answer: Alex`, { y: 1.9, h: 1.0, fon
     T.addProse(slide,
       "Under the hood MAF is managing the thread for you. You can create explicit threads when you need to — covered in Day 3 memory module.",
       { y: 3.1, h: 1.2, fontSize: 14 });
-    T.notes(slide, "Attendees will ask 'where does that state live?' — answer: in the process for client-side agents; server-side for Foundry-hosted (Module 6).");
+    T.notes(slide, "Attendees will ask 'where does that state live?' — for your own MAF process, in the process; for Foundry-hosted Prompt or Hosted agents, server-side (Module 6).");
   }
 
   {
@@ -751,13 +752,13 @@ r2 = await agent.run("What's my name?")   # answer: Alex`, { y: 1.9, h: 1.0, fon
   {
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 4", title: "Bridge to the next two modules" });
     T.addProse(slide,
-      "You've now seen a client-side agent — built with Agent + FoundryChatClient (Python) or AIProjectClient.AsAIAgent (C#).",
+      "You've now seen the MAF primitives that let your process call the Foundry Responses API — Agent + FoundryChatClient (Python) or AIProjectClient.AsAIAgent (C#).",
       { y: 1.2, h: 1.0, fontSize: 16 });
     T.addProse(slide,
-      "There's another way to run an agent: have Foundry host it for you. That's a PromptAgent or a HostedAgent in Foundry, connected via FoundryAgent.",
+      "That's one of three ways to run an agent with Foundry. The other two — Prompt agents (portal-authored, no code) and Hosted agents (your code, containerized, run by Foundry) — live inside Agent Service and are connected via FoundryAgent.",
       { y: 2.4, h: 1.2, fontSize: 16 });
     T.addProse(slide,
-      "Module 5 gives us the mental model that ties everything together. Module 6 compares the two hosting styles.",
+      "Module 5 gives us the mental model that ties everything together. Module 6 walks all three paths in detail.",
       { y: 3.8, h: 1.0, fontSize: 15, italic: true });
     T.notes(slide, "Foreshadow. Don't dive into hosting details here — save for Module 6.");
   }
@@ -768,7 +769,7 @@ r2 = await agent.run("What's my name?")   # answer: Alex`, { y: 1.9, h: 1.0, fon
       "MAF's primitives are small and stable: chat client, agent, thread, run, tool, message.",
       "Python and C# APIs mirror each other closely.",
       "Auth is Azure identity end-to-end. No keys.",
-      "Client-side agent is one of two hosting styles — hosted variants next.",
+      "The pattern you just saw — your code calling the Responses API — is one of three ways to run an agent. Module 6 covers all three.",
     ],
     next: "The five-layer agent stack we'll refer to every day this week.",
   }), "Recap. If code slides ran long, cut the takeaways to 30 seconds.");
@@ -791,7 +792,7 @@ function buildModule5() {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 5", title: "The five-layer stack" });
     T.addBullets(slide, [
       "Model — the deployed model",
-      "Runtime — where the agent lives (client-side vs. Foundry-hosted)",
+      "Runtime — where the agent runs (Prompt agent, Hosted agent, or your own code calling the Responses API)",
       "Actions — how it does things (tools, Toolbox, MCP)",
       "Knowledge — how it knows things (Foundry IQ, RAG)",
       "Ops — identity, tracing, evaluation, cost, deployment",
@@ -822,8 +823,9 @@ function buildModule5() {
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 5", title: "Layer 2 — Runtime" });
     T.addProse(slide, "Where the agent code and state live. Two choices:", { y: 1.15, h: 0.5, fontSize: 16 });
     T.addBullets(slide, [
-      "Client-side — Agent + FoundryChatClient in your app; in-process thread state",
-      "Foundry-hosted — a PromptAgent or HostedAgent, connected from MAF via FoundryAgent; server-managed state",
+      "Prompt agent — portal- or SDK-authored, no code, Foundry runs it",
+      "Hosted agent — your code, packaged as a container, Foundry runs the container",
+      "Your own code calling the Responses API — your process runs your code and calls Foundry for models and tools",
     ], { y: 1.8, h: 2.2 });
     T.addProse(slide,
       "Module 6 is entirely about this choice. Both are legitimate; each has a sweet spot.",
@@ -907,49 +909,108 @@ function buildModule5() {
       "Every day of the workshop, and every real agent you build, fits into these.",
       "When something breaks or costs too much, ask which layer first.",
     ],
-    next: "Module 6 zooms into Layer 2 (Runtime) — the two agent hosting styles you can pick.",
+    next: "Module 6 zooms into Layer 2 (Runtime) — the three ways to run an agent with Foundry.",
   }), "Ask two attendees to name the five layers out loud. Cheap check for retention.");
 
   return pres.writeFile({ fileName: path.join(OUT_DIR, "module-5-agent-stack.pptx") });
 }
 
-// ---------- MODULE 6 — Client-side vs. Foundry-hosted ----------
+// ---------- MODULE 6 — Three ways to run an agent with Foundry ----------
 function buildModule6() {
   const pres = T.newDeck(new pptxgen());
 
   T.notes(T.titleSlide(pres, {
     eyebrow: "DAY 1 · MODULE 6 · 35 MIN",
-    title: "Agent Hosting Styles",
-    subtitle: "Client-side vs. Foundry-hosted (PromptAgent and HostedAgent)",
+    title: "Three ways to run an agent with Foundry",
+    subtitle: "Prompt agents, Hosted agents, and calling the Responses API from your own code",
     footer: "Building AI Apps and Agents",
-  }), "This is the terminology-heavy module. Get the words right — they're the actual MAF vocabulary and appear in every future day.");
+  }), "Terminology-heavy module. Get the words right — these are the actual Foundry Agent Service terms and appear in every future day. All three paths use the Responses API; what changes is where the code runs and how much of the runtime Foundry manages.");
 
   {
-    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Two places an agent can live" });
-    T.addTwoColumn(slide,
-      [
-        "You build the agent in your app code with Agent + a chat client",
-        "In-process thread state",
-        "Your process owns the lifecycle",
-        "Full local control over construction, tools, memory",
-      ],
-      [
-        "The agent is created and configured in the Foundry portal (or via API)",
-        "MAF connects to it over the wire",
-        "Foundry owns the lifecycle",
-        "Shared identity across apps and teams",
-      ],
-      { leftHeader: "Client-side", rightHeader: "Foundry-hosted" }
-    );
-    slide.addText("MAF gives you a consistent API for both. You choose based on the scenario, not the SDK.", {
-      x: 0.4, y: 4.55, w: 9.2, h: 0.4,
-      fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted,
+    const { slide } = T.bodySlide(pres, {
+      tag: "Day 1 · Module 6", title: "Foundry Agent Service — you pick how much of it to use",
     });
-    T.notes(slide, "Frame the choice as scenario-driven. No wrong answer — it's about who owns lifecycle and who consumes the agent.");
+    // Three path cards
+    const cardY = 1.25, cardH = 2.6, cardW = 3.0, gap = 0.15;
+    const startX = (10 - (3 * cardW + 2 * gap)) / 2;
+    const cards = [
+      {
+        name: "Path A · Prompt agent",
+        where: "Runs in Foundry",
+        managed: "Foundry manages everything (no code, no compute)",
+      },
+      {
+        name: "Path B · Your code + Responses API",
+        where: "Runs in your process",
+        managed: "You manage the runtime; Foundry serves the model + tools",
+      },
+      {
+        name: "Path C · Hosted agent",
+        where: "Your code, run by Foundry",
+        managed: "Foundry manages endpoint, autoscale, identity, observability",
+      },
+    ];
+    cards.forEach((c, i) => {
+      const x = startX + i * (cardW + gap);
+      slide.addShape("rect", {
+        x, y: cardY, w: cardW, h: cardH,
+        fill: { color: T.COLORS.white },
+        line: { color: T.COLORS.navy, width: 1 },
+      });
+      slide.addText(c.name, {
+        x: x + 0.1, y: cardY + 0.15, w: cardW - 0.2, h: 0.55,
+        fontFace: T.FONTS.title, fontSize: 15, bold: true, color: T.COLORS.navy, align: "center", valign: "middle", margin: 0,
+      });
+      slide.addText(c.where, {
+        x: x + 0.1, y: cardY + 0.85, w: cardW - 0.2, h: 0.35,
+        fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted, align: "center", margin: 0,
+      });
+      slide.addText(c.managed, {
+        x: x + 0.15, y: cardY + 1.35, w: cardW - 0.3, h: 1.1,
+        fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.ink, align: "center", valign: "top", margin: 0,
+      });
+    });
+    // Shared entry point callout
+    slide.addShape("rect", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.6,
+      fill: { color: T.COLORS.ice }, line: { type: "none" },
+    });
+    slide.addText([
+      { text: "Shared entry point: ", options: { bold: true } },
+      { text: "the Responses API. All three paths call it for models and platform tools." },
+    ], {
+      x: 0.55, y: 4.6, w: 8.9, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 13, color: T.COLORS.navy, valign: "middle", margin: 0,
+    });
+    T.notes(slide, "Anchor slide for the module. Reinforce: the Responses API is the shared entry point. What changes across the three paths is where the code lives and who manages the runtime.");
   }
 
   {
-    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Client-side agent — Python" });
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Path A — Prompt agent" });
+    T.addProse(slide,
+      "A Prompt agent is defined entirely as configuration: instructions, model, tools. Author in the Foundry portal or via SDK / REST. Foundry runs it — no application code to maintain, no compute to manage.",
+      { y: 1.15, h: 0.9, fontSize: 13 });
+    T.addCode(slide, `from agent_framework.foundry import FoundryAgent
+from azure.identity import AzureCliCredential
+
+agent = FoundryAgent(
+    project_endpoint="https://<project>.services.ai.azure.com",
+    agent_name="docs-assistant",
+    agent_version="1.0",
+    credential=AzureCliCredential(),
+)
+result = await agent.run("What is Foundry IQ?")`, { y: 2.15, h: 2.55 });
+    slide.addText("Best for: fast start, internal tools, production agents that don't need custom orchestration.",
+      { x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 13, italic: true, color: T.COLORS.muted });
+    T.notes(slide, "Call out: this is Learn's recommended 'start here' path. Zero infrastructure and the fastest way to see an agent working.");
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Path B — Your own code, calling the Responses API" });
+    T.addProse(slide,
+      "Your MAF app runs in your process — laptop, Container Apps, App Service, AKS, Functions — and calls Foundry's Responses API. You own the runtime.",
+      { y: 1.15, h: 0.7, fontSize: 13 });
     T.addCode(slide, `from agent_framework import Agent
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
@@ -958,19 +1019,16 @@ agent = Agent(
     client=FoundryChatClient(credential=AzureCliCredential()),
     name="DocsAssistant",
     instructions="You are a helpful docs assistant. Cite sources.",
-    # tools=[...],
 )
-
-result = await agent.run("What is Foundry IQ?")`, { y: 1.2, h: 3.6 });
-    slide.addText("The agent object lives entirely in your process. Kill the process, kill the thread.", {
-      x: 0.4, y: 4.9, w: 9.2, h: 0.4,
-      fontFace: T.FONTS.body, fontSize: 13, italic: true, color: T.COLORS.muted,
-    });
-    T.notes(slide, "Note there's no versioning here — you version the code, not the agent.");
+result = await agent.run("What is Foundry IQ?")`, { y: 1.95, h: 2.75 });
+    slide.addText("Additive to Path C — the same MAF code can be repackaged as a Hosted agent later. No rewrite.",
+      { x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy });
+    T.notes(slide, "The most common developer path. Emphasize the additive relationship with Path C — Path B code becomes a Hosted agent by packaging, not rewriting.");
   }
 
   {
-    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Client-side agent — C#" });
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Path B — C# equivalent" });
     T.addCode(slide, `using Azure.AI.Projects;
 using Azure.Identity;
 using Microsoft.Agents.AI;
@@ -983,98 +1041,103 @@ AIAgent agent = new AIProjectClient(
         instructions: "You are a helpful docs assistant. Cite sources.");
 
 Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));`, { y: 1.2, h: 3.6 });
-    slide.addText("Same shape — construct locally, run locally, no persisted server-side identity.",
+    slide.addText("Same shape. Same primitives. Same \"your process calls Foundry's Responses API\" pattern.",
       { x: 0.4, y: 4.9, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 13, italic: true, color: T.COLORS.muted });
-    T.notes(slide, "Point out AIProjectClient.AsAIAgent(...) is the .NET client-side pattern; same primitives.");
+    T.notes(slide, "Point out AIProjectClient.AsAIAgent(...) is C#'s way to write Path B. Python and C# APIs mirror.");
   }
 
   {
-    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Foundry-hosted, flavor 1 — PromptAgent" });
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Path C — Hosted agent" });
     T.addProse(slide,
-      "A versioned, portal-configured agent inside Foundry. Instructions, model, tools, knowledge sources all live on the service.",
-      { y: 1.15, h: 0.8, fontSize: 14 });
-    T.addCode(slide, `from agent_framework.foundry import FoundryAgent
-from azure.identity import AzureCliCredential
+      "Your agent code (MAF, LangGraph, OpenAI Agents SDK, or your own), packaged as a container or a source zip. Foundry runs the container with a managed endpoint, autoscale, dedicated Entra identity, and end-to-end observability. Under the hood, your code calls the Responses API.",
+      { y: 1.15, h: 1.3, fontSize: 12 });
+    T.addCode(slide, `# From any client — including another agent — connect by name:
+from agent_framework.foundry import FoundryAgent
 
 agent = FoundryAgent(
     project_endpoint="https://<project>.services.ai.azure.com",
-    agent_name="docs-assistant",
-    agent_version="1.0",           # PromptAgent is versioned
+    agent_name="docs-assistant-hosted",
     credential=AzureCliCredential(),
-)
-
-result = await agent.run("What is Foundry IQ?")`, { y: 2.05, h: 2.7 });
-    slide.addText("Prefer PromptAgent when the agent is a shipped artifact your team versions and deploys independently from app code.",
-      { x: 0.4, y: 4.9, w: 9.2, h: 0.5, fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted });
-    T.notes(slide, "This is where 'the P word' collision usually confuses people — clarify PromptAgent is a Foundry-hosted thing, NOT the in-process pattern.");
+)`, { y: 2.5, h: 2.05, fontSize: 12 });
+    slide.addText("Best for: agents that call into your own custom code, custom orchestration, and any scenario where you want Foundry to handle hosting, scaling, and identity.",
+      { x: 0.4, y: 4.7, w: 9.2, h: 0.55, fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted });
+    T.notes(slide, "Path C is where Foundry stops being 'model host' and starts being 'agent app host + platform tooling.' Attendees see this in Part C of the lab.");
   }
 
   {
-    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Foundry-hosted, flavor 2 — HostedAgent" });
-    T.addProse(slide,
-      "A Foundry-hosted agent without an explicit version number. Slightly simpler; still server-managed.",
-      { y: 1.15, h: 0.8, fontSize: 14 });
-    T.addCode(slide, `from agent_framework.foundry import FoundryAgent
-from azure.identity import AzureCliCredential
-
-agent = FoundryAgent(
-    project_endpoint="https://<project>.services.ai.azure.com",
-    agent_name="docs-assistant",
-    # no agent_version
-    credential=AzureCliCredential(),
-)
-
-result = await agent.run("What is Foundry IQ?")`, { y: 2.05, h: 2.7 });
-    slide.addText("Prefer HostedAgent when you want a shared server-hosted agent but versioning discipline isn't a hard constraint.",
-      { x: 0.4, y: 4.9, w: 9.2, h: 0.5, fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted });
-    T.notes(slide, "Only difference from PromptAgent in code = no agent_version. Emphasize how small the API delta is.");
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "What Foundry manages for a Hosted agent" });
+    // Two columns: what you write vs. what Foundry gives you
+    T.addTwoColumn(slide,
+      [
+        "Agent logic (MAF or other frameworks)",
+        "Instructions and tool wiring",
+        "Any custom business code",
+        "Your unit tests and CI",
+        { text: "That's it.", indent: 0 },
+      ],
+      [
+        "Managed endpoint (a stable URL)",
+        "Autoscale — container instances per session and request volume",
+        "Dedicated Microsoft Entra identity per agent",
+        "End-to-end tracing + App Insights integration",
+        "Content safety and prompt-injection mitigation",
+        "Foundry Toolbox tools (web search, code interpreter, MCP servers, …)",
+        "Managed conversations / memory (BYO also supported)",
+      ],
+      { leftHeader: "What you write", rightHeader: "What Foundry gives you" }
+    );
+    T.notes(slide, "This is the answer to 'why not just run my own container?' Foundry hosts your app runtime AND the tooling around it in one place.");
   }
 
   {
-    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Trade-offs at a glance" });
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Compare at a glance" });
     T.addTable(slide, [
-      ["Concern", "Client-side", "PromptAgent", "HostedAgent"],
-      ["Agent identity lives", "In your code", "In Foundry", "In Foundry"],
-      ["Thread state", "In-process", "Server-managed", "Server-managed"],
-      ["Versioning built in", "You handle it", "Yes", "No"],
-      ["Shared across apps", "Duplicate code", "Yes", "Yes"],
-      ["Iteration speed", "Fast (redeploy app)", "Portal + new version", "Fastest (portal edit)"],
-      ["Portability off Foundry", "High", "Lower", "Lower"],
-    ], { y: contentTop, colW: [2.4, 2.0, 2.4, 2.4], rowH: 0.4, fontSize: 12 });
-    T.notes(slide, "Walk down each row. Pause on 'versioning' — that's the main reason to pick PromptAgent over HostedAgent.");
+      ["Concern", "A · Prompt", "B · Your code", "C · Hosted"],
+      ["Runtime code to maintain", "None", "Yours", "Yours"],
+      ["Compute to manage", "None", "Yours", "Container (Foundry)"],
+      ["Managed endpoint", "Yes", "You provide", "Yes"],
+      ["Autoscale", "Yes", "You handle", "Yes"],
+      ["Agent identity (Entra)", "Yes", "You handle", "Yes, dedicated"],
+      ["Iteration speed", "Portal + publish", "Edit + restart", "Portal upload / redeploy"],
+      ["Portability off Foundry", "Low", "High", "Medium"],
+    ], { y: contentTop, colW: [2.6, 2.0, 2.2, 2.4], rowH: 0.42, fontSize: 12 });
+    T.notes(slide, "Walk down each row. Emphasize how Path B is the most portable but requires you to handle endpoint, scaling, identity yourself.");
   }
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Decision guide (rough cuts)" });
     T.addBullets(slide, [
-      "Building a library or embedded assistant? → Client-side",
-      "One agent used by 3+ apps or teams? → Foundry-hosted",
-      "Regulated / auditable agent that needs immutable versions? → PromptAgent",
-      "Prototyping quickly with portal edits? → HostedAgent",
-    ], { y: contentTop });
-    slide.addText("Mix and match — you can have some client-side and some Foundry-hosted agents in the same app.",
-      { x: 0.4, y: 4.55, w: 9.2, h: 0.5, fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted });
-    T.notes(slide, "Ask the audience: 'anyone see their scenario fitting more than one row?' Common — good discussion.");
+      "Getting started, or building a scoped internal tool with no custom logic? → Path A (Prompt agent)",
+      "Embedding an agent inside an existing app you already run somewhere? → Path B (your code + Responses API)",
+      "Prototyping quickly on your laptop before you decide on hosting? → Path B",
+      "Shipping a production agent with custom code that needs managed hosting, Entra identity, and observability? → Path C (Hosted agent)",
+      "Regulated agent that needs managed content safety, a stable endpoint, and dedicated identity? → Path A or Path C",
+    ], { y: contentTop, fontSize: 14 });
+    slide.addText("Mix and match — real systems combine paths.",
+      { x: 0.4, y: 4.9, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 13, italic: true, color: T.COLORS.muted });
+    T.notes(slide, "Ask the audience whether their scenario fits more than one row — many will. That's the point.");
   }
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Common gotchas" });
     T.addBullets(slide, [
-      "'PromptAgent = client-side' — wrong. PromptAgent is Foundry-hosted. 'Prompt' sounds lightweight but isn't.",
-      "Assuming portability — a PromptAgent's configuration is Foundry-specific. Design your app so runtime choice is behind an interface.",
-      "Mixing credentials — all three use Azure identity; differences are in what the credential authenticates to.",
-    ], { y: contentTop });
-    T.notes(slide, "The first bullet is the terminology collision we surface all week. If attendees only remember one gotcha, this is it.");
+      "\"Prompt agent = client-side\" — wrong. A Prompt agent is Foundry-managed. There's no client-side runtime for it at all.",
+      "\"Hosted agent = my code running anywhere in Azure\" — wrong. Hosted agent specifically means your code as a container run by Foundry Agent Service. Your own container in your own App Service is Path B, not Path C.",
+      "Assuming portability off Foundry — Path A is Foundry-only by construction. Path C keeps Foundry-managed features (Toolbox, IQ, portal connections) behind the managed endpoint. Path B is the most portable.",
+      "Mixing up authentication — all three use Azure identity; the credential authenticates to different things.",
+    ], { y: contentTop, fontSize: 13 });
+    T.notes(slide, "The first two gotchas are the terminology collisions the module was designed to fix. Reinforce.");
   }
 
   {
-    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Same code, different destinations" });
-    slide.addText("A MAF agent you write on your laptop is portable. The hosting decision is separable from the agent code.", {
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Same MAF code, different destinations" });
+    slide.addText("Path B code can be repackaged as a Path C Hosted agent later. The MAF code you write does not change.", {
       x: 0.4, y: 1.2, w: 9.2, h: 0.5,
       fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted, margin: 0,
     });
     // Left card — local dev
-    const leftX = 0.4, leftW = 3.0, cardsY = 1.95, leftH = 2.4;
+    const leftX = 0.4, leftW = 3.0, cardsY = 1.9, leftH = 2.5;
     slide.addShape("rect", {
       x: leftX, y: cardsY, w: leftW, h: leftH,
       fill: { color: T.COLORS.white }, line: { color: T.COLORS.navy, width: 1 },
@@ -1093,7 +1156,7 @@ result = await agent.run("What is Foundry IQ?")`, { y: 2.05, h: 2.7 });
       fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.ink, valign: "top", paraSpaceAfter: 4,
     });
 
-    // Middle arrow with label
+    // Middle arrow
     const arrY = cardsY + leftH / 2;
     slide.addShape("line", {
       x: leftX + leftW + 0.15, y: arrY, w: 1.4, h: 0,
@@ -1109,11 +1172,11 @@ result = await agent.run("What is Foundry IQ?")`, { y: 2.05, h: 2.7 });
     });
 
     // Right — three stacked destination cards
-    const rightX = 5.4, rightW = 4.2, destH = 0.7, destGap = 0.15;
+    const rightX = 5.4, rightW = 4.2, destH = 0.72, destGap = 0.12;
     const dests = [
-      { name: "Foundry Agent Service", sub: "register as a PromptAgent or HostedAgent" },
-      { name: "Azure Container Apps or AKS", sub: "you own the container" },
-      { name: "Azure Functions", sub: "event-driven or HTTP triggers" },
+      { name: "Foundry Agent Service (Path C)", sub: "zip → portal → managed Hosted agent" },
+      { name: "Azure Container Apps or AKS", sub: "Path B — you own the container" },
+      { name: "App Service or Azure Functions", sub: "Path B — event-driven or HTTP triggers" },
     ];
     dests.forEach((d, i) => {
       const y = cardsY + i * (destH + destGap);
@@ -1122,50 +1185,49 @@ result = await agent.run("What is Foundry IQ?")`, { y: 2.05, h: 2.7 });
         fill: { color: T.COLORS.panel }, line: { color: T.COLORS.border, width: 0.5 },
       });
       slide.addText(d.name, {
-        x: rightX + 0.15, y: y + 0.06, w: rightW - 0.3, h: 0.3,
-        fontFace: T.FONTS.title, fontSize: 13, bold: true, color: T.COLORS.navy, margin: 0,
+        x: rightX + 0.15, y: y + 0.08, w: rightW - 0.3, h: 0.3,
+        fontFace: T.FONTS.title, fontSize: 12, bold: true, color: T.COLORS.navy, margin: 0,
       });
       slide.addText(d.sub, {
-        x: rightX + 0.15, y: y + 0.35, w: rightW - 0.3, h: 0.3,
-        fontFace: T.FONTS.body, fontSize: 11, italic: true, color: T.COLORS.muted, margin: 0,
+        x: rightX + 0.15, y: y + 0.38, w: rightW - 0.3, h: 0.3,
+        fontFace: T.FONTS.body, fontSize: 10, italic: true, color: T.COLORS.muted, margin: 0,
       });
     });
 
-    // Bottom caption
     slide.addShape("rect", {
-      x: 0.4, y: 4.6, w: 9.2, h: 0.6,
+      x: 0.4, y: 4.55, w: 9.2, h: 0.5,
       fill: { color: T.COLORS.ice }, line: { type: "none" },
     });
     slide.addText([
-      { text: "Prototype and evaluate locally first — then pick a hosting destination. ", options: { bold: true } },
-      { text: "Foundry-specific features (PromptAgent versioning, IQ, portal connections) remain hosted-only." },
+      { text: "Prototype locally in Path B. Decide destination later. ", options: { bold: true } },
+      { text: "Foundry-specific features (Toolbox skills, IQ, agent identity) become available on Path A or Path C." },
     ], {
-      x: 0.55, y: 4.65, w: 8.9, h: 0.5,
-      fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
+      x: 0.55, y: 4.6, w: 8.9, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 11, color: T.COLORS.navy, valign: "middle", margin: 0,
     });
-    T.notes(slide, "This is the anti-lock-in reassurance. Attendees debating client-side vs. hosted often worry about being trapped; this slide says the choice is reversible for agent code, but Foundry-specific *features* are the actual coupling.");
+    T.notes(slide, "Anti-lock-in reassurance for the agent code. Foundry-specific *features* remain the coupling — call that out honestly.");
   }
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "What you'll do in the lab" });
     T.addBullets(slide, [
-      "Part A — build a client-side agent in your code",
-      "Part B — connect to a Foundry PromptAgent you create in the portal",
-      "Part C (bonus) — connect to a Foundry HostedAgent",
-      "Compare responses, thread persistence, and where each configuration lives",
-    ], { y: contentTop });
-    slide.addText("Same model, three hosting styles. You'll feel the trade-offs.",
-      { x: 0.4, y: 4.55, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 15, italic: true, bold: true, color: T.COLORS.navy });
-    T.notes(slide, "Bridge to Module 7 (lab kickoff). Attendees should feel prepared.");
+      "Part A — Prompt agent: create in the Foundry portal, connect from your MAF app",
+      "Part B — Your own code + Responses API: build an MAF app in Python (or C#) that runs in your process",
+      "Part C — Hosted agent: connect to a pre-deployed Hosted agent in the sandbox; walk the portal to see what Foundry manages (endpoint, tracing, identity, Toolbox tool, content safety)",
+      "Stretch: zip your Part B code and deploy it as your own Hosted agent",
+    ], { y: contentTop, fontSize: 14 });
+    slide.addText("Same underlying docs-assistant behavior three ways. You'll feel the trade-offs.",
+      { x: 0.4, y: 4.55, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy });
+    T.notes(slide, "Bridge to Module 7 lab kickoff. Attendees should feel prepared.");
   }
 
   T.notes(T.takeawaysSlide(pres, {
     tag: "Day 1 · Module 6", title: "Takeaways",
     bullets: [
-      "Client-side agents live in your process; Foundry-hosted agents live in Foundry.",
-      "Foundry-hosted has two flavors: PromptAgent (versioned) and HostedAgent (non-versioned).",
-      "Pick based on who owns lifecycle and who consumes the agent — not the SDK.",
-      "Vocabulary matters. Use the exact MAF terms.",
+      "Foundry gives you three paths to run an agent, with the Responses API as the shared entry point.",
+      "Prompt agent = configuration only. Hosted agent = your code, Foundry-run. Path B = your code, you run it.",
+      "Foundry Agent Service manages more than models — endpoint, identity, observability, Toolbox tools, memory, content safety.",
+      "Path B code is portable — you can promote it to a Hosted agent later without a rewrite.",
     ],
     next: "Lab walkthrough and environment check.",
   }), "Two-minute recap. Confirm no vocabulary confusion before moving to the lab.");
@@ -1188,9 +1250,9 @@ function buildModule7() {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 7", title: "What you'll build" });
     T.addBullets(slide, [
       "The same small docs assistant, three ways",
-      "Part A — client-side agent (Python or C#)",
-      "Part B — Foundry PromptAgent (versioned, portal-configured)",
-      "Part C (bonus) — Foundry HostedAgent (non-versioned)",
+      "Part A — Prompt agent (created in the portal, no code to maintain)",
+      "Part B — Your own code calling the Responses API (MAF in Python or C#)",
+      "Part C — Hosted agent (connect to a pre-deployed one; explore what Foundry manages)",
       "Ask each the same questions and compare behavior, latency, and where thread state lives",
     ], { y: contentTop });
     T.notes(slide, "Emphasize reflection > code. The reflection.md is the actual deliverable.");
@@ -1225,18 +1287,19 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
 ├── README.md                 ← the lab instructions
 ├── python/                   ← Python starter templates (uv)
 │   ├── pyproject.toml
-│   ├── part_a_client_side_agent.py
-│   ├── part_b_foundry_prompt_agent.py
-│   └── part_c_foundry_hosted_agent.py
-└── csharp/PartA_ClientSideAgent/`, { y: 3.2, h: 2.1, fontSize: 12 });
+│   ├── part_a_prompt_agent.py
+│   ├── part_b_responses_api.py
+│   └── part_c_hosted_agent.py
+└── csharp/PartB_ResponsesApi/`, { y: 3.2, h: 2.1, fontSize: 12 });
     T.notes(slide, "Walk through the file layout so nothing feels mysterious. Show the actual repo URL.");
   }
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 7", title: "Success criteria — what 'done' looks like" });
     T.addBullets(slide, [
-      "Part A runs — client-side agent handles non-streaming and streaming multi-turn questions",
-      "Part B runs — you created a PromptAgent in the portal (version 1.0) and MAF connects to it",
+      "Part A runs — you created a Prompt agent in the Foundry portal (version 1.0) and your MAF app connects to it",
+      "Part B runs — your MAF app calls the Responses API and handles multi-turn, streaming, and non-streaming",
+      "Part C runs — you connect to a pre-deployed Hosted agent and walked the portal to see what Foundry manages",
       "A short reflection.md committed to your fork:",
       { text: "Where did thread state live in Part A vs. Part B?", indent: 1 },
       { text: "Which felt faster to iterate on?", indent: 1 },
@@ -1262,7 +1325,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "az login succeeded but MAF still 401s — may need Azure AI User role on the project",
       "FOUNDRY_PROJECT_ENDPOINT not set — copy from .env.example, paste from portal",
       "Model deployment name mismatch — deployment name is not the same as model name",
-      "Python — package missing — `uv sync` from labs/day1/python/",
+      "Python — package missing — uv sync from labs/day1/python/",
     ], { y: contentTop, fontSize: 14 });
     T.notes(slide, "This is a look-before-you-leap slide. Save the async portion from the same-question-x-15 problem.");
   }
@@ -1285,7 +1348,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
   T.notes(T.takeawaysSlide(pres, {
     tag: "Day 1 · Module 7", title: "Takeaways",
     bullets: [
-      "Same functional agent, three hosting styles.",
+      "Same underlying docs-assistant behavior — three ways to run an agent with Foundry.",
       "Focus on feeling the difference — not just making the code run.",
       "The reflection is the deliverable, not the code.",
     ],

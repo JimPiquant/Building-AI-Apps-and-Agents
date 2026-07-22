@@ -1,6 +1,6 @@
-# Day 1 Lab — Two agents, same job
+# Day 1 Lab — Three ways to run an agent with Foundry
 
-Build the same small docs assistant three ways: as a **client-side agent**, as a **Foundry PromptAgent**, and (bonus) as a **Foundry HostedAgent**. Compare where thread state lives, how you iterate on each, and which you'd choose for a shared production scenario.
+Build the same small docs assistant three ways: as a **Prompt agent** (Part A), as **your own code calling the Responses API** (Part B), and as a **Hosted agent** (Part C). Compare where the runtime lives, what Foundry manages for you, and how you'd choose between them.
 
 Estimated time: **~2 hours async**.
 
@@ -8,82 +8,93 @@ Estimated time: **~2 hours async**.
 
 - You completed the [prereqs self-check](../../docs/prereqs.md).
 - `az login` works against the Publix tenant.
-- You have a Foundry project and know its **project endpoint** and **at least one model deployment name** (both were surfaced in Module 2).
+- You have a Foundry project and know its **project endpoint** and **at least one model deployment name** (surfaced in Module 2).
 - You've cloned this repo and are working from `labs/day1/`.
 
 ## Choose your language
 
-- **Python**: all three parts implemented — [`python/`](python/)
-- **C#**: Part A implemented — [`csharp/PartA_ClientSideAgent/`](csharp/PartA_ClientSideAgent/). Parts B and C in Cohort 1 are **Python-only**; C# equivalents exist in the `microsoft/agent-framework` samples under `dotnet/samples/02-agents/AgentProviders/foundry/`. See the [terminology doc](../../docs/terminology.md) for the C# API mapping.
+- **Python**: all three parts implemented under [`python/`](python/).
+- **C#**: **Part B** implemented under [`csharp/PartB_ResponsesApi/`](csharp/PartB_ResponsesApi/). Parts A and C are Python-only for Cohort 1; C# reference samples for those paths live in the `microsoft/agent-framework` repo — see [`csharp/README.md`](csharp/README.md).
 
-You can mix — do Part A in C# if you prefer, then switch to Python for Parts B and C.
+You can mix — Part B in C# is fine, then switch to Python for Parts A and C.
 
 ## Environment file
 
-Both languages read from a `.env` in `labs/day1/`. Copy the example:
+Copy the example:
 
 ```bash
 cp labs/day1/.env.example labs/day1/.env
 ```
 
-Then fill in the values described inside. Never commit `.env`.
+Fill in the values described inside. Never commit `.env`.
 
 ---
 
-## Part A — Client-side agent (~45 min)
+## Part A — Prompt agent (~30 min)
 
-**What you'll do:** build a client-side agent in code with `Agent` + `FoundryChatClient` (Python) or `AIProjectClient.AsAIAgent(...)` (C#). Run it non-streaming and streaming. Have a short multi-turn conversation.
-
-**Steps**
-1. Fill in `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL` in `.env`.
-2. Python: `cd labs/day1/python && uv sync && uv run python part_a_client_side_agent.py` (install uv first from https://astral.sh/uv)
-3. C#: `cd labs/day1/csharp/PartA_ClientSideAgent && dotnet run`
-4. Ask the questions in the "Reflection prompts" section at the bottom of the starter file. Save the transcript.
-
-**Definition of done for Part A**
-- The agent responds to at least three multi-turn prompts.
-- You see streaming output work (tokens print incrementally).
-- You can articulate where thread state is stored.
-
----
-
-## Part B — Foundry PromptAgent (~45 min)
-
-**What you'll do:** create a **PromptAgent** in the Foundry portal, publish version `1.0`, then connect to it from MAF using `FoundryAgent(agent_name, agent_version)`.
+**What you'll do:** create a **Prompt agent** in the Foundry portal (instructions, model, tools defined as configuration), then connect to it from an MAF app. You write **no runtime code** for the agent itself — Foundry runs it.
 
 **Portal steps** (facilitator will demo the first one live)
-1. Open your Foundry project → **Agents** → **New PromptAgent**.
-2. Name it `docs-assistant`. Instructions: same system prompt you used in Part A.
-3. Attach the model deployment you used in Part A.
+1. Foundry portal → your project → **Agents** → **New Prompt agent**.
+2. Name it `docs-assistant`. Instructions: use the docs-assistant system prompt from the starter (`labs/day1/python/part_a_prompt_agent.py`).
+3. Attach the model deployment from Module 2.
 4. Publish version `1.0`.
 
 **Code steps**
 1. Set `FOUNDRY_PROMPT_AGENT_NAME=docs-assistant` and `FOUNDRY_PROMPT_AGENT_VERSION=1.0` in `.env`.
-2. Run `python part_b_foundry_prompt_agent.py`.
-3. Ask the same multi-turn questions you used in Part A. Save the transcript.
+2. Run `uv run python part_a_prompt_agent.py`.
 
-**Definition of done for Part B**
-- Your PromptAgent shows up in the portal under **Agents**.
-- MAF connects to it and responds to prompts.
-- You can articulate what "versioned agent" means in practice — what would you change to publish `1.1`?
+**Definition of done for Part A**
+- Your Prompt agent shows up in the portal under **Agents**.
+- Your MAF app connects to it and gets responses.
+- You can articulate what "versioned Prompt agent" means in practice: what changes to publish `1.1`, and what happens to consumers pinned to `1.0`?
 
 ---
 
-## Part C — Foundry HostedAgent (bonus, ~20 min)
+## Part B — Your own code, calling the Responses API (~45 min)
 
-**What you'll do:** create a **HostedAgent** (no version), connect via `FoundryAgent(agent_name)`, and compare with Part B.
+**What you'll do:** build an MAF app in your language of choice that runs in **your** process and calls the Foundry Responses API for models and tools. Your code owns the runtime; Foundry serves the models plus platform tools.
 
-**Portal steps**
-1. Foundry project → **Agents** → **New HostedAgent**.
-2. Name it `docs-assistant-hosted`. Same instructions + model.
+**Steps**
+1. Confirm `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL` are set in `.env`.
+2. Python: `cd labs/day1/python && uv sync && uv run python part_b_responses_api.py`
+3. C#: `cd labs/day1/csharp/PartB_ResponsesApi && dotnet run`
+4. Complete the multi-turn prompts in the starter file. Save the transcript.
 
-**Code steps**
+**Definition of done for Part B**
+- The agent responds to at least three multi-turn prompts.
+- You see streaming output work (tokens print incrementally).
+- You can articulate where thread state is stored, and what it would take to move this same code inside a Hosted agent (Part C).
+
+---
+
+## Part C — Hosted agent (~30 min)
+
+**What you'll do:** connect to a **Hosted agent** that was pre-deployed to the shared Foundry Agent Service sandbox. Walk the portal to see what Foundry manages for you: managed endpoint, tracing, dedicated Entra identity, attached Toolbox tools, content safety. This is where Foundry stops being "model host" and starts being "agent app + tooling host."
+
+**Setup (facilitator does this ahead of Day 1)**
+- Package the Part B starter code as a zip and upload it to Foundry Agent Service via the portal. Foundry builds the container image from the zip.
+- Name the deployment `docs-assistant-hosted`.
+- Attach one Foundry Toolbox tool to it (e.g., **web search**) so attendees can see a platform tool in the traces.
+
+**Attendee steps**
 1. Set `FOUNDRY_HOSTED_AGENT_NAME=docs-assistant-hosted` in `.env`.
-2. Run `python part_c_foundry_hosted_agent.py`.
+2. Run `uv run python part_c_hosted_agent.py`.
+3. Ask the same multi-turn questions you used in Parts A and B. Save the transcript.
+4. In the Foundry portal, walk through:
+   - The Hosted agent's **managed endpoint** URL (the URL your code just called).
+   - **Tracing / observability** — inspect a trace of the run you just did.
+   - **Agent identity** — the dedicated Microsoft Entra identity for this agent.
+   - The attached **Toolbox tool** and its call in the trace.
+   - **Content safety** filters that ran on the response.
+
+**Stretch (optional, ~30 min)**
+Take *your* Part B code, zip it, upload it via the Foundry portal as your own Hosted agent, and repeat the "connect and observe" steps against your deployment.
 
 **Definition of done for Part C**
-- Both agents (PromptAgent and HostedAgent) exist in your project.
-- MAF connects to each via the same `FoundryAgent` class — the only difference is whether you pass `agent_version`.
+- Your MAF app connects to the pre-deployed Hosted agent and gets responses.
+- You've spent time in the portal for that agent and can name at least three things Foundry manages that you'd have to build yourself in Part B.
+- Stretch: your own zip → Hosted-agent deploy succeeds and you can call it.
 
 ---
 
@@ -91,9 +102,9 @@ Then fill in the values described inside. Never commit `.env`.
 
 Add a file `labs/day1/reflection.md` in your fork of this repo answering:
 
-1. **Where did thread state live** in Part A vs. Part B? How would that change your deployment story?
-2. **Which felt faster to iterate on** — editing instructions in your Python file vs. editing them in the Foundry portal? Why?
-3. **For a Publix scenario you know**, which hosting style would you pick and why? Consider: how many apps consume the agent, who owns the prompt, and how change is reviewed.
+1. **Which path felt fastest to iterate on** — Part A (portal edits), Part B (code redeploy), or Part C (zip upload)? Why?
+2. **What does Foundry Agent Service manage for you** in Parts A and C that you'd have to build or wire up yourself in Part B? List at least three concrete things.
+3. **For a Publix scenario you know**, which of the three paths would you pick? Consider: who owns the prompt, how many apps consume the agent, and what identity/observability you'd need.
 4. **What did we not do today** that you'd want to try before making this a real project? (This seeds Days 2–5.)
 
 Commit that file and push to your fork. Reflection > code.
@@ -104,10 +115,11 @@ Commit that file and push to your fork. Reflection > code.
 
 | Symptom | Likely cause | Fix |
 |---------|-------------|-----|
-| `az login` fine but MAF 401 | Missing `Azure AI User` role on project | Ask a facilitator to assign it |
+| `az login` fine but MAF 401 | Missing `Azure AI User` role on the project | Ask a facilitator to assign it |
 | `FOUNDRY_PROJECT_ENDPOINT` not found | `.env` missing or wrong path | Copy from `.env.example`; run from `labs/day1/` |
 | `Model not found` | Deployment name mismatch | Copy the exact deployment name from Portal → Deployments |
-| Agent hangs on first run | Region / quota issue | Check Portal → Diagnostics; may need capacity bump |
-| Streaming prints nothing | Terminal buffering | Ensure `flush=True` (already in template) |
+| Prompt agent connection fails on version | You didn't publish version 1.0 in the portal | Publish, then retry |
+| Hosted agent 404 | `FOUNDRY_HOSTED_AGENT_NAME` doesn't match the pre-deployed agent | Check the exact name in the portal |
+| Python — package missing | `uv sync` from `labs/day1/python/` | Install uv first if needed |
 
 If none of these apply, ping the workshop channel with the exact error and the file you're running.

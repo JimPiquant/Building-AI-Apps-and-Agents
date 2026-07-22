@@ -71,11 +71,12 @@ Rule of thumb: **reach for the leftmost pattern that actually solves the problem
 ## What Foundry gives you
 
 - Model deployments (frontier and open models)
-- Playgrounds
-- Foundry Agent Service — server-hosted agents (**PromptAgent**, **HostedAgent**)
-- **Foundry Toolbox** — a curated tool/connector catalog (exposed via MCP)
+- Playgrounds — chat, agent, evaluation
+- Foundry Agent Service — the runtime for **Prompt agents** (portal-authored, no code) and **Hosted agents** (your code, packaged and run by Foundry)
+- **Responses API** — the single model + tools entry point; you can call it from your own code running anywhere (laptop, Container Apps, App Service, AKS, Functions)
+- **Foundry Toolbox** — curated tool / connector catalog, exposed via MCP
 - **Foundry IQ** — enterprise knowledge and grounding layer
-- Evaluators, tracing, and safety
+- Managed identity per agent, evaluators, tracing, and safety
 
 ---
 
