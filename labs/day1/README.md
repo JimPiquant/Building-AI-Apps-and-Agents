@@ -36,7 +36,7 @@ Then fill in the values described inside. Never commit `.env`.
 
 **Steps**
 1. Fill in `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL` in `.env`.
-2. Python: `cd labs/day1/python && pip install -r requirements.txt && python part_a_client_side_agent.py`
+2. Python: `cd labs/day1/python && uv sync && uv run python part_a_client_side_agent.py` (install uv first from https://astral.sh/uv)
 3. C#: `cd labs/day1/csharp/PartA_ClientSideAgent && dotnet run`
 4. Ask the questions in the "Reflection prompts" section at the bottom of the starter file. Save the transcript.
 

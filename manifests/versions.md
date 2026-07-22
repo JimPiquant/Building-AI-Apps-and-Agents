@@ -10,11 +10,12 @@ This manifest fixes the runtime and SDK versions used across every day and lab i
 | Node.js (for MCP tooling only) | 20 LTS |
 
 ## Python packages
-Install with:
+Managed with [**uv**](https://docs.astral.sh/uv/). Each day's lab has a `pyproject.toml`; pinned versions live in the committed `uv.lock`.
 
 ```bash
-pip install --upgrade pip
-pip install -r labs/day1/python/requirements.txt
+cd labs/dayN/python
+uv sync
+uv run python <script>.py
 ```
 
 Core dependencies (see each day's `requirements.txt` for the full pinned set):
