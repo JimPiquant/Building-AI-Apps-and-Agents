@@ -328,15 +328,122 @@ function buildModule2() {
   }
 
   {
-    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "The Foundry hierarchy" });
-    T.addBullets(slide, [
-      "Tenant — your Entra tenant",
-      "Subscription — Azure subscription that pays for resources",
-      "Resource group — where Foundry resources live",
-      "Foundry project — the unit of collaboration; also the URL MAF connects to",
-      "Model deployments — instances of a specific model callable from your project",
-    ], { y: contentTop });
-    T.notes(slide, "Emphasize: you always operate inside a project. If in doubt, 'what project are we in?'");
+    // Foundry resource architecture — diagrammatic
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Foundry resource architecture" });
+
+    // Left: Foundry resource governance boundary (outer box)
+    const outerX = 0.4, outerY = 1.15, outerW = 5.6, outerH = 3.4;
+    slide.addShape("rect", {
+      x: outerX, y: outerY, w: outerW, h: outerH,
+      fill: { color: T.COLORS.white },
+      line: { color: T.COLORS.navy, width: 2 },
+    });
+    slide.addText("Foundry resource · governance boundary", {
+      x: outerX + 0.1, y: outerY + 0.08, w: outerW - 0.2, h: 0.35,
+      fontFace: T.FONTS.title, fontSize: 13, bold: true, color: T.COLORS.navy, margin: 0,
+    });
+    // Three pills — resource-scoped things
+    const pillY = outerY + 0.55, pillH = 0.4, pillGap = 0.1;
+    const pillW = (outerW - 0.3 - 2 * pillGap) / 3;
+    ["Model deployments", "Security & networking", "Connections"].forEach((p, i) => {
+      const px = outerX + 0.15 + i * (pillW + pillGap);
+      slide.addShape("roundRect", {
+        x: px, y: pillY, w: pillW, h: pillH,
+        fill: { color: T.COLORS.ice }, line: { type: "none" }, rectRadius: 0.08,
+      });
+      slide.addText(p, {
+        x: px, y: pillY, w: pillW, h: pillH,
+        fontFace: T.FONTS.body, fontSize: 10, bold: true, color: T.COLORS.navy, align: "center", valign: "middle", margin: 0,
+      });
+    });
+    // Nested project box
+    const projX = outerX + 0.15, projY = pillY + pillH + 0.2, projW = outerW - 0.3, projH = outerH - (projY - outerY) - 0.15;
+    slide.addShape("rect", {
+      x: projX, y: projY, w: projW, h: projH,
+      fill: { color: T.COLORS.panel }, line: { color: T.COLORS.navy, width: 1, dashType: "dash" },
+    });
+    slide.addText("Project · development boundary", {
+      x: projX + 0.1, y: projY + 0.08, w: projW - 0.2, h: 0.32,
+      fontFace: T.FONTS.title, fontSize: 12, bold: true, color: T.COLORS.navy, margin: 0,
+    });
+    slide.addText("Project assets: files · agents · evaluations", {
+      x: projX + 0.1, y: projY + 0.5, w: projW - 0.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 11, italic: true, color: T.COLORS.ink, margin: 0,
+    });
+
+    // Right: Connected resources — separate governance boundaries
+    const connX = 6.4, connW = 3.2;
+    slide.addText("Connected resources", {
+      x: connX, y: outerY + 0.08, w: connW, h: 0.3,
+      fontFace: T.FONTS.title, fontSize: 13, bold: true, color: T.COLORS.navy, margin: 0,
+    });
+    slide.addText("separate Azure resources · own governance", {
+      x: connX, y: outerY + 0.4, w: connW, h: 0.3,
+      fontFace: T.FONTS.body, fontSize: 10, italic: true, color: T.COLORS.muted, margin: 0,
+    });
+    const conns = ["Azure Storage", "Azure Key Vault", "Azure AI Search"];
+    const cH = 0.7, cGap = 0.15;
+    const cStartY = outerY + 0.85;
+    conns.forEach((c, i) => {
+      const cy = cStartY + i * (cH + cGap);
+      slide.addShape("rect", {
+        x: connX, y: cy, w: connW, h: cH,
+        fill: { color: T.COLORS.white }, line: { color: T.COLORS.border, width: 1, dashType: "dash" },
+      });
+      slide.addText(c, {
+        x: connX, y: cy, w: connW, h: cH,
+        fontFace: T.FONTS.body, fontSize: 12, bold: true, color: T.COLORS.ink, align: "center", valign: "middle", margin: 0,
+      });
+    });
+
+    // Bottom caption
+    slide.addShape("rect", {
+      x: 0.4, y: 4.7, w: 9.2, h: 0.55,
+      fill: { color: T.COLORS.ice }, line: { type: "none" },
+    });
+    slide.addText([
+      { text: "Four layers to know: ", options: { bold: true } },
+      { text: "Foundry resource → project → project assets → connected resources. Connected resources have their own networking and access policies." },
+    ], {
+      x: 0.55, y: 4.75, w: 8.9, h: 0.45,
+      fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
+    });
+
+    T.notes(slide, "This is the mental map for Foundry governance. Emphasize that connected resources (Storage, Key Vault, AI Search) are independent Azure resources — you manage their networking and access separately. The Foundry resource references them through connections.");
+  }
+
+  {
+    // What lives where + RBAC starter
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "What lives where · starter RBAC" });
+    T.addTwoColumn(slide,
+      [
+        "Model deployments",
+        "Security & networking",
+        "Connections to connected resources",
+        "Resource-scoped RBAC roles (Foundry User, Foundry Owner)",
+      ],
+      [
+        "Agents (Prompt agents, Hosted agents)",
+        "Files",
+        "Evaluations",
+        "Project-scoped RBAC assignments",
+      ],
+      { leftHeader: "Foundry resource level", rightHeader: "Project level" }
+    );
+    slide.addShape("rect", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.6,
+      fill: { color: T.COLORS.ice }, line: { type: "none" },
+    });
+    slide.addText([
+      { text: "Starter RBAC: ", options: { bold: true } },
+      { text: "assign every developer " },
+      { text: "Foundry User", options: { bold: true } },
+      { text: " at the Foundry resource scope. That covers Day 1 lab access. Fine-grained project-scoped roles come later." },
+    ], {
+      x: 0.55, y: 4.6, w: 8.9, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
+    });
+    T.notes(slide, "Foundry User role was previously called Azure AI User — attendees may see either name during the rollout. RBAC scopes at both resource and project level; 401/403 in the lab almost always means missing Foundry User at the resource scope.");
   }
 
   {
@@ -389,12 +496,13 @@ function buildModule2() {
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Connections" });
     T.addBullets(slide, [
-      "Connections are how a Foundry project reaches other Azure resources — AI Search, storage, Fabric, and more",
-      "Configure once per project; agents inherit them",
+      "How a Foundry resource references other Azure services — AI Search, Storage, Key Vault, Fabric, and more",
+      "Each connected resource is a separate Azure resource with its own networking and access policies",
+      "Configured on the Foundry resource; projects inherit them",
       "Auth via managed identity or service principal — never long-lived keys in production",
       "We wire connections for Foundry IQ knowledge sources on Day 2",
     ], { y: contentTop });
-    T.notes(slide, "Just orient them. Deep material lands Day 2.");
+    T.notes(slide, "Reinforce the architecture slide: connections are Foundry's way of pointing at connected resources, which live under their own governance boundaries. If a Foundry-side connection fails, check the target resource's own network/access policies, not just Foundry's.");
   }
 
   T.notes(T.sectionSlide(pres, "Toolbox and Foundry IQ", "Introductions only — Days 2–3 go deep"),
@@ -436,7 +544,7 @@ function buildModule2() {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Common portal gotchas" });
     T.addBullets(slide, [
       "Quota errors on deployment — request a bump in the region before Day 1",
-      "Missing role assignments — attendees need at least Azure AI User on the project (401/403 usually means this)",
+      "Missing role assignments — attendees need at least Foundry User (previously Azure AI User) at the Foundry resource scope; 401/403 usually means this",
       "Region mismatch — model deployment region must be reachable by IQ / AI Search",
       "Preview features move — Toolbox and parts of IQ are evolving; trust running code over screenshots",
     ], { y: contentTop });

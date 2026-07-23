@@ -23,15 +23,32 @@ You'll be able to:
 
 ---
 
-## The Foundry hierarchy
+## Foundry resource architecture
 
-- **Tenant** — your Microsoft Entra tenant
-- **Subscription** — Azure subscription that pays for resources
-- **Resource group** — where Foundry resources live
-- **Foundry project** — the unit of collaboration; the URL you'll paste into MAF as `project_endpoint`
-- **Model deployments** — instances of a specific model made callable from your project
+Foundry organizes AI workloads through a layered architecture. Four things to keep straight:
 
-You always operate inside **a project**. Everything else hangs off it.
+- **Foundry resource** — the top-level Azure resource (`Microsoft.CognitiveServices/accounts`, kind `AIServices`). This is the **governance boundary**: model deployments, security & networking, and connections all live here.
+- **Project** — a subresource inside a Foundry resource (`.../projects`). This is the **development boundary**: teams prototype, build agents, and run evaluations here, reusing the deployments and connections configured at the resource level.
+- **Project assets** — files, agents, evaluations, and related artifacts scoped to a project.
+- **Connected resources** — separate Azure services (Storage, Key Vault, Azure AI Search, Fabric, …) that the Foundry resource **references through connections**. Each has its own governance boundary; you manage its networking and access policies independently.
+
+You always operate inside a **project**, but the project is nested inside a Foundry resource that owns the runtime and governance.
+
+## What lives where + starter RBAC
+
+**Foundry resource level:**
+- Model deployments
+- Security & networking (private link, managed VNet, content safety)
+- Connections to connected resources
+- Resource-scoped RBAC roles
+
+**Project level:**
+- Agents (Prompt agents, Hosted agents)
+- Files
+- Evaluations
+- Project-scoped RBAC assignments
+
+**Starter RBAC for the lab.** Assign every developer **Foundry User** at the Foundry resource scope. That covers Day 1 lab access. Fine-grained project-scoped roles come later. (Foundry User was previously named *Azure AI User*; you may see either during the rollout.)
 
 ---
 
@@ -84,11 +101,13 @@ Use playgrounds to sanity-check *before* writing agent code. If it doesn't work 
 
 ## Connections
 
-- **Connections** are how a Foundry project reaches other Azure resources (AI Search, storage, Fabric, etc.)
-- Configure once per project; agents inherit them
+- How a Foundry resource **references** other Azure services — AI Search, Storage, Key Vault, Fabric, and more
+- Each **connected resource** is a separate Azure resource with its own networking and access policies
+- Configured on the Foundry resource; **projects inherit them**
 - Auth via managed identity or service principal — never long-lived keys in production
+- We wire connections for Foundry IQ knowledge sources on Day 2
 
-We'll wire connections for Foundry IQ knowledge sources on **Day 2**.
+*If a connection fails, remember to check the target resource's own network/access policies, not just Foundry's.*
 
 ---
 
@@ -130,7 +149,7 @@ Days 2–3 map cleanly onto this pair.
 ## Common portal gotchas
 
 - **Quota errors** on deployment → request a quota bump in the region before Day 1.
-- **Missing role assignments** → attendees need at least `Azure AI User` on the project. If Foundry pages 401 or 403, this is usually it.
+- **Missing role assignments** → attendees need at least `Foundry User` (previously *Azure AI User*) at the **Foundry resource scope**. If Foundry pages 401 or 403, this is usually it.
 - **Region mismatch** → your model deployment must be in a region Foundry IQ / your AI Search index can reach.
 - **Preview features moving** — Toolbox and parts of Foundry IQ are evolving fast; if a screenshot in these slides doesn't match reality, the code is still what you should trust.
 
@@ -152,7 +171,7 @@ Facilitator will demonstrate:
 
 ## Takeaways
 
-- Everything in Foundry lives inside a **project**.
+- Everything in Foundry lives inside a **project** — which itself lives inside a **Foundry resource** that owns governance (deployments, security, connections).
 - Copy your **project endpoint** and one **model deployment name** — you'll need both in every lab.
 - Toolbox and Foundry IQ are today's introductions; Days 2–3 make them real.
 - If the portal pages don't work, check quota, region, and RBAC in that order.
