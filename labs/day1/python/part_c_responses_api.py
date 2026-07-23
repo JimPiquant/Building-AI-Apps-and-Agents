@@ -1,5 +1,5 @@
 """
-Day 1 Lab — Part B — Your own code, calling the Responses API.
+Day 1 Lab — Part C — Your own code, calling the Responses API.
 
 Build an MAF app that runs in *your* process and calls Foundry's Responses API
 for models and platform tools. This is one of the three ways to run an agent
@@ -7,7 +7,7 @@ with Foundry — the runtime is yours (laptop today, Container Apps / App Servic
 / AKS / Functions tomorrow), and Foundry serves the model plus platform tools.
 
 The same MAF code you write here is what would run inside a **Hosted agent**
-(Part C) if you later chose to package it as a container. No rewrite required.
+(Part B) if you later chose to package it as a container. No rewrite required.
 """
 
 import asyncio
@@ -85,8 +85,9 @@ async def main() -> None:
 # 1. Where did the thread state live during the multi-turn run?
 # 2. This same code could run in Container Apps, App Service, AKS, or Functions.
 #    Which host would you pick for a real Publix scenario and why?
-# 3. What would you have to add to run *the same MAF code* as a Hosted agent
-#    (Part C) — and what does Foundry manage for you when you do?
+# 3. Stretch: zip this Part C code and deploy it as a Hosted agent (like the
+#    one you connected to in Part B). What does Foundry add on top of the same
+#    MAF code once it's hosted?
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":

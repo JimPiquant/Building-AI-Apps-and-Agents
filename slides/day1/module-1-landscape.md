@@ -107,7 +107,7 @@ If you need any of those, the workshop coordinator can point you to separate con
 
 ## Roadmap: how the week hangs together
 
-- **Day 1** — the stack, both agent hosting styles, first working agents
+- **Day 1** — the stack, the three hosting options, first working agents
 - **Day 2** — grounding (Foundry IQ, custom RAG) and tools in depth
 - **Day 3** — single-agent depth: memory, streaming, structured outputs, MCP
 - **Day 4** — multi-agent patterns + evaluation as a first-class activity

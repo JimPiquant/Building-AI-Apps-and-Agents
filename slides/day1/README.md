@@ -11,7 +11,7 @@ If you edit content, edit the markdown here **and** update the corresponding mod
 | 3 | Prompt engineering fundamentals | 25m | [`module-3-prompt-engineering.md`](module-3-prompt-engineering.md) | [`decks/day1/module-3-prompt-engineering.pptx`](../../decks/day1/module-3-prompt-engineering.pptx) |
 | 4 | MAF 101 | 40m | [`module-4-maf-101.md`](module-4-maf-101.md) | [`decks/day1/module-4-maf-101.pptx`](../../decks/day1/module-4-maf-101.pptx) |
 | 5 | The agent stack, end-to-end | 35m | [`module-5-agent-stack.md`](module-5-agent-stack.md) | [`decks/day1/module-5-agent-stack.pptx`](../../decks/day1/module-5-agent-stack.pptx) |
-| 6 | Three ways to run an agent with Foundry | 35m | [`module-6-hosting-styles.md`](module-6-hosting-styles.md) | [`decks/day1/module-6-hosting-styles.pptx`](../../decks/day1/module-6-hosting-styles.pptx) |
+| 6 | Three ways to run an agent with Foundry | 35m | [`module-6-hosting-options.md`](module-6-hosting-options.md) | [`decks/day1/module-6-hosting-options.pptx`](../../decks/day1/module-6-hosting-options.pptx) |
 | 7 | Guided walkthrough + lab kickoff | 25m | [`module-7-lab-kickoff.md`](module-7-lab-kickoff.md) | [`decks/day1/module-7-lab-kickoff.pptx`](../../decks/day1/module-7-lab-kickoff.pptx) |
 
 Total live time: **230 min** (leaves ~10 min buffer against the 240-min budget).

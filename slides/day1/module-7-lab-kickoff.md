@@ -15,8 +15,8 @@ Day 1 · 25 minutes
 Same underlying docs-assistant behavior — three ways to run an agent with Foundry:
 
 - **Part A** — Prompt agent (created in the portal, no code to maintain)
-- **Part B** — Your own code, calling the Responses API (MAF in Python or C#)
-- **Part C** — Hosted agent (connect to a pre-deployed one; explore what Foundry manages)
+- **Part B** — Hosted agent (connect to a pre-deployed one; explore what Foundry manages)
+- **Part C** — Your own code, calling the Responses API (MAF in Python or C#)
 
 You'll ask each the same questions and compare where the runtime lives, who manages what, and how you'd choose between them.
 
@@ -57,10 +57,10 @@ labs/day1/
 ├── README.md                    ← the lab instructions
 ├── python/                      ← Python starter templates (uv-managed)
 │   ├── part_a_prompt_agent.py
-│   ├── part_b_responses_api.py
-│   └── part_c_hosted_agent.py
-└── csharp/                      ← C# starter (Part B — Responses API from your own code)
-    └── PartB_ResponsesApi/
+│   ├── part_b_hosted_agent.py
+│   └── part_c_responses_api.py
+└── csharp/                      ← C# starter (Part C — Responses API from your own code)
+    └── PartC_ResponsesApi/
 ```
 
 ---
@@ -70,11 +70,11 @@ labs/day1/
 At the end of the lab you should have:
 
 1. **Part A runs** — you created a Prompt agent in the Foundry portal (version 1.0) and your MAF app connects to it.
-2. **Part B runs** — your MAF app (Python or C#) calls the Responses API and handles multi-turn conversation, streaming, and non-streaming.
-3. **Part C runs** — you connect to a pre-deployed Hosted agent in the sandbox, walk the portal to see what Foundry manages (endpoint, tracing, identity, an attached Toolbox tool), and (stretch) deploy your own.
+2. **Part B runs** — you connect to a pre-deployed Hosted agent in the sandbox and walk the portal to see what Foundry manages (endpoint, tracing, identity, an attached Toolbox tool).
+3. **Part C runs** — your MAF app (Python or C#) calls the Responses API and handles multi-turn conversation, streaming, and non-streaming. (Stretch: zip and deploy as your own Hosted agent.)
 4. **A short reflection** committed to your fork:
    - Which path felt fastest to iterate on and why?
-   - What does Foundry Agent Service manage for you in Path A / Path C that you'd otherwise build yourself in Path B?
+   - What does Foundry Agent Service manage for you in Path A / Path B that you'd otherwise build yourself in Path C?
    - Which path would you pick for a shared, cross-team agent at Publix? Why?
 
 ---
@@ -101,8 +101,8 @@ The instructor is on for questions during the async portion; response times vary
 ## Time expectations
 
 - Part A → about **30 min** (portal setup + connection code)
-- Part B → about **45 min** (most of the code writing lives here)
-- Part C → about **30 min** (connect + portal exploration; stretch deploy adds ~30 min)
+- Part B → about **30 min** (connect + portal exploration)
+- Part C → about **45 min** (most of the code writing lives here; stretch deploy adds ~30 min)
 - Reflection commit → about **10 min**
 
 Total: about **2 hours** of async work. If you're going long, ping a facilitator — we'll help you scope down.
@@ -111,7 +111,7 @@ Total: about **2 hours** of async work. If you're going long, ping a facilitator
 
 ## Takeaways
 
-- Same functional agent, three hosting styles.
+- Same functional agent, three hosting options.
 - Focus on **feeling the difference**, not just making the code run.
 - The reflection is the deliverable — not the code.
 

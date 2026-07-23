@@ -1,5 +1,5 @@
 """
-Day 1 Lab — Part C — Hosted agent.
+Day 1 Lab — Part B — Hosted agent.
 
 Connect from your app to a **Hosted agent** deployed in the shared Foundry
 Agent Service sandbox. A Hosted agent is your agent code — packaged as a
@@ -7,8 +7,8 @@ container or a source zip — that Foundry runs for you with a managed endpoint,
 autoscale, a dedicated Microsoft Entra identity, and end-to-end observability.
 
 For Cohort 1 the workshop facilitator pre-deploys a `docs-assistant-hosted`
-Hosted agent whose source is essentially the Part B code, packaged for Agent
-Service. You connect to it here to feel the difference vs. Parts A and B.
+Hosted agent whose source is essentially the Part C code, packaged for Agent
+Service. You connect to it here to feel the difference vs. Parts A and C.
 
 Then, in the portal, walk through what Foundry manages for you:
     - Managed endpoint (the URL you're calling)
@@ -18,8 +18,8 @@ Then, in the portal, walk through what Foundry manages for you:
     - At least one attached Toolbox tool (for example, web search)
     - Content safety filters
 
-Stretch: zip your own Part B code and deploy it as your own Hosted agent
-through the Foundry portal (portal builds the container for you from the zip).
+Stretch (belongs in Part C): after you finish Part C, zip your own Part C code
+and deploy it as your own Hosted agent through the Foundry portal.
 """
 
 import asyncio
@@ -58,7 +58,7 @@ async def main() -> None:
     )
     print(f"Agent: {result}\n")
 
-    # Ask the same multi-turn set as Parts A and B so the transcripts are comparable.
+    # Ask the same multi-turn set as Parts A and C so the transcripts are comparable.
     for prompt in [
         "In two sentences, what is Microsoft Foundry?",
         "I am building a small internal docs assistant. Suggest 3 features.",
@@ -74,11 +74,11 @@ async def main() -> None:
 #
 # 1. Open the Foundry portal for this Hosted agent. Which of these does Foundry
 #    manage for you: endpoint, autoscale, identity, tracing, content safety,
-#    Toolbox tools? Which would you have to build yourself in Part B?
+#    Toolbox tools? Which would you have to build yourself in Part C?
 # 2. What breaks (or becomes harder) if we move this same agent code out of
 #    Foundry Agent Service and run it ourselves in Azure Container Apps?
-# 3. Stretch: attempt the portal zip → Hosted agent flow with your Part B code.
-#    Note what worked and what tripped you up.
+# 3. After finishing Part C: attempt the portal zip → Hosted agent flow with
+#    your Part C code. Note what worked and what tripped you up.
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":

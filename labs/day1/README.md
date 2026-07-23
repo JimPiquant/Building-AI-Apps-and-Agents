@@ -1,6 +1,6 @@
 # Day 1 Lab — Three ways to run an agent with Foundry
 
-Build the same small docs assistant three ways: as a **Prompt agent** (Part A), as **your own code calling the Responses API** (Part B), and as a **Hosted agent** (Part C). Compare where the runtime lives, what Foundry manages for you, and how you'd choose between them.
+Build the same small docs assistant three ways: as a **Prompt agent** (Part A), as a **Hosted agent** (Part B), and as **your own code calling the Responses API** (Part C). Compare where the runtime lives, what Foundry manages for you, and how you'd choose between them.
 
 Estimated time: **~2 hours async**.
 
@@ -14,9 +14,9 @@ Estimated time: **~2 hours async**.
 ## Choose your language
 
 - **Python**: all three parts implemented under [`python/`](python/).
-- **C#**: **Part B** implemented under [`csharp/PartB_ResponsesApi/`](csharp/PartB_ResponsesApi/). Parts A and C are Python-only for Cohort 1; C# reference samples for those paths live in the `microsoft/agent-framework` repo — see [`csharp/README.md`](csharp/README.md).
+- **C#**: **Part C** implemented under [`csharp/PartC_ResponsesApi/`](csharp/PartC_ResponsesApi/). Parts A and B are Python-only for Cohort 1; C# reference samples for those paths live in the `microsoft/agent-framework` repo — see [`csharp/README.md`](csharp/README.md).
 
-You can mix — Part B in C# is fine, then switch to Python for Parts A and C.
+You can mix — Part C in C# is fine, then switch to Python for Parts A and B.
 
 ## Environment file
 
@@ -51,36 +51,19 @@ Fill in the values described inside. Never commit `.env`.
 
 ---
 
-## Part B — Your own code, calling the Responses API (~45 min)
-
-**What you'll do:** build an MAF app in your language of choice that runs in **your** process and calls the Foundry Responses API for models and tools. Your code owns the runtime; Foundry serves the models plus platform tools.
-
-**Steps**
-1. Confirm `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL` are set in `.env`.
-2. Python: `cd labs/day1/python && uv sync && uv run python part_b_responses_api.py`
-3. C#: `cd labs/day1/csharp/PartB_ResponsesApi && dotnet run`
-4. Complete the multi-turn prompts in the starter file. Save the transcript.
-
-**Definition of done for Part B**
-- The agent responds to at least three multi-turn prompts.
-- You see streaming output work (tokens print incrementally).
-- You can articulate where thread state is stored, and what it would take to move this same code inside a Hosted agent (Part C).
-
----
-
-## Part C — Hosted agent (~30 min)
+## Part B — Hosted agent (~30 min)
 
 **What you'll do:** connect to a **Hosted agent** that was pre-deployed to the shared Foundry Agent Service sandbox. Walk the portal to see what Foundry manages for you: managed endpoint, tracing, dedicated Entra identity, attached Toolbox tools, content safety. This is where Foundry stops being "model host" and starts being "agent app + tooling host."
 
 **Setup (facilitator does this ahead of Day 1)**
-- Package the Part B starter code as a zip and upload it to Foundry Agent Service via the portal. Foundry builds the container image from the zip.
+- Package a small MAF agent (essentially the Part C starter code) as a zip and upload it to Foundry Agent Service via the portal. Foundry builds the container image from the zip.
 - Name the deployment `docs-assistant-hosted`.
 - Attach one Foundry Toolbox tool to it (e.g., **web search**) so attendees can see a platform tool in the traces.
 
 **Attendee steps**
 1. Set `FOUNDRY_HOSTED_AGENT_NAME=docs-assistant-hosted` in `.env`.
-2. Run `uv run python part_c_hosted_agent.py`.
-3. Ask the same multi-turn questions you used in Parts A and B. Save the transcript.
+2. Run `uv run python part_b_hosted_agent.py`.
+3. Ask the multi-turn questions from the starter. Save the transcript.
 4. In the Foundry portal, walk through:
    - The Hosted agent's **managed endpoint** URL (the URL your code just called).
    - **Tracing / observability** — inspect a trace of the run you just did.
@@ -88,13 +71,29 @@ Fill in the values described inside. Never commit `.env`.
    - The attached **Toolbox tool** and its call in the trace.
    - **Content safety** filters that ran on the response.
 
-**Stretch (optional, ~30 min)**
-Take *your* Part B code, zip it, upload it via the Foundry portal as your own Hosted agent, and repeat the "connect and observe" steps against your deployment.
+**Definition of done for Part B**
+- Your MAF app connects to the pre-deployed Hosted agent and gets responses.
+- You've spent time in the portal for that agent and can name at least three things Foundry manages that you'd have to build yourself in Part C.
+
+---
+
+## Part C — Your own code, calling the Responses API (~45 min)
+
+**What you'll do:** build an MAF app in your language of choice that runs in **your** process and calls the Foundry Responses API for models and tools. Your code owns the runtime; Foundry serves the models plus platform tools.
+
+**Steps**
+1. Confirm `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL` are set in `.env`.
+2. Python: `cd labs/day1/python && uv sync && uv run python part_c_responses_api.py`
+3. C#: `cd labs/day1/csharp/PartC_ResponsesApi && dotnet run`
+4. Complete the multi-turn prompts in the starter file. Save the transcript.
 
 **Definition of done for Part C**
-- Your MAF app connects to the pre-deployed Hosted agent and gets responses.
-- You've spent time in the portal for that agent and can name at least three things Foundry manages that you'd have to build yourself in Part B.
-- Stretch: your own zip → Hosted-agent deploy succeeds and you can call it.
+- The agent responds to at least three multi-turn prompts.
+- You see streaming output work (tokens print incrementally).
+- You can articulate where thread state is stored, and what it would take to move this same code inside a Hosted agent (Part B).
+
+**Stretch (optional, ~30 min)**
+Take *your* Part C code, zip it, upload it via the Foundry portal as your own Hosted agent, and connect to your deployment the same way you did in Part B. Notice what Foundry adds around the same MAF code.
 
 ---
 
@@ -102,8 +101,8 @@ Take *your* Part B code, zip it, upload it via the Foundry portal as your own Ho
 
 Add a file `labs/day1/reflection.md` in your fork of this repo answering:
 
-1. **Which path felt fastest to iterate on** — Part A (portal edits), Part B (code redeploy), or Part C (zip upload)? Why?
-2. **What does Foundry Agent Service manage for you** in Parts A and C that you'd have to build or wire up yourself in Part B? List at least three concrete things.
+1. **Which path felt fastest to iterate on** — Part A (portal edits), Part B (zip upload), or Part C (code redeploy)? Why?
+2. **What does Foundry Agent Service manage for you** in Parts A and B that you'd have to build or wire up yourself in Part C? List at least three concrete things.
 3. **For a Publix scenario you know**, which of the three paths would you pick? Consider: who owns the prompt, how many apps consume the agent, and what identity/observability you'd need.
 4. **What did we not do today** that you'd want to try before making this a real project? (This seeds Days 2–5.)
 

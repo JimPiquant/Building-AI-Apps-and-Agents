@@ -117,4 +117,4 @@ Bring this back to Publix as a shared vocabulary.
 - Every day of the workshop, and every real agent you build, fits into these.
 - When something breaks or costs too much, ask **which layer** first.
 
-**Next:** Module 6 zooms into Layer 2 (Runtime) — the two agent hosting styles you can pick, and when to pick which.
+**Next:** Module 6 zooms into Layer 2 (Runtime) — the three hosting options you can pick, and when to pick which.

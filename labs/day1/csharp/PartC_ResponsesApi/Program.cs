@@ -1,4 +1,4 @@
-// Day 1 Lab — Part B — Your own code, calling the Responses API (C#)
+// Day 1 Lab — Part C — Your own code, calling the Responses API (C#)
 //
 // Build an MAF app that runs in *your* process and calls Foundry's Responses
 // API. `AIProjectClient(...).AsAIAgent(...)` is the C# way to write "my code
@@ -62,4 +62,4 @@ Console.WriteLine();
 // 1. Where did the thread state live during the multi-turn run?
 // 2. This same code could run in Container Apps, App Service, AKS, or Functions.
 //    Which host would you pick for a real Publix scenario and why?
-// 3. What would you have to add to run this as a Hosted agent (Part C)?
+// 3. What would you have to add to run this as a Hosted agent (Part B)?
