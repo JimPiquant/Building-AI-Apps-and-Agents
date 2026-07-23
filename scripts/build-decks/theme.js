@@ -242,9 +242,19 @@ function takeawaysSlide(pres, opts) {
   return b.slide;
 }
 
-// Add speaker notes to any slide
+// Add speaker notes to any slide.
+// Two shapes accepted:
+//   notes(slide, "one line of text")               -> printed as-is
+//   notes(slide, ["bullet 1", "bullet 2", ...])    -> rendered as "• bullet 1\n• bullet 2\n..."
+// Prefer arrays for teaching notes so they scan as bullets in Presenter View.
 function notes(slide, text) {
-  if (text && text.trim()) slide.addNotes(text);
+  if (!text) return;
+  if (Array.isArray(text)) {
+    if (text.length === 0) return;
+    slide.addNotes(text.map((t) => `• ${t}`).join("\n"));
+  } else if (typeof text === "string" && text.trim()) {
+    slide.addNotes(text);
+  }
 }
 
 module.exports = {

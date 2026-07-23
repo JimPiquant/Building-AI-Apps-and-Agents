@@ -17,7 +17,13 @@ function buildModule1() {
     title: "Azure AI Landscape",
     subtitle: "Where MAF, Foundry, and Copilot Studio fit",
     footer: "Building AI Apps and Agents",
-  }), "Set the stage. Attendees include senior devs and architects who need a compass before hands-on. Emphasize this is decision-first, code-later.");
+  }), [
+    "Say: this module is a compass, not code",
+    "Audience: senior devs + solution architects — respect their experience",
+    "Set expectation: decisions first, code starts Module 4",
+    "Time: 25 min total — keep it moving",
+    "Nothing in this module needs a demo",
+  ]);
 
   {
     const { slide, contentTop, contentW } = T.bodySlide(pres, {
@@ -25,7 +31,13 @@ function buildModule1() {
     });
     T.addProse(slide, "By the end of this workshop you'll be building agents. Before writing code, you need to know which surface to build on — and when. Today's decisions have outsized impact on cost, control, and portability.",
       { y: contentTop, w: contentW, h: 3.5, fontSize: 18 });
-    T.notes(slide, "This slide is the frame. Reassure that this module is short (25 min) and light on code. Set expectation: decisions today, code Module 4+.");
+    T.notes(slide, [
+      "Frame the whole module in one sentence: 'before you write a line of code, decide which surface to build on'",
+      "Reassure: this module is short (25 min), light on code",
+      "Ask: who's already been sold on a specific approach?",
+      "If hands go up, promise you'll cover fit vs. their situation",
+      "Move quickly — the payoff slides come next",
+    ]);
   }
 
   {
@@ -36,7 +48,15 @@ function buildModule1() {
       ["Microsoft Foundry", "Developers", "Full model + agent platform on Azure"],
       ["Microsoft Agent Framework (MAF)", "Developers", "The SDK your app code uses to build agents on top of Foundry"],
     ], { colW: [3.0, 2.8, 3.4], rowH: 0.75 });
-    T.notes(slide, "Copilot Studio and Foundry can be complementary. This workshop = Foundry + MAF. Make it explicit: 'if your target audience is makers, this is not your workshop.'");
+    T.notes(slide, [
+      "The three surfaces are complementary, not competitive",
+      "Copilot Studio → makers, business analysts, M365 destinations",
+      "Foundry → developer platform on Azure",
+      "MAF → the SDK your code uses on top of Foundry",
+      "Be explicit: 'if your target audience is makers, this is not your workshop'",
+      "Do not disparage Copilot Studio — it's the right tool for a different job",
+      "Publix has both audiences; this workshop targets the developer audience",
+    ]);
   }
 
   {
@@ -90,7 +110,14 @@ function buildModule1() {
       x: 0.4, y: 4.7, w: 9.2, h: 0.5,
       fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.navy, align: "center",
     });
-    T.notes(slide, "Anchor slide. Emphasize that the problem shape is the same across all three; the layer of abstraction is what shifts. Sets up the next slide's spectrum framing.");
+    T.notes(slide, [
+      "Anchor slide — the payoff for the whole module",
+      "Every agent needs three things: Model, Instructions, Tools",
+      "That's true whether you're in Copilot Studio, Foundry, or writing raw MAF code",
+      "What changes across surfaces: how much code you write, who owns the runtime",
+      "Sets up the next slide's IaaS/PaaS/SaaS spectrum",
+      "Pause for questions here — this is where the mental model clicks or doesn't",
+    ]);
   }
 
   {
@@ -158,7 +185,15 @@ function buildModule1() {
       x: 0.55, y: 4.78, w: 8.9, h: 0.44,
       fontFace: T.FONTS.body, fontSize: 14, color: T.COLORS.navy, margin: 0,
     });
-    T.notes(slide, "Use the familiar IaaS/PaaS/SaaS trio — attendees already know it. This replaces a bullet list and lands harder. Emphasize 'this workshop = PaaS.'");
+    T.notes(slide, [
+      "Piggyback on vocabulary attendees already know",
+      "IaaS = OSS frameworks + containers you run",
+      "PaaS = Foundry Agent Service + MAF (this workshop)",
+      "SaaS = Copilot Studio",
+      "Say clearly: 'this workshop lives in PaaS territory'",
+      "PaaS = you write real code, you don't run the infrastructure",
+      "This slide replaces a bullet list — the visual lands harder, let it breathe",
+    ]);
   }
 
   {
@@ -216,7 +251,16 @@ function buildModule1() {
         fontFace: T.FONTS.body, fontSize: 11, color: T.COLORS.muted, align: "center", valign: "top", margin: 0,
       });
     });
-    T.notes(slide, "This slide prevents the anti-pattern of building an agent for what should be a plain LLM call. Ask attendees which pattern their current use case actually needs.");
+    T.notes(slide, [
+      "Prevents the #1 anti-pattern: 'everything must be an agent'",
+      "Match complexity to need — not every LLM problem needs orchestration",
+      "Direct LLM call: summarize this doc — cheap, easy to eval",
+      "Single agent w/ tools: iterative work that needs to *do* something",
+      "Multi-agent workflow: distinct roles, hand-offs — costly, new failure modes",
+      "Rule: reach for the leftmost pattern that solves the problem",
+      "Ask 2–3 attendees: 'what pattern does your current use case actually need?'",
+      "This connects directly to Day 4 (multi-agent) — plant the flag",
+    ]);
   }
 
   {
@@ -232,7 +276,15 @@ function buildModule1() {
       "Foundry IQ — enterprise knowledge and grounding layer",
       "Evaluators, tracing, and safety",
     ], { y: contentTop });
-    T.notes(slide, "Preview only. Prompt agents, Hosted agents, Toolbox, and Foundry IQ each get their own module or day. Don't dive into any of them here.");
+    T.notes(slide, [
+      "Preview only — resist the urge to teach any of these",
+      "Prompt agents / Hosted agents → Module 6 today",
+      "Toolbox → Day 2 (Actions layer)",
+      "Foundry IQ → Day 2 (Knowledge layer)",
+      "Responses API → Module 6 today, deeper in Days 2–3",
+      "Evaluators / tracing → Day 4 and Day 5",
+      "This slide's job: land the vocabulary once so nothing feels new later",
+    ]);
   }
 
   {
@@ -247,7 +299,15 @@ function buildModule1() {
       "Consumes Foundry Toolbox and MCP servers",
       "The successor to Semantic Kernel and AutoGen patterns (both out of scope)",
     ], { y: contentTop });
-    T.notes(slide, "Emphasize 'one vocabulary' — attendees coming from SK / AutoGen will spot the lineage. Call SK 'still supported, not the forward path.' Don't disparage.");
+    T.notes(slide, [
+      "One vocabulary is the key selling point of MAF",
+      "Same primitives (agent, thread, tool, run) in Python and C#",
+      "For attendees coming from SK or AutoGen: acknowledge the lineage",
+      "Say: 'SK is still supported, not the forward path for new work'",
+      "Say: 'AutoGen was the research predecessor to MAF'",
+      "Don't disparage — attendees have shipped code with both",
+      "MAF absorbed the lessons; the surface is cleaner",
+    ]);
   }
 
   {
@@ -271,7 +331,14 @@ function buildModule1() {
       ],
       { leftHeader: "Covered", rightHeader: "Out of scope" }
     );
-    T.notes(slide, "This is important framing. Attendees with adjacent expectations need to know we're not going there today.");
+    T.notes(slide, [
+      "Set explicit expectations about scope",
+      "If someone came expecting Copilot Studio depth: not this workshop",
+      "If someone came expecting fine-tuning or model training: not this workshop",
+      "Copilot Studio, SK, AutoGen, LangChain, CrewAI — all out of scope",
+      "Explain why: MAF is the forward direction for Publix code",
+      "Redirect anyone who needs the excluded topics to appropriate resources",
+    ]);
   }
 
   {
@@ -286,7 +353,14 @@ function buildModule1() {
       ["4", "Multi-agent patterns + evaluation as a first-class activity"],
       ["5", "Production concerns; capstone project kickoff"],
     ], { colW: [0.8, 8.4], rowH: 0.5, y: contentTop });
-    T.notes(slide, "Preview the arc. Mention every day builds on the same 'docs assistant' reference project.");
+    T.notes(slide, [
+      "Preview the 5-day arc in 60 seconds",
+      "Days 1–3 build on the same 'docs assistant' reference project",
+      "Day 4 turns the single agent into a multi-agent workflow",
+      "Day 5 covers production + capstone kickoff",
+      "Every day maps to the four-layer stack (Module 5)",
+      "Post-workshop: capstone project reviewed 1:1",
+    ]);
   }
 
   T.notes(T.takeawaysSlide(pres, {
@@ -311,7 +385,13 @@ function buildModule2() {
     title: "Foundry Portal Tour",
     subtitle: "Projects, models, deployments, connections, Toolbox, Foundry IQ",
     footer: "Building AI Apps and Agents",
-  }), "This module is mostly a live walkthrough. Slides are attendee reference. Have your portal open, share screen early.");
+  }), [
+    "Mostly a live walkthrough — share screen early",
+    "Slides are attendee reference, not primary teaching",
+    "Have the Foundry portal open before this module starts",
+    "Have at least one existing project + model deployment ready to show",
+    "Time budget: 45 min — 25 in portal, 20 on slides for reference",
+  ]);
 
   {
     const { slide, contentTop } = T.bodySlide(pres, {
@@ -324,7 +404,12 @@ function buildModule2() {
       "Locate your project endpoint (you'll paste this into your .env in the lab)",
       "Recognize Toolbox and Foundry IQ (deep-dive comes Days 2–3)",
     ], { y: contentTop });
-    T.notes(slide, "Set expectations: recognize, not master. The goal is to make Modules 4–6 make sense in context.");
+    T.notes(slide, [
+      "Goal: recognize the surfaces, not master any of them",
+      "Attendees just need to feel oriented enough for Modules 4–6",
+      "Deep material lands Days 2–3 (IQ, Toolbox) and Module 6 today (agent types)",
+      "Attendees should walk out with: their project endpoint + one deployment name",
+    ]);
   }
 
   {
@@ -366,7 +451,18 @@ function buildModule2() {
       fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
     });
 
-    T.notes(slide, "Diagram from Microsoft Learn (foundry/concepts/architecture). Walk the four layers explicitly: (1) Foundry resource is the governance boundary — deployments, security, connections. (2) Projects are development boundaries nested inside. (3) Project assets are files, agents, evaluations. (4) Connected resources (Storage, Key Vault, AI Search) are separate Azure resources with their own governance — you manage networking and access for them independently.");
+    T.notes(slide, [
+      "Canonical diagram from Microsoft Learn — walk it in this order:",
+      "(1) Foundry resource = the outer box = governance boundary",
+      "  → contains: model deployments, security & networking, connections",
+      "(2) Project = the inner dashed box = development boundary",
+      "  → contains: agents, files, evaluations (project assets)",
+      "(3) Connected resources on the right (Storage, Key Vault, AI Search)",
+      "  → separate Azure resources, separate governance boundaries",
+      "  → Foundry references them via connections, doesn't own them",
+      "Emphasize: 'connected resources have their own networking and access policies'",
+      "Common failure: Foundry connection works, but the target resource's firewall blocks — check the target resource's own policies",
+    ]);
   }
 
   {
@@ -400,7 +496,14 @@ function buildModule2() {
       x: 0.55, y: 4.6, w: 8.9, h: 0.5,
       fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
     });
-    T.notes(slide, "Foundry User role was previously called Azure AI User — attendees may see either name during the rollout. RBAC scopes at both resource and project level; 401/403 in the lab almost always means missing Foundry User at the resource scope.");
+    T.notes(slide, [
+      "Starter RBAC for the lab: Foundry User at the Foundry resource scope",
+      "Foundry User was previously named Azure AI User — attendees may see either during rollout",
+      "RBAC scopes at BOTH resource level and project level",
+      "Day 1 lab access is covered by the resource-scope assignment",
+      "401 / 403 in the lab almost always = missing Foundry User at resource scope",
+      "If facilitator hears '401' in chat: 'check RBAC first, then endpoint, then deployment name'",
+    ]);
   }
 
   {
@@ -410,7 +513,14 @@ function buildModule2() {
     T.addProse(slide,
       "Set this as FOUNDRY_PROJECT_ENDPOINT in every lab's .env. MAF connects with this endpoint plus a credential — AzureCliCredential in dev, managed identity in production.",
       { y: 2.4, h: 1.5, fontSize: 15 });
-    T.notes(slide, "Show them where to grab this from the portal. Overview page → 'Endpoints and keys' or similar (verify current wording live).");
+    T.notes(slide, [
+      "Show attendees where the project endpoint lives in the portal",
+      "Path (verify live — portal wording moves): Overview → Endpoints and keys",
+      "Have them copy it now — they'll need it in every lab",
+      "Format: https://<project>.services.ai.azure.com",
+      "Never commit this to source control — it belongs in .env",
+      "The credential (AzureCliCredential) authenticates against this endpoint",
+    ]);
   }
 
   {
@@ -421,7 +531,14 @@ function buildModule2() {
       "See region availability, pricing tier, context window",
       "Not every model is available in every region — check region and quota first",
     ], { y: contentTop });
-    T.notes(slide, "Common gotcha — attendees pick a model, hit a region wall. Encourage confirming region + quota before deploying.");
+    T.notes(slide, [
+      "Common gotcha: attendee picks a model, hits a region availability wall",
+      "Not every model is available in every region",
+      "Not every model has capacity in every region even when available",
+      "Sequence: pick region → confirm model availability → confirm quota → deploy",
+      "If attendee can't deploy: check region and quota first, not model choice",
+      "Ignite 2026 will likely shift which models are where — check current state before workshop",
+    ]);
   }
 
   {
@@ -435,7 +552,15 @@ function buildModule2() {
       { text: "Region — inherited from the project", indent: 1 },
       "Rule of thumb: one deployment per (model, role) pair. Don't share prod and dev.",
     ], { y: contentTop, fontSize: 14 });
-    T.notes(slide, "Deployment name != model name. Common source of confusion in the lab. Emphasize.");
+    T.notes(slide, [
+      "The #1 confusion in the Day 1 lab: deployment name ≠ model name",
+      "Model name: 'gpt-4o'",
+      "Deployment name: whatever *you* named the deployment in the portal",
+      "In MAF, you pass the DEPLOYMENT name as model= — not the model name",
+      "In the .env file, FOUNDRY_MODEL = the deployment name",
+      "Have attendees copy the exact deployment name from Portal → Deployments now",
+      "Rule of thumb: one deployment per (model, role) pair — don't share prod and dev",
+    ]);
   }
 
   {
@@ -447,7 +572,14 @@ function buildModule2() {
       "Use playgrounds to sanity-check before writing agent code",
       "If it doesn't work in the playground, it won't work in MAF either",
     ], { y: contentTop });
-    T.notes(slide, "This is a debugging tip masquerading as a portal feature. Reinforce: iterate in the playground first.");
+    T.notes(slide, [
+      "This slide is really a debugging tip",
+      "Reinforce: iterate in the playground BEFORE writing agent code",
+      "If a prompt doesn't work in the playground, it won't work in MAF",
+      "Cheap iteration loop: playground → prompt fix → playground → deploy",
+      "Attendees who skip this waste a lot of time debugging things that were prompt issues",
+      "Three playgrounds worth knowing: chat, agent, evaluation",
+    ]);
   }
 
   {
@@ -459,7 +591,14 @@ function buildModule2() {
       "Auth via managed identity or service principal — never long-lived keys in production",
       "We wire connections for Foundry IQ knowledge sources on Day 2",
     ], { y: contentTop });
-    T.notes(slide, "Reinforce the architecture slide: connections are Foundry's way of pointing at connected resources, which live under their own governance boundaries. If a Foundry-side connection fails, check the target resource's own network/access policies, not just Foundry's.");
+    T.notes(slide, [
+      "Reinforce the architecture diagram: connections = Foundry pointing at connected resources",
+      "Connected resources have their OWN governance boundaries",
+      "When a connection fails, check the target resource's policies first",
+      "Auth: managed identity or service principal — NO long-lived keys in production",
+      "Configured on the Foundry resource; projects inherit them",
+      "We'll wire IQ knowledge-source connections on Day 2",
+    ]);
   }
 
   T.notes(T.sectionSlide(pres, "Toolbox and Foundry IQ", "Introductions only — Days 2–3 go deep"),
@@ -473,7 +612,13 @@ function buildModule2() {
       "Exposed to MAF over an MCP endpoint (same protocol as Day 3)",
       "Attach Toolbox tools to a Foundry-hosted agent from the portal, or from code",
     ], { y: contentTop });
-    T.notes(slide, "Bookmark this. We use it lightly today and go deep Day 2. Note: Toolbox = MCP under the hood; ties into Day 3 nicely.");
+    T.notes(slide, [
+      "Bookmark: Toolbox = curated tool/connector catalog for agents",
+      "We use it lightly today (Part B of the lab) and go deep Day 2",
+      "Interesting fact for later: Toolbox is exposed via an MCP endpoint under the hood",
+      "That ties Toolbox and Day 3's MCP topic together neatly",
+      "Toolbox samples: web search, code interpreter, file search, SharePoint, Fabric, Graph",
+    ]);
   }
 
   {
@@ -484,7 +629,14 @@ function buildModule2() {
       "Alternative to hand-rolling a RAG pipeline per source",
       "Agents that use it get grounded answers with citations, without you writing retrieval code",
     ], { y: contentTop });
-    T.notes(slide, "This is Day 2's main course. Just plant the flag.");
+    T.notes(slide, [
+      "Bookmark: Foundry IQ = enterprise knowledge and grounding layer",
+      "Day 2 is IQ's main course — don't teach it here",
+      "The pitch: unified retrieval across your enterprise data",
+      "Alternative to building a RAG pipeline per source",
+      "Grounded answers with citations, without writing retrieval code",
+      "Preview status — call out that some parts are moving fast",
+    ]);
   }
 
   {
@@ -494,7 +646,14 @@ function buildModule2() {
       ["Actions — how the agent does things", "Toolbox, MCP, function tools", "Callable capabilities"],
       ["Knowledge — how the agent knows things", "Foundry IQ, RAG", "Retrieval and grounding"],
     ], { colW: [3.5, 2.7, 3.0], rowH: 0.9, fontSize: 14 });
-    T.notes(slide, "Actions vs. Knowledge is the compass for Days 2–3. Actions maps to Day 3 (MCP). Knowledge maps to Day 2 (Foundry IQ, RAG).");
+    T.notes(slide, [
+      "The two-axis mental model attendees should carry all week",
+      "Actions = how the agent DOES things — Toolbox, MCP, function tools",
+      "Knowledge = how the agent KNOWS things — Foundry IQ, RAG",
+      "Day 2 = Knowledge deep dive",
+      "Day 3 = Actions deep dive (MCP)",
+      "When something breaks, ask: is this an Actions problem or a Knowledge problem?",
+    ]);
   }
 
   {
@@ -505,7 +664,14 @@ function buildModule2() {
       "Region mismatch — model deployment region must be reachable by IQ / AI Search",
       "Preview features move — Toolbox and parts of IQ are evolving; trust running code over screenshots",
     ], { y: contentTop });
-    T.notes(slide, "Give attendees the diagnostic sequence: quota → RBAC → region. In that order.");
+    T.notes(slide, [
+      "Give attendees the diagnostic sequence in a fixed order:",
+      "  1. Quota — is your region out of capacity?",
+      "  2. RBAC — do you have Foundry User at the resource scope?",
+      "  3. Region — does the model live in your region?",
+      "This ordering catches ~90% of Day 1 lab failures",
+      "Preview features move — trust running code over screenshots",
+    ]);
   }
 
   {
@@ -522,7 +688,14 @@ function buildModule2() {
       x: 0.4, y: 4.6, w: 9.2, h: 0.5,
       fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy,
     });
-    T.notes(slide, "Screen share your portal. Move steadily. Ask attendees to raise a hand if they can't complete steps 1–4 during the demo.");
+    T.notes(slide, [
+      "Screen share the portal — this is a live demo, not a slide read",
+      "Move steadily, don't linger",
+      "Ask attendees to do steps 1–4 alongside you",
+      "Ask them to raise a hand (or emoji in chat) if they hit a block",
+      "Fix blocks in real time — do NOT let them accumulate to async time",
+      "Steps 5–6 (Toolbox, IQ) are demo-only for today",
+    ]);
   }
 
   T.notes(T.takeawaysSlide(pres, {
@@ -548,7 +721,12 @@ function buildModule3() {
     title: "Prompt Engineering Fundamentals",
     subtitle: "The parts that still matter when you're building agents",
     footer: "Building AI Apps and Agents",
-  }), "This is the second-shortest module of Day 1. Don't over-invest — attendees will be doing prompting all week.");
+  }), [
+    "This is the second-shortest module of Day 1 — 25 min",
+    "Don't over-invest — attendees will be doing prompting all week",
+    "Goal: acknowledge that prompting still matters, teach the disciplines that matter most, move on",
+    "If you run over 25 min, cut the anti-patterns slide",
+  ]);
 
   {
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 3", title: "Why this module" });
@@ -564,7 +742,14 @@ function buildModule3() {
       x: 0.4, y: 4.5, w: 9.2, h: 0.4,
       fontFace: T.FONTS.body, fontSize: 15, italic: true, color: T.COLORS.muted,
     });
-    T.notes(slide, "Frame it: 'prompts are everywhere in agents.' The engineering discipline stays; the surface area changes.");
+    T.notes(slide, [
+      "Frame the module in one line: 'agents don't kill prompt engineering, they concentrate it'",
+      "Prompts are now everywhere in your codebase, not just chat",
+      "System prompts / instructions",
+      "Tool descriptions (the model reads every docstring)",
+      "Structured output schemas (field names + docstrings are prompts too)",
+      "Discipline stays. Surface area gets bigger.",
+    ]);
   }
 
   {
@@ -579,7 +764,16 @@ function buildModule3() {
       x: 0.4, y: 4.5, w: 9.2, h: 0.4,
       fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted,
     });
-    T.notes(slide, "Four labeled sections is a good default. Show real examples during content review if time permits.");
+    T.notes(slide, [
+      "Four labeled sections is a strong default for a system prompt",
+      "  1. Role and scope",
+      "  2. How to respond (tone, length, format, 'I don't know')",
+      "  3. How to use tools (when, which, what to do with the result)",
+      "  4. Boundaries and safety (refusals, privacy, tenant scope)",
+      "Keep it under ~500 words",
+      "If longer, ask: 'should this be a tool or a knowledge source instead?'",
+      "If time permits, walk through the docs-assistant instructions from the lab",
+    ]);
   }
 
   {
@@ -591,7 +785,15 @@ function buildModule3() {
       "Vague identity — 'you are a helpful assistant.' Every model already thinks that.",
       "Forgetting the audience — a prompt for engineers looks different than one for associates.",
     ], { y: contentTop });
-    T.notes(slide, "This is where senior devs perk up. Ask if anyone has hit these before — usually a few nods.");
+    T.notes(slide, [
+      "This is where senior devs perk up — they've hit these",
+      "Ask: 'anyone recognize one of these from a past project?' (usually a few nods)",
+      "Wall of rules: the more you list, the more the model ignores at least one",
+      "Example dump in system prompt: move to few-shot messages",
+      "Prompting the wrong layer: 'search the docs' is a tool call, not a prompt",
+      "Vague identity: every model already thinks it's helpful — be specific",
+      "Forgetting the audience: an engineer's prompt ≠ a store associate's prompt",
+    ]);
   }
 
   {
@@ -609,7 +811,14 @@ function buildModule3() {
       ],
       { leftHeader: "1. Structured instructions", rightHeader: "2. Explicit output contracts" }
     );
-    T.notes(slide, "Both techniques appear again — structure is used every day; structured outputs deepens Day 3.");
+    T.notes(slide, [
+      "Two techniques worth investing in this week:",
+      "  1. Structured instructions — labeled sections beat prose walls",
+      "  2. Explicit output contracts — tell the model exactly what shape",
+      "Structure lands every day this week",
+      "Structured outputs (typed models) deepens on Day 3",
+      "Best practice: define the shape, don't ask for it",
+    ]);
   }
 
   {
@@ -625,7 +834,14 @@ function buildModule3() {
       x: 0.4, y: 4.55, w: 9.2, h: 0.5,
       fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted,
     });
-    T.notes(slide, "Push hard on 'change one thing.' Attendees will conflate multiple edits and be surprised the eval doesn't tell them what worked.");
+    T.notes(slide, [
+      "The iteration loop is the most important slide in this module",
+      "5 steps: eval set → run → read failures → change ONE thing → rerun",
+      "Push hard on 'change one thing'",
+      "Attendees will conflate multiple edits, then can't tell what worked",
+      "The habit starts today — Day 2 (retrieval eval) and Day 4 (workflow eval) reinforce",
+      "Show: 'don't tune prompts in your head'",
+    ]);
   }
 
   {
@@ -645,7 +861,13 @@ agent = Agent(
         "- Say 'I don't know' when you don't.\\n"
     ),
 )`, { y: 1.2, h: 3.8 });
-    T.notes(slide, "For a Prompt agent, the instructions live in the portal as a versioned artifact — set up in Module 6, seen again in Part A of the lab.");
+    T.notes(slide, [
+      "For a client-side / Path C agent, instructions live in your code (this slide)",
+      "For a Prompt agent (Path A, Module 6), instructions live in the portal",
+      "For a Hosted agent (Path B), instructions live in your code but Foundry runs it",
+      "Either way: write instructions with structure, not prose",
+      "Attendees see all three variants in the lab today",
+    ]);
   }
 
   {
@@ -663,7 +885,14 @@ def create_ticket(title: str, body: str, priority: str) -> str:
       x: 0.4, y: 4.85, w: 9.2, h: 0.4,
       fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy,
     });
-    T.notes(slide, "This is the point most attendees haven't internalized — MAF sends every tool docstring to the model. Docstring quality = model tool-use quality.");
+    T.notes(slide, [
+      "THE point most attendees haven't internalized",
+      "MAF sends EVERY tool docstring to the model as part of the prompt",
+      "Bad docstring = model calls the wrong tool at the wrong time",
+      "Good docstring reads like a mini-prompt: what it does, when to use it, when NOT to use it",
+      "Show the create_ticket example — walk through what makes each line necessary",
+      "This is a Day 3 topic really, but planting it now pays off Day 2",
+    ]);
   }
 
   T.notes(T.takeawaysSlide(pres, {
@@ -691,7 +920,13 @@ function buildModule4() {
     title: "MAF 101",
     subtitle: "Core primitives, in Python and C#",
     footer: "Building AI Apps and Agents",
-  }), "The most code-dense module of Day 1. Move at a steady pace; call out that Modules 5–6 use everything you show here.");
+  }), [
+    "Most code-dense module of Day 1 — 40 min",
+    "Move at a steady pace; don't linger on any one snippet",
+    "Modules 5–6 use everything shown here — reassure attendees they'll see it again",
+    "Attendees don't need to memorize APIs; they need to recognize the shape",
+    "If they take away one thing: the six primitives (next slide)",
+  ]);
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 4", title: "What MAF is" });
@@ -703,7 +938,13 @@ function buildModule4() {
       "Streaming, memory, structured outputs, tools, MCP, multi-agent, eval — one place",
       "The successor to Semantic Kernel and AutoGen for new work",
     ], { y: contentTop });
-    T.notes(slide, "For attendees coming from SK / AutoGen — reassure that MAF is the forward direction with cleaner primitives.");
+    T.notes(slide, [
+      "MAF = Microsoft's SDK for building agents (the WHAT)",
+      "One vocabulary in Python and C# — this is the key value prop",
+      "First-class Foundry integration",
+      "For attendees coming from SK or AutoGen: MAF is the forward direction",
+      "Cleaner primitives, single SDK, active investment",
+    ]);
   }
 
   {
@@ -717,7 +958,14 @@ function buildModule4() {
       ["Tool", "A callable capability the model can invoke"],
       ["Message", "Individual user / assistant / tool messages in a thread"],
     ], { colW: [2.2, 7.0], rowH: 0.5 });
-    T.notes(slide, "Six primitives. Every day this week uses them. Pause to ask if the names conflict with anything the audience already uses.");
+    T.notes(slide, [
+      "Six primitives — write them on a whiteboard if you can",
+      "  Chat client, Agent, Thread, Run, Tool, Message",
+      "Every day this week uses all six",
+      "Ask: 'do any of these names collide with your team's vocabulary?'",
+      "  (Some Publix teams may already use 'thread' or 'run' differently)",
+      "If yes, agree on how you'll disambiguate for the week",
+    ]);
   }
 
   {
@@ -737,7 +985,14 @@ async def main():
     print(result)
 
 asyncio.run(main())`, { y: 1.2, h: 3.9 });
-    T.notes(slide, "That's it. Deployed model + credential + instructions. Emphasize how small this is.");
+    T.notes(slide, [
+      "Say: 'that's it — deployed model + credential + instructions'",
+      "Emphasize how small this is compared to hand-rolled agent code",
+      "No boilerplate for tool wiring, message parsing, streaming",
+      "AzureCliCredential = 'sign in via az login' — no API keys",
+      "This is the code attendees will run in Part C of the lab today",
+      "Walk the imports first, then the Agent(...) construction, then .run()",
+    ]);
   }
 
   {
@@ -755,7 +1010,13 @@ AIAgent agent = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredentia
                instructions: "You are a friendly assistant. Keep answers brief.");
 
 Console.WriteLine(await agent.RunAsync("What is the capital of France?"));`, { y: 1.2, h: 3.8 });
-    T.notes(slide, "Same shape as Python. AIProjectClient.AsAIAgent(...) is C#'s way to write 'my code calling the Responses API'.");
+    T.notes(slide, [
+      "Point out: same shape as Python — this is MAF's design goal",
+      "AIProjectClient(...).AsAIAgent(...) = C# way to write 'my code calling the Responses API'",
+      "For attendees writing C#: everything shown in Python this week has a C# equivalent",
+      "For attendees writing Python: the C# code should feel readable",
+      "Version pinning: check manifests/versions.md if there's any doubt",
+    ]);
   }
 
   {
@@ -775,7 +1036,14 @@ await foreach (var update in agent.RunStreamingAsync("Tell me a fun fact."))
 {
     Console.Write(update);
 }`, { y: 1.2, h: 3.9, fontSize: 12 });
-    T.notes(slide, "Streaming matters for UX; we come back to it Day 3 with tool-progress events and cancellation.");
+    T.notes(slide, [
+      "Non-streaming vs. streaming — show the diff in shape",
+      "Non-streaming: wait for the full response, one call",
+      "Streaming: process chunks as they arrive (async iterator)",
+      "Streaming matters for UX — perceived latency drops significantly",
+      "Day 3 goes deeper: tool-progress events, cancellation, back-pressure",
+      "In the lab today: attendees will see streaming print chunks live",
+    ]);
   }
 
   {
@@ -787,7 +1055,14 @@ r2 = await agent.run("What's my name?")   # answer: Alex`, { y: 1.9, h: 1.0, fon
     T.addProse(slide,
       "Under the hood MAF is managing the thread for you. You can create explicit threads when you need to — covered in Day 3 memory module.",
       { y: 3.1, h: 1.2, fontSize: 14 });
-    T.notes(slide, "Attendees will ask 'where does that state live?' — for your own MAF process, in the process; for Foundry-hosted Prompt or Hosted agents, server-side (Module 6).");
+    T.notes(slide, [
+      "Attendees WILL ask: 'where does that thread state live?'",
+      "Answer depends on which of the three paths (Module 6):",
+      "  Path A (Prompt agent): server-side in Foundry",
+      "  Path B (Hosted agent): server-side in Foundry",
+      "  Path C (your code + Responses API): in your process",
+      "This is the bridge to Module 6 — Module 5 first, then Module 6",
+    ]);
   }
 
   {
@@ -798,7 +1073,14 @@ r2 = await agent.run("What's my name?")   # answer: Alex`, { y: 1.9, h: 1.0, fon
       "CI / production: DefaultAzureCredential() or, preferably, an explicit ManagedIdentityCredential",
       "Never commit API keys or connection strings — enforced on Day 5",
     ], { y: contentTop });
-    T.notes(slide, "This is table stakes but attendees will still bring keys from other codebases. Restate: no keys in this workshop's code.");
+    T.notes(slide, [
+      "Table stakes topic, but attendees WILL bring keys from other codebases",
+      "Restate clearly: NO API keys in this workshop's code",
+      "Dev on laptop: AzureCliCredential — signs in via az login",
+      "Production: DefaultAzureCredential or explicit ManagedIdentityCredential",
+      "If you see a Foundry API key in a code review: reject the PR",
+      "Day 5 revisits this in the Identity module — plant the flag",
+    ]);
   }
 
   {
@@ -811,7 +1093,13 @@ r2 = await agent.run("What's my name?")   # answer: Alex`, { y: 1.9, h: 1.0, fon
       ["AI Search", "agent-framework-azure-ai-search", "Azure.Search.Documents"],
       ["MCP hosting", "agent-framework-hosting-mcp", "ModelContextProtocol samples"],
     ], { colW: [1.9, 3.6, 3.7], rowH: 0.42, fontSize: 12 });
-    T.notes(slide, "Version freeze lives in manifests/versions.md. Attendees should not chase newer packages during the workshop.");
+    T.notes(slide, [
+      "Package cheat sheet — attendees don't need to memorize",
+      "Point them at manifests/versions.md for the frozen versions",
+      "Cohort 1 freeze happens now; Cohort 2 re-freezes post-Ignite",
+      "Ask attendees NOT to chase newer packages during the workshop",
+      "If something breaks with a newer package version, downgrade to the manifest",
+    ]);
   }
 
   {
@@ -825,7 +1113,12 @@ r2 = await agent.run("What's my name?")   # answer: Alex`, { y: 1.9, h: 1.0, fon
     T.addProse(slide,
       "Module 5 gives us the mental model that ties everything together. Module 6 walks all three paths in detail.",
       { y: 3.8, h: 1.0, fontSize: 15, italic: true });
-    T.notes(slide, "Foreshadow. Don't dive into hosting details here — save for Module 6.");
+    T.notes(slide, [
+      "This is a bridge slide — don't teach hosting here, save for Module 6",
+      "One sentence: 'you've now seen the primitives; Module 5 gives you the map, Module 6 shows the three ways to run agents'",
+      "Foreshadow the three paths (Prompt agent, Hosted agent, Responses API from your own code)",
+      "Attendees should feel: 'oh, there's more than one place this code can run'",
+    ]);
   }
 
   T.notes(T.takeawaysSlide(pres, {
@@ -851,7 +1144,13 @@ function buildModule5() {
     title: "The Agent Stack",
     subtitle: "The mental model we use every day this week",
     footer: "Building AI Apps and Agents",
-  }), "The 'compass' module. If they leave with only one thing from Day 1, it should be this five-layer model.");
+  }), [
+    "This is the 'compass' module of Day 1",
+    "If attendees leave with only ONE thing from Day 1, it should be the five layers",
+    "Every day this week refers back — repeat that promise",
+    "Ask attendees to write down the five words on paper",
+    "Time budget: 35 min — half the module is Layer 1–5 slides, half is 'where each day lives' + 'why this matters'",
+  ]);
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 5", title: "The five-layer stack" });
@@ -866,7 +1165,14 @@ function buildModule5() {
       x: 0.4, y: 4.55, w: 9.2, h: 0.4,
       fontFace: T.FONTS.body, fontSize: 15, italic: true, bold: true, color: T.COLORS.navy,
     });
-    T.notes(slide, "Say the five words twice. Ask attendees to write them down. Every day this week refers back.");
+    T.notes(slide, [
+      "Say the five words twice, slowly:",
+      "  Model, Runtime, Actions, Knowledge, Ops",
+      "Ask attendees to write them down",
+      "Reinforce: 'every day this week fits into these five layers'",
+      "Reinforce: 'every agent you build fits into these five layers'",
+      "Every subsequent slide in this module drills into one layer",
+    ]);
   }
 
   {
@@ -881,7 +1187,13 @@ function buildModule5() {
     T.addProse(slide,
       "Day 5 covers model routing — small model first, escalate on low confidence.",
       { y: 4.3, h: 0.6, fontSize: 14, italic: true });
-    T.notes(slide, "Keep it short — attendees have already been through the portal on this.");
+    T.notes(slide, [
+      "Keep this slide short — attendees already saw model deployments in Module 2",
+      "Three decisions at this layer:",
+      "  which model, what capacity, which region",
+      "Day 5 revisits: model routing (small first, escalate on low confidence)",
+      "One tip: name deployments by (model, role) not just model",
+    ]);
   }
 
   {
@@ -895,7 +1207,14 @@ function buildModule5() {
     T.addProse(slide,
       "Module 6 is entirely about this choice. Both are legitimate; each has a sweet spot.",
       { y: 4.3, h: 0.6, fontSize: 14, italic: true });
-    T.notes(slide, "Tee up Module 6.");
+    T.notes(slide, [
+      "Tee up Module 6 — three ways to run an agent",
+      "Path A: Prompt agent — Foundry runs it, no code",
+      "Path B: Hosted agent — your code, Foundry runs the container",
+      "Path C: your own code calling the Responses API",
+      "Don't teach them now — Module 6 does that in 35 min",
+      "Just plant the flag: 'this is a real decision point'",
+    ]);
   }
 
   {
@@ -909,7 +1228,14 @@ function buildModule5() {
     T.addProse(slide,
       "Day 2: function tools and Toolbox. Day 3: MCP end-to-end.",
       { y: 4.3, h: 0.6, fontSize: 14, italic: true });
-    T.notes(slide, "Actions = capability. Knowledge (next slide) = memory. Keep them distinct.");
+    T.notes(slide, [
+      "Actions = capability = what the agent can DO",
+      "Knowledge (next slide) = grounding = what the agent KNOWS",
+      "Keep these two concepts distinct — attendees conflate them",
+      "Three sources of actions: function tools, Toolbox, MCP",
+      "Day 2 covers function tools + Toolbox; Day 3 covers MCP end-to-end",
+      "When something breaks: 'is this an Actions bug or a Knowledge bug?'",
+    ]);
   }
 
   {
@@ -921,7 +1247,14 @@ function buildModule5() {
     ], { y: 1.8, h: 2.2 });
     T.addProse(slide, "Day 2 deep dive: both, plus when to prefer one over the other.",
       { y: 4.3, h: 0.6, fontSize: 14, italic: true });
-    T.notes(slide, "IQ = the easy path. Custom RAG = when you need control. Not a binary — mix.");
+    T.notes(slide, [
+      "Knowledge = grounding = what the agent knows",
+      "Foundry IQ = the easy path — unified retrieval across enterprise sources",
+      "Custom RAG = when you need control IQ doesn't give you yet",
+      "Not a binary — mix in a real system",
+      "Day 2 is IQ's deep dive with a hands-on comparison",
+      "Rule: reach for IQ first, drop to custom RAG when you have a specific reason",
+    ]);
   }
 
   {
@@ -937,7 +1270,14 @@ function buildModule5() {
     ], { y: 1.8, h: 2.8 });
     T.addProse(slide, "Day 5 owns most of this — but evaluation is threaded through every day.",
       { y: 4.75, h: 0.5, fontSize: 14, italic: true });
-    T.notes(slide, "Emphasize: eval is not a Day-5 topic. It appears every day.");
+    T.notes(slide, [
+      "Ops = the unglamorous layer that makes agents production-worthy",
+      "Five sub-layers: identity, tracing, evaluation, cost/latency, deployment",
+      "Emphasize: evaluation is NOT a Day-5 topic",
+      "Eval appears every day this week (Days 2, 3, 4, 5)",
+      "Day 4 is the eval anchor module",
+      "Day 5 covers the rest of Ops (identity, tracing, cost, deployment)",
+    ]);
   }
 
   {
@@ -950,7 +1290,14 @@ function buildModule5() {
       ["4", "✓", "multi-agent", "✓", "✓", "eval anchor"],
       ["5", "routing", "✓", "✓", "✓", "deep"],
     ], { y: contentTop, colW: [0.6, 1.4, 2.0, 1.9, 1.9, 1.4], rowH: 0.45, fontSize: 12 });
-    T.notes(slide, "Nothing in the workshop lives outside these five columns. If something feels orphaned, tell us.");
+    T.notes(slide, [
+      "Every topic in the workshop fits into these five columns",
+      "If a topic feels orphaned to attendees, ask them to flag it",
+      "Walk the table row by row (~15 seconds per row)",
+      "Point out: 'eval' appears in every row from Day 2 onward",
+      "Day 4 = the multi-agent + eval anchor day",
+      "Day 5 = the Ops-heavy day",
+    ]);
   }
 
   {
@@ -964,7 +1311,14 @@ function buildModule5() {
       x: 0.4, y: 4.55, w: 9.2, h: 0.4,
       fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy,
     });
-    T.notes(slide, "This is a soft-skills slide disguised as an architecture slide. Attendees will use it to argue for budget and roadmap items.");
+    T.notes(slide, [
+      "This is a soft-skills slide disguised as an architecture slide",
+      "The five layers give attendees vocabulary to talk to product / ops / security",
+      "'The agent isn't grounded' = Knowledge problem, not Model problem",
+      "'Adding an MCP tool' = Actions + Ops concern, not Model concern",
+      "Attendees will use this to argue for budget and roadmap items later",
+      "Encourage them to bring the vocabulary back to Publix",
+    ]);
   }
 
   T.notes(T.takeawaysSlide(pres, {
@@ -989,7 +1343,14 @@ function buildModule6() {
     title: "Three ways to run an agent with Foundry",
     subtitle: "Prompt agents, Hosted agents, and calling the Responses API from your own code",
     footer: "Building AI Apps and Agents",
-  }), "Terminology-heavy module. Get the words right — these are the actual Foundry Agent Service terms and appear in every future day. All three paths use the Responses API; what changes is where the code runs and how much of the runtime Foundry manages.");
+  }), [
+    "Terminology-heavy module — get the words RIGHT",
+    "These are the actual Foundry Agent Service terms from Learn docs",
+    "Wrong vocabulary here cascades into confusion for the rest of the week",
+    "One-sentence framing: 'three paths, one Responses API'",
+    "Ordering: A → B → C = most Foundry-managed to least Foundry-managed",
+    "Time budget: 35 min. Code slides are quick; comparison + gotchas take more time",
+  ]);
 
   {
     const { slide } = T.bodySlide(pres, {
@@ -1039,7 +1400,15 @@ function buildModule6() {
       x: 0.55, y: 4.6, w: 8.9, h: 0.5,
       fontFace: T.FONTS.body, fontSize: 13, color: T.COLORS.navy, valign: "middle", margin: 0,
     });
-    T.notes(slide, "Anchor slide. Reinforce: Responses API is the shared entry point. What changes across the three paths is where the code lives and who manages the runtime. Ordering goes from most-Foundry-managed to least.");
+    T.notes(slide, [
+      "Anchor slide — the payoff for the whole module",
+      "Responses API is the shared entry point across ALL three paths",
+      "What changes across paths:",
+      "  Where the code runs",
+      "  Who manages the runtime",
+      "Ordering: A most-managed → C least-managed (increasing attendee ownership)",
+      "Path B and Path C use THE SAME MAF code — call this out early",
+    ]);
   }
 
   // Path A — Prompt agent
@@ -1061,7 +1430,14 @@ result = await agent.run("What is Foundry IQ?")`, { y: 2.15, h: 2.55 });
     slide.addText("Best for: fast start, internal tools, production agents that don't need custom orchestration.",
       { x: 0.4, y: 4.85, w: 9.2, h: 0.4,
         fontFace: T.FONTS.body, fontSize: 13, italic: true, color: T.COLORS.muted });
-    T.notes(slide, "Learn's recommended 'start here' path. Zero infrastructure and the fastest way to see an agent working.");
+    T.notes(slide, [
+      "Path A = Prompt agent = Foundry's 'start here' recommendation",
+      "Zero code, zero compute — just configuration",
+      "Two authoring modes: portal-first (interactive) or code-first (SDK/REST/YAML for CI/CD)",
+      "Best for: fast start, internal tools, agents without custom orchestration",
+      "Fastest way to see an agent working",
+      "Attendees do this in Part A of the lab today",
+    ]);
   }
 
   // Path B — Hosted agent
@@ -1080,7 +1456,15 @@ agent = FoundryAgent(
 )`, { y: 2.5, h: 2.05, fontSize: 12 });
     slide.addText("Best for: agents that call into your own custom code, custom orchestration, and any scenario where you want Foundry to handle hosting, scaling, and identity.",
       { x: 0.4, y: 4.7, w: 9.2, h: 0.55, fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted });
-    T.notes(slide, "Path B is where Foundry stops being 'model host' and starts being 'agent app host + platform tooling.' Attendees see this in Part B of the lab.");
+    T.notes(slide, [
+      "Path B = Hosted agent = the 'Foundry as agent app host' story",
+      "Foundry stops being just a model host — starts being an agent APP host",
+      "Your code (MAF, LangGraph, OpenAI Agents SDK, or your own)",
+      "Packaged as container (or zip; Foundry builds the image)",
+      "Foundry runs it with: managed endpoint, autoscale, dedicated Entra identity, observability",
+      "Best for: production agents with custom code that need managed hosting + identity",
+      "Attendees see this in Part B of the lab today",
+    ]);
   }
 
   // What Foundry manages for a Hosted agent (comes right after Path B)
@@ -1105,7 +1489,14 @@ agent = FoundryAgent(
       ],
       { leftHeader: "What you write", rightHeader: "What Foundry gives you" }
     );
-    T.notes(slide, "Answer to 'why not just run my own container?' — Foundry hosts your app runtime AND the tooling around it in one place.");
+    T.notes(slide, [
+      "The answer to 'why not just run my own container in ACA or AKS?'",
+      "Foundry hosts your app runtime AND the tooling around it in ONE place",
+      "What you write: agent logic, instructions, tools, tests, CI",
+      "What Foundry gives you: everything else on the right column",
+      "Managed endpoint, autoscale, Entra identity, tracing, content safety, Toolbox, memory",
+      "This is the 'more than model hosting' pitch you flagged as important",
+    ]);
   }
 
   // Path C — Your code + Responses API
@@ -1127,7 +1518,15 @@ result = await agent.run("What is Foundry IQ?")`, { y: 1.95, h: 2.75 });
     slide.addText("Additive to Path B — the same MAF code can be repackaged as a Hosted agent later. No rewrite.",
       { x: 0.4, y: 4.85, w: 9.2, h: 0.4,
         fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy });
-    T.notes(slide, "The most common developer path. Emphasize the additive relationship with Path B — Path C code becomes a Hosted agent by packaging, not rewriting.");
+    T.notes(slide, [
+      "Path C = your own code + Responses API = the most common developer path",
+      "Your MAF app in your own process (laptop, ACA, App Service, AKS, Functions)",
+      "You manage the runtime; Foundry serves the model + tools",
+      "KEY POINT: Path C code becomes a Path B Hosted agent by packaging",
+      "  → NOT by rewriting",
+      "  → same MAF code, different destination",
+      "Best for: embedding in existing apps, prototyping, full runtime control",
+    ]);
   }
 
   // Path C — C# equivalent
@@ -1147,7 +1546,12 @@ AIAgent agent = new AIProjectClient(
 Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));`, { y: 1.2, h: 3.6 });
     slide.addText("Same shape. Same primitives. Same \"your process calls Foundry's Responses API\" pattern.",
       { x: 0.4, y: 4.9, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 13, italic: true, color: T.COLORS.muted });
-    T.notes(slide, "AIProjectClient.AsAIAgent(...) is C#'s way to write Path C. Python and C# APIs mirror.");
+    T.notes(slide, [
+      "AIProjectClient(...).AsAIAgent(...) = C#'s way to write Path C",
+      "Python and C# APIs mirror closely",
+      "Same primitives, same shape, same 'process calls Foundry' pattern",
+      "For C# devs: this is what Part C of the lab looks like in C#",
+    ]);
   }
 
   // Compare at a glance
@@ -1163,7 +1567,14 @@ Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));`, { y: 1.2, h: 3
       ["Iteration speed", "Portal + publish", "Portal upload / redeploy", "Edit + restart"],
       ["Portability off Foundry", "Low", "Medium", "High"],
     ], { y: contentTop, colW: [2.6, 2.0, 2.4, 2.2], rowH: 0.42, fontSize: 12 });
-    T.notes(slide, "Walk down each row. Emphasize how Path C is the most portable but requires you to handle endpoint, scaling, identity yourself.");
+    T.notes(slide, [
+      "Walk down each row — ~10 seconds per row",
+      "Path C is the most portable — but you handle endpoint/scale/identity",
+      "Path A is the least portable — Foundry-only by construction",
+      "Path B is middle — portable code, non-portable Foundry-managed features",
+      "The 'cost model' row is important: Path B adds container compute",
+      "The 'iteration speed' row: A slowest (publish), C fastest (edit + restart)",
+    ]);
   }
 
   // Decision guide
@@ -1179,7 +1590,13 @@ Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));`, { y: 1.2, h: 3
     slide.addText("Mix and match — real systems combine paths.",
       { x: 0.4, y: 4.9, w: 9.2, h: 0.4,
         fontFace: T.FONTS.body, fontSize: 13, italic: true, color: T.COLORS.muted });
-    T.notes(slide, "Ask the audience whether their scenario fits more than one row — many will. That's the point.");
+    T.notes(slide, [
+      "Ask: 'anyone see their scenario fitting more than one row?'",
+      "Many will — that's the point",
+      "Real systems mix paths",
+      "Example: shared read-only Prompt agent (A) + custom orchestration agent (B) + embedded assistant (C)",
+      "There is no wrong answer if you're honest about the constraints",
+    ]);
   }
 
   // Common gotchas
@@ -1191,7 +1608,14 @@ Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));`, { y: 1.2, h: 3
       "Assuming portability off Foundry — Path A is Foundry-only by construction. Path B keeps Foundry-managed features (Toolbox, IQ, portal connections) behind the managed endpoint. Path C is the most portable.",
       "Mixing up authentication — all three use Azure identity; the credential authenticates to different things.",
     ], { y: contentTop, fontSize: 13 });
-    T.notes(slide, "The first two gotchas are the terminology collisions the module was designed to fix. Reinforce.");
+    T.notes(slide, [
+      "The first two gotchas are the terminology collisions this module was designed to fix",
+      "  1. 'Prompt agent = client-side' → wrong; Prompt agent is Foundry-managed",
+      "  2. 'Hosted agent = my code anywhere in Azure' → wrong; specifically means Foundry-run container",
+      "Reinforce both — attendees will trip on this in the weeks after the workshop",
+      "Portability gotcha (#3): Path A is Foundry-only; Path B keeps managed features behind the endpoint",
+      "Auth gotcha (#4): all three use Azure identity, but authenticate to different targets",
+    ]);
   }
 
   // Same MAF code, different destinations
@@ -1264,7 +1688,14 @@ Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));`, { y: 1.2, h: 3
       x: 0.55, y: 4.6, w: 8.9, h: 0.4,
       fontFace: T.FONTS.body, fontSize: 11, color: T.COLORS.navy, valign: "middle", margin: 0,
     });
-    T.notes(slide, "Anti-lock-in reassurance for the agent code. Foundry-specific *features* remain the coupling — call that out honestly.");
+    T.notes(slide, [
+      "Anti-lock-in reassurance — attendees worry about being trapped",
+      "The MAF code you write is portable across all three destinations",
+      "BUT: Foundry-specific FEATURES (Toolbox skills, IQ, agent identity) stay behind the endpoint",
+      "Be honest about that coupling — don't oversell portability",
+      "Practical advice: prototype in Path C, promote to A or B later",
+      "The 'same code, different destination' pitch is the platform's design",
+    ]);
   }
 
   // What you'll do in the lab
@@ -1278,7 +1709,15 @@ Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));`, { y: 1.2, h: 3
     ], { y: contentTop, fontSize: 14 });
     slide.addText("Same underlying docs-assistant behavior three ways. You'll feel the trade-offs.",
       { x: 0.4, y: 4.55, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy });
-    T.notes(slide, "Bridge to Module 7 lab kickoff. Attendees should feel prepared.");
+    T.notes(slide, [
+      "Bridge to Module 7 (lab kickoff)",
+      "Three parts map 1:1 to the three paths just covered",
+      "Part A: Prompt agent (~30 min)",
+      "Part B: Hosted agent — connect to pre-deployed (~30 min)",
+      "Part C: your code + Responses API — the meaty coding part (~45 min)",
+      "Stretch: zip your Part C code and deploy as your own Hosted agent",
+      "Attendees should feel prepared, not overwhelmed",
+    ]);
   }
 
   T.notes(T.takeawaysSlide(pres, {
@@ -1303,7 +1742,12 @@ function buildModule7() {
     title: "Lab Kickoff",
     subtitle: "Two agents, same job",
     footer: "Building AI Apps and Agents",
-  }), "Short module. Objective: everyone leaves the live session with a green light on their environment. Async lab starts immediately after.");
+  }), [
+    "Short module — 25 min",
+    "Objective: every attendee leaves live session with a GREEN LIGHT on env",
+    "Async lab starts immediately after",
+    "The reflection is the deliverable, not the code",
+  ]);
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 7", title: "What you'll build" });
@@ -1314,7 +1758,13 @@ function buildModule7() {
       "Part C — Your own code calling the Responses API (MAF in Python or C#)",
       "Ask each the same questions and compare behavior, latency, and where thread state lives",
     ], { y: contentTop });
-    T.notes(slide, "Emphasize reflection > code. The reflection.md is the actual deliverable.");
+    T.notes(slide, [
+      "Emphasize: reflection > code",
+      "reflection.md is the actual deliverable",
+      "Attendees who write 3 solid reflection answers > attendees who complete all 3 parts",
+      "Preview the 4 reflection questions — don't wait for them to read the lab",
+      "Same underlying docs-assistant behavior three ways",
+    ]);
   }
 
   {
@@ -1330,7 +1780,14 @@ uv --version             # required for Python labs`, { y: 1.2, h: 1.9 });
     ], { y: 3.4, h: 1.5 });
     slide.addText("If anything fails, flag it now — get unblocked before the async portion.",
       { x: 0.4, y: 4.9, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy });
-    T.notes(slide, "Do a live show-of-hands: 'raise your hand if az login didn't work.' Fix issues in real time before they leave the room.");
+    T.notes(slide, [
+      "Live show-of-hands moment",
+      "Ask: 'raise your hand if az login didn't work'",
+      "Ask: 'raise your hand if python --version doesn't show 3.11+'",
+      "Ask: 'raise your hand if you don't have your project endpoint yet'",
+      "Fix issues in real time — do NOT let them accumulate to async time",
+      "If more than 20% of attendees are stuck, delay the lab kickoff",
+    ]);
   }
 
   {
@@ -1350,7 +1807,13 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
 │   ├── part_b_hosted_agent.py
 │   └── part_c_responses_api.py
 └── csharp/PartC_ResponsesApi/`, { y: 3.2, h: 2.1, fontSize: 12 });
-    T.notes(slide, "Walk through the file layout so nothing feels mysterious. Show the actual repo URL.");
+    T.notes(slide, [
+      "Walk through the file layout so nothing feels mysterious",
+      "Show the actual repo URL live: github.com/JimPiquant/Building-AI-Apps-and-Agents",
+      "Explain uv briefly: 'uv sync creates a .venv and installs deps'",
+      "Point out .env.example → copy to .env → fill in",
+      "Never commit .env",
+    ]);
   }
 
   {
@@ -1364,7 +1827,16 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       { text: "Which felt faster to iterate on?", indent: 1 },
       { text: "Which would you pick for a shared cross-team agent at Publix? Why?", indent: 1 },
     ], { y: contentTop });
-    T.notes(slide, "The reflection is the deliverable. Focus on trade-offs, not on maximum coverage.");
+    T.notes(slide, [
+      "The reflection is the deliverable, not the code output",
+      "Focus on TRADE-OFFS between paths, not on maximum coverage",
+      "Four questions to answer:",
+      "  1. Which path felt fastest to iterate on and why?",
+      "  2. What does Foundry manage in A/B that you'd handle in C?",
+      "  3. For a Publix scenario you know, which path would you pick?",
+      "  4. What would you want to try next?",
+      "Attendee who completes Parts A + C with good reflection > attendee who completes all 3 with none",
+    ]);
   }
 
   {
@@ -1375,7 +1847,13 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "Code stuck? Pair up — lab is designed to be doable, not solo-only",
       "Instructor is on for questions during the async portion; response times vary",
     ], { y: contentTop });
-    T.notes(slide, "Set the norm that asking is encouraged. First-hour blocker rate matters more than final completion rate.");
+    T.notes(slide, [
+      "Set the norm: asking questions is encouraged, not embarrassing",
+      "First-hour blocker rate matters more than final completion rate",
+      "Channels: workshop chat for blockers, pair programming for stuck code",
+      "Facilitator is on during async time; response times vary",
+      "If stuck > 20 min on the same thing, ping the channel",
+    ]);
   }
 
   {
@@ -1386,7 +1864,14 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "Model deployment name mismatch — deployment name is not the same as model name",
       "Python — package missing — uv sync from labs/day1/python/",
     ], { y: contentTop, fontSize: 14 });
-    T.notes(slide, "This is a look-before-you-leap slide. Save the async portion from the same-question-x-15 problem.");
+    T.notes(slide, [
+      "Look-before-you-leap slide — this saves you 15 identical questions later",
+      "Walk through the 4 gotchas quickly",
+      "az login OK but 401 → Foundry User role missing at resource scope",
+      "FOUNDRY_PROJECT_ENDPOINT not found → copy from .env.example",
+      "Model deployment name mismatch → not the same as the model name",
+      "Python packages missing → uv sync from labs/day1/python/",
+    ]);
   }
 
   {
@@ -1401,7 +1886,14 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
     slide.addText("Going long? Ping a facilitator — we'll help you scope down.", {
       x: 0.4, y: 4.55, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted,
     });
-    T.notes(slide, "Set realistic expectations. Attendees who hit 90 min on Part C should ask for help.");
+    T.notes(slide, [
+      "Set realistic expectations before they start",
+      "Part A: ~30 min · Part B: ~30 min · Part C: ~45 min",
+      "Reflection commit: ~10 min",
+      "Total: ~2 hours of async work",
+      "Attendees who hit 90 min on Part C should ping the channel",
+      "Going long often means an env or RBAC issue, not a code issue",
+    ]);
   }
 
   T.notes(T.takeawaysSlide(pres, {
