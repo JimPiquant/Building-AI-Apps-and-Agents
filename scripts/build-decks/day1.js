@@ -981,7 +981,7 @@ function buildModule6() {
   {
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Path A — Prompt agent" });
     T.addProse(slide,
-      "A Prompt agent is defined entirely as configuration: instructions, model, tools. Author in the Foundry portal or via SDK / REST. Foundry runs it — no application code to maintain, no compute to manage.",
+      "A Prompt agent is defined entirely as configuration: instructions, model, tools. Author in the Foundry portal, via SDK / REST, or as a declarative YAML definition. Foundry runs it — no application code to maintain, no compute to manage.",
       { y: 1.15, h: 0.9, fontSize: 13 });
     T.addCode(slide, `from agent_framework.foundry import FoundryAgent
 from azure.identity import AzureCliCredential
