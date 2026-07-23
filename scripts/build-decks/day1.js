@@ -328,88 +328,45 @@ function buildModule2() {
   }
 
   {
-    // Foundry resource architecture — diagrammatic
+    // Foundry resource architecture — canonical diagram from Microsoft Learn
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Foundry resource architecture" });
 
-    // Left: Foundry resource governance boundary (outer box)
-    const outerX = 0.4, outerY = 1.15, outerW = 5.6, outerH = 3.4;
-    slide.addShape("rect", {
-      x: outerX, y: outerY, w: outerW, h: outerH,
-      fill: { color: T.COLORS.white },
-      line: { color: T.COLORS.navy, width: 2 },
-    });
-    slide.addText("Foundry resource · governance boundary", {
-      x: outerX + 0.1, y: outerY + 0.08, w: outerW - 0.2, h: 0.35,
-      fontFace: T.FONTS.title, fontSize: 13, bold: true, color: T.COLORS.navy, margin: 0,
-    });
-    // Three pills — resource-scoped things
-    const pillY = outerY + 0.55, pillH = 0.4, pillGap = 0.1;
-    const pillW = (outerW - 0.3 - 2 * pillGap) / 3;
-    ["Model deployments", "Security & networking", "Connections"].forEach((p, i) => {
-      const px = outerX + 0.15 + i * (pillW + pillGap);
-      slide.addShape("roundRect", {
-        x: px, y: pillY, w: pillW, h: pillH,
-        fill: { color: T.COLORS.ice }, line: { type: "none" }, rectRadius: 0.08,
-      });
-      slide.addText(p, {
-        x: px, y: pillY, w: pillW, h: pillH,
-        fontFace: T.FONTS.body, fontSize: 10, bold: true, color: T.COLORS.navy, align: "center", valign: "middle", margin: 0,
-      });
-    });
-    // Nested project box
-    const projX = outerX + 0.15, projY = pillY + pillH + 0.2, projW = outerW - 0.3, projH = outerH - (projY - outerY) - 0.15;
-    slide.addShape("rect", {
-      x: projX, y: projY, w: projW, h: projH,
-      fill: { color: T.COLORS.panel }, line: { color: T.COLORS.navy, width: 1, dashType: "dash" },
-    });
-    slide.addText("Project · development boundary", {
-      x: projX + 0.1, y: projY + 0.08, w: projW - 0.2, h: 0.32,
-      fontFace: T.FONTS.title, fontSize: 12, bold: true, color: T.COLORS.navy, margin: 0,
-    });
-    slide.addText("Project assets: files · agents · evaluations", {
-      x: projX + 0.1, y: projY + 0.5, w: projW - 0.2, h: 0.5,
-      fontFace: T.FONTS.body, fontSize: 11, italic: true, color: T.COLORS.ink, margin: 0,
+    // Center the image in the content area.
+    // Native aspect 1800x1158 (1.554); target height 3.6" → width ~5.60"
+    const imgH = 3.6;
+    const imgW = imgH * (1800 / 1158);
+    const imgX = (10 - imgW) / 2;
+    const imgY = 1.2;
+    slide.addImage({
+      path: path.resolve(__dirname, "..", "..", "slides", "day1", "assets", "foundry-architecture.png"),
+      x: imgX, y: imgY, w: imgW, h: imgH,
+      altText: {
+        title: "Foundry resource hierarchy",
+        description: "Diagram showing a Foundry resource governance boundary containing model deployments, security settings, connections, and two projects. Connected resources — Storage, Key Vault, and Azure AI Search — are shown as separate governance boundaries.",
+        name: "FoundryArchitecture",
+      },
     });
 
-    // Right: Connected resources — separate governance boundaries
-    const connX = 6.4, connW = 3.2;
-    slide.addText("Connected resources", {
-      x: connX, y: outerY + 0.08, w: connW, h: 0.3,
-      fontFace: T.FONTS.title, fontSize: 13, bold: true, color: T.COLORS.navy, margin: 0,
-    });
-    slide.addText("separate Azure resources · own governance", {
-      x: connX, y: outerY + 0.4, w: connW, h: 0.3,
-      fontFace: T.FONTS.body, fontSize: 10, italic: true, color: T.COLORS.muted, margin: 0,
-    });
-    const conns = ["Azure Storage", "Azure Key Vault", "Azure AI Search"];
-    const cH = 0.7, cGap = 0.15;
-    const cStartY = outerY + 0.85;
-    conns.forEach((c, i) => {
-      const cy = cStartY + i * (cH + cGap);
-      slide.addShape("rect", {
-        x: connX, y: cy, w: connW, h: cH,
-        fill: { color: T.COLORS.white }, line: { color: T.COLORS.border, width: 1, dashType: "dash" },
-      });
-      slide.addText(c, {
-        x: connX, y: cy, w: connW, h: cH,
-        fontFace: T.FONTS.body, fontSize: 12, bold: true, color: T.COLORS.ink, align: "center", valign: "middle", margin: 0,
-      });
+    // Attribution caption
+    slide.addText("Diagram: Microsoft Learn · aka.ms/foundry/architecture", {
+      x: 0.4, y: imgY + imgH + 0.05, w: 9.2, h: 0.25,
+      fontFace: T.FONTS.body, fontSize: 9, italic: true, color: T.COLORS.muted, align: "center", margin: 0,
     });
 
-    // Bottom caption
+    // Bottom takeaway callout
     slide.addShape("rect", {
-      x: 0.4, y: 4.7, w: 9.2, h: 0.55,
+      x: 0.4, y: 5.05, w: 9.2, h: 0.5,
       fill: { color: T.COLORS.ice }, line: { type: "none" },
     });
     slide.addText([
       { text: "Four layers to know: ", options: { bold: true } },
       { text: "Foundry resource → project → project assets → connected resources. Connected resources have their own networking and access policies." },
     ], {
-      x: 0.55, y: 4.75, w: 8.9, h: 0.45,
+      x: 0.55, y: 5.08, w: 8.9, h: 0.44,
       fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
     });
 
-    T.notes(slide, "This is the mental map for Foundry governance. Emphasize that connected resources (Storage, Key Vault, AI Search) are independent Azure resources — you manage their networking and access separately. The Foundry resource references them through connections.");
+    T.notes(slide, "Diagram from Microsoft Learn (foundry/concepts/architecture). Walk the four layers explicitly: (1) Foundry resource is the governance boundary — deployments, security, connections. (2) Projects are development boundaries nested inside. (3) Project assets are files, agents, evaluations. (4) Connected resources (Storage, Key Vault, AI Search) are separate Azure resources with their own governance — you manage networking and access for them independently.");
   }
 
   {

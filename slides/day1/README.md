@@ -23,3 +23,8 @@ cd scripts/build-decks
 npm install
 node day1.js
 ```
+
+
+## Assets
+
+Diagrams sourced from Microsoft Learn (or other authoritative sources) are cached in [`assets/`](assets/). The deck generator embeds the PNG version for PowerPoint compatibility. Every embedded diagram has an attribution caption on-slide.
