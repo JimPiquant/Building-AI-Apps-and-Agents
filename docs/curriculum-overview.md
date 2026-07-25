@@ -27,7 +27,7 @@ Each day maps onto this stack:
 - **Day 5** — Ops.
 
 ## Reference domain
-Every day builds on the same reference project: a **technical documentation assistant**. It's intentionally general-purpose so what you learn transfers to any real Publix scenario. Days 3–4 introduce real integrations (GitHub Issues via the GitHub MCP server) so the pattern is production-shaped by the end of the week.
+Every day builds on the same reference project: a **technical documentation assistant**. It's intentionally general-purpose so what you learn transfers to any real Publix scenario. Days 3–4 introduce real integrations (Azure DevOps work items via the official Azure DevOps MCP server — Publix's actual toolchain) so the pattern is production-shaped by the end of the week.
 
 ## Out of scope
 The following are intentionally **not covered**:

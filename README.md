@@ -15,7 +15,7 @@ Professional developers, senior engineers, and solution architects with working 
 |-----|-------|----------------|
 | 1 | Foundations: Foundry + MAF + Toolbox + Foundry IQ | A Prompt agent, your own code calling the Responses API, and a Hosted agent — the three ways to run an agent with Foundry |
 | 2 | Grounding & Tools | A grounded, tool-using docs assistant with a Foundry IQ knowledge source |
-| 3 | MAF Single Agent Deep Dive + MCP | The same agent, production-shaped, using the GitHub MCP server against real Issues |
+| 3 | MAF Single Agent Deep Dive + MCP | The same agent, production-shaped, using the official Azure DevOps MCP server against real ADO work items |
 | 4 | Multi-Agent Patterns + Evaluation | A planner + retriever + summarizer + critic workflow with a trajectory eval |
 | 5 | Production + Capstone Kickoff | Observability, identity, RAI, cost, deployment; capstone scoping |
 
