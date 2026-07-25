@@ -112,7 +112,7 @@ Add a file `labs/day1/reflection.md` in your fork of this repo answering:
 1. **Which path felt fastest to iterate on** — Part A (portal edits), Part B (zip upload), or Part C (code redeploy)? Why?
 2. **What does Foundry Agent Service manage for you** in Parts A and B that you'd have to build or wire up yourself in Part C? List at least three concrete things.
 3. **For a Publix scenario you know**, which of the three paths would you pick? Consider: who owns the prompt, how many apps consume the agent, and what identity/observability you'd need.
-4. **What scenario would you build for your capstone?** Jot down 2–3 candidate ideas — real work you'd want to sharpen with an agent. You'll refine one of these during Day 5's capstone scoping session; this is where you start.
+4. **What scenario would your team build for your capstone?** Jot down 2–3 candidate ideas — real work you'd want to sharpen with an agent — and any teammates you'd want to work with. You'll form teams and pick one scenario during Day 5's capstone scoping session; this is where you start.
 
 Commit that file and push to your fork. Reflection > code.
 

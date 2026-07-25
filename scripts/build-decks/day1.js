@@ -1968,17 +1968,18 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       tag: "Day 1 · Module 7", title: "Preview: your capstone project",
     });
     T.addProse(slide,
-      "The workshop ends with a capstone. Start thinking about your scenario this week — every day gives you a piece.",
+      "The workshop ends with a team capstone. Start thinking about your scenario this week — every day gives you a piece.",
       { y: contentTop, h: 0.6, fontSize: 14, italic: true });
 
     // Two-column: what it is + what to be watching for this week
     T.addTwoColumn(slide,
       [
-        "Solo, or teams of 2–3",
-        "Starts at Day 5 close · target completion 4–6 weeks after",
-        "1:1 architecture review with Jim (± Pradeep)",
+        "Teams of 2–3 · everyone participates",
+        "Starts at Day 5 close · demo day 2–3 weeks after",
+        "Shared demo day — all teams present to Pradeep + Jim",
+        "~15 min per team (10 demo + 5 Q&A + coaching)",
         "Coaching and feedback — no competitive scoring",
-        "Your choice of scenario",
+        "Your team's choice of scenario",
       ],
       [
         "An MAF agent (Prompt agent, Hosted agent, or Path C)",
@@ -1998,7 +1999,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
     });
     slide.addText([
       { text: "Start today: ", options: { bold: true } },
-      { text: "reflection question #4 asks what you'd want to build next — that's your capstone starter." },
+      { text: "reflection question #4 asks what scenario your team would build — that's your capstone starter." },
     ], {
       x: 0.55, y: 4.98, w: 8.9, h: 0.44,
       fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
@@ -2006,10 +2007,13 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
 
     T.notes(slide, [
       "Plant the seed on Day 1 — attendees have all week to marinate on scenarios",
-      "Emphasize: solo OR small teams of 2–3, their choice",
-      "Timing: capstone runs ~4–6 weeks after workshop close",
-      "Cohort 1 target: reviews complete by end of Nov 2026 (before blackout)",
-      "1:1 review is coaching, not scoring — reassure any nervous attendees",
+      "Everyone on a team of 2–3 — no solo path this time",
+      "Timeline: 2–3 weeks between Day 5 close and demo day",
+      "Cohort 1: workshop ends wk of Oct 12; demo day lands wk of Nov 2 or Nov 9",
+      "Format: shared demo day, not 1:1 reviews",
+      "  ~15 min per team (10 demo + 5 Q&A / coaching)",
+      "  Pradeep + Jim attend; attendees also see each other's work",
+      "Character stays coaching + feedback — no ranking, no scoring",
       "Every required element maps to a day of the workshop:",
       "  MAF agent → Day 1",
       "  Grounding + tools → Day 2",
@@ -2017,7 +2021,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "  Multi-agent + eval → Day 4",
       "  Observability + deployment → Day 5",
       "Point out reflection question 4 explicitly — it's the seed",
-      "Ask attendees to jot down 2–3 scenario ideas by end of the week",
+      "Ask attendees to jot down 2–3 scenario ideas + potential teammates by end of the week",
     ]);
   }
 

@@ -113,7 +113,7 @@ Total: about **2 hours** of async work. If you're going long, ping a facilitator
 
 ## Preview: your capstone project
 
-The workshop ends with a **capstone project** — solo or in small teams of 2–3, starting at Day 5 close, target completion 4–6 weeks after. You'll do a 1:1 architecture review with the instructor (± Pradeep). It's coaching and feedback, not competitive scoring.
+The workshop ends with a **team capstone** — every attendee is on a team of 2–3. Starts at Day 5 close; **demo day is 2–3 weeks later** — a shared session where all teams present to Pradeep + Jim (and each other). Each team gets about 15 minutes (10 min demo + 5 min Q&A and coaching). Coaching and feedback, not competitive scoring.
 
 **Required elements (each day of the workshop gives you a piece):**
 - An MAF agent — Prompt agent, Hosted agent, or your own code + Responses API
@@ -124,7 +124,7 @@ The workshop ends with a **capstone project** — solo or in small teams of 2–
 - OTel traces visible in the Foundry portal or Application Insights
 - Architecture diagram + README with 30-day next steps
 
-**Start today.** Reflection question #4 asks what you'd want to build next — that's your capstone starter. Jot down 2–3 scenario ideas as the week unfolds.
+**Start today.** Reflection question #4 asks what scenario your team would build — that's your capstone starter. Jot down 2–3 scenario ideas and potential teammates as the week unfolds.
 
 ---
 
