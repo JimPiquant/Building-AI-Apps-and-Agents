@@ -109,10 +109,28 @@ Total: about **2 hours** of async work. If you're going long, ping a facilitator
 
 ---
 
+## Preview: your capstone project
+
+The workshop ends with a **capstone project** — solo or in small teams of 2–3, starting at Day 5 close, target completion 4–6 weeks after. You'll do a 1:1 architecture review with the instructor (± Pradeep). It's coaching and feedback, not competitive scoring.
+
+**Required elements (each day of the workshop gives you a piece):**
+- An MAF agent — Prompt agent, Hosted agent, or your own code + Responses API
+- Grounded in a Foundry-deployed model
+- At least one Toolbox tool, MCP server, or custom function tool
+- At least one Foundry IQ knowledge source, or a custom RAG pipeline
+- A golden set of ≥ 10 items and a captured evaluation score
+- OTel traces visible in the Foundry portal or Application Insights
+- Architecture diagram + README with 30-day next steps
+
+**Start today.** Reflection question #4 asks what you'd want to build next — that's your capstone starter. Jot down 2–3 scenario ideas as the week unfolds.
+
+---
+
 ## Takeaways
 
 - Same functional agent, three hosting options.
 - Focus on **feeling the difference**, not just making the code run.
 - The reflection is the deliverable — not the code.
+- Start noodling on your capstone scenario this week.
 
 **End of Day 1 live content. Have fun with the lab.**

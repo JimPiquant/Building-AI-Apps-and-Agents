@@ -1916,15 +1916,80 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
     ]);
   }
 
+  // Capstone preview — plant the seed on Day 1 so attendees marinate on scenarios all week
+  {
+    const { slide, contentTop } = T.bodySlide(pres, {
+      tag: "Day 1 · Module 7", title: "Preview: your capstone project",
+    });
+    T.addProse(slide,
+      "The workshop ends with a capstone. Start thinking about your scenario this week — every day gives you a piece.",
+      { y: contentTop, h: 0.6, fontSize: 14, italic: true });
+
+    // Two-column: what it is + what to be watching for this week
+    T.addTwoColumn(slide,
+      [
+        "Solo, or teams of 2–3",
+        "Starts at Day 5 close · target completion 4–6 weeks after",
+        "1:1 architecture review with Jim (± Pradeep)",
+        "Coaching and feedback — no competitive scoring",
+        "Your choice of scenario",
+      ],
+      [
+        "An MAF agent (Prompt agent, Hosted agent, or Path C)",
+        "Grounded in a Foundry-deployed model",
+        "At least one Toolbox tool, MCP server, or function tool",
+        "At least one Foundry IQ source or custom RAG",
+        "A golden set of ≥10 items + captured eval score",
+        "OTel traces visible in the portal or App Insights",
+        "Architecture diagram + README with 30-day next steps",
+      ],
+      { y: 1.85, h: 3.0, leftHeader: "The format", rightHeader: "Required elements (each day gives you a piece)" }
+    );
+
+    slide.addShape("rect", {
+      x: 0.4, y: 4.95, w: 9.2, h: 0.5,
+      fill: { color: T.COLORS.ice }, line: { type: "none" },
+    });
+    slide.addText([
+      { text: "Start today: ", options: { bold: true } },
+      { text: "reflection question #4 asks what you'd want to build next — that's your capstone starter." },
+    ], {
+      x: 0.55, y: 4.98, w: 8.9, h: 0.44,
+      fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
+    });
+
+    T.notes(slide, [
+      "Plant the seed on Day 1 — attendees have all week to marinate on scenarios",
+      "Emphasize: solo OR small teams of 2–3, their choice",
+      "Timing: capstone runs ~4–6 weeks after workshop close",
+      "Cohort 1 target: reviews complete by end of Nov 2026 (before blackout)",
+      "1:1 review is coaching, not scoring — reassure any nervous attendees",
+      "Every required element maps to a day of the workshop:",
+      "  MAF agent → Day 1",
+      "  Grounding + tools → Day 2",
+      "  MCP / production shape → Day 3",
+      "  Multi-agent + eval → Day 4",
+      "  Observability + deployment → Day 5",
+      "Point out reflection question 4 explicitly — it's the seed",
+      "Ask attendees to jot down 2–3 scenario ideas by end of the week",
+    ]);
+  }
+
   T.notes(T.takeawaysSlide(pres, {
     tag: "Day 1 · Module 7", title: "Takeaways",
     bullets: [
       "Same underlying docs-assistant behavior — three hosting options with Foundry.",
       "Focus on feeling the difference — not just making the code run.",
       "The reflection is the deliverable, not the code.",
+      "Start noodling on your capstone scenario this week.",
     ],
     next: "End of Day 1 live content. Have fun with the lab.",
-  }), "Sign-off. Encourage attendees to start the lab in a small pair or group if the async time doesn't line up individually.");
+  }), [
+    "Sign-off · Day 1 wrap",
+    "Encourage attendees to start the lab in a small pair or group if async time doesn't line up individually",
+    "Reinforce the capstone seed one more time",
+    "Confirm no vocabulary confusion (Prompt agent / Hosted agent / Path C) before releasing",
+  ]);
 
   return pres.writeFile({ fileName: path.join(OUT_DIR, "module-7-lab-kickoff.pptx") });
 }
