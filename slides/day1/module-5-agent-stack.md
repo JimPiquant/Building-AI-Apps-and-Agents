@@ -77,7 +77,7 @@ How the agent grounds its answers:
 The unglamorous layer that makes agents production-worthy:
 
 - **Identity** — Entra, managed identity, RBAC
-- **Tracing** — OpenTelemetry, Foundry tracing, App Insights
+- **Tracing** — OTel spans of every model call, tool invocation, and decision; view in the Foundry portal or ship to App Insights
 - **Evaluation** — retrieval, single-agent, multi-agent, and continuous eval
 - **Cost & latency** — model tiers, caching, batching, routing
 - **Deployment** — Container Apps vs. Functions vs. AKS

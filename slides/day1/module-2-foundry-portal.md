@@ -133,6 +133,16 @@ Also bookmark — this is Day 2's main course.
 
 ---
 
+## Observability — preview
+
+- Every agent run in Foundry emits a **trace** — no code to enable, built-in for Prompt and Hosted agents
+- A trace records: model calls, tool invocations, decisions, latency, tokens, and errors
+- View traces in the Foundry portal (Tracing / Observability), or ship them to Application Insights
+- OpenTelemetry semantics under the hood — same spans you'd expect from any OTel-instrumented service
+- You'll open a real trace in Part B of today's lab; **Day 5 goes deep** on production observability
+
+---
+
 ## Two axes to remember
 
 Foundry helps agents with two very different things:

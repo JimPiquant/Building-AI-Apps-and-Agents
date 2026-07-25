@@ -66,7 +66,7 @@ Fill in the values described inside. Never commit `.env`.
 3. Ask the multi-turn questions from the starter. Save the transcript.
 4. In the Foundry portal, walk through:
    - The Hosted agent's **managed endpoint** URL (the URL your code just called).
-   - **Tracing / observability** — inspect a trace of the run you just did.
+   - **Tracing / observability** — open the most recent run's trace. You should see: the model call, any tool invocations (including the attached Toolbox tool), decisions the agent made, latency for each step, and token counts. Click into a tool call to see its arguments and return value. This is the same tracing you'd get with any OTel-instrumented service; Foundry emits spans automatically for Prompt and Hosted agents.
    - **Agent identity** — the dedicated Microsoft Entra identity for this agent.
    - The attached **Toolbox tool** and its call in the trace.
    - **Content safety** filters that ran on the response.

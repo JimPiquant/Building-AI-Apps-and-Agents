@@ -639,6 +639,26 @@ function buildModule2() {
     ]);
   }
 
+  // New: Observability preview (Day 1 introduction; deep dive is Day 5)
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Observability — preview" });
+    T.addBullets(slide, [
+      "Every agent run in Foundry emits a trace — no code to enable, built-in for Prompt and Hosted agents",
+      "A trace records: model calls, tool invocations, decisions, latency, tokens, and errors",
+      "View traces in the Foundry portal (Tracing / Observability), or ship them to Application Insights",
+      "OpenTelemetry semantics under the hood — same spans you'd expect from any OTel-instrumented service",
+      "You'll open a real trace in Part B of today's lab; Day 5 goes deep on production observability",
+    ], { y: contentTop });
+    T.notes(slide, [
+      "Awareness slide — Day 5 goes deep",
+      "Point out: attendees don't have to configure anything for Prompt or Hosted agents; tracing is on by default",
+      "For Path C (your own code), you enable OTel yourself — Day 5 covers this",
+      "A trace makes the abstract concrete: attendees literally SEE their model + tool calls",
+      "Best debugging tool most attendees haven't tried yet",
+      "Preview only — don't over-teach; they'll click into a trace in Part B",
+    ]);
+  }
+
   {
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Two axes to remember" });
     T.addTable(slide, [
@@ -1263,7 +1283,7 @@ function buildModule5() {
       { y: 1.15, h: 0.5, fontSize: 16 });
     T.addBullets(slide, [
       "Identity — Entra, managed identity, RBAC",
-      "Tracing — OpenTelemetry, Foundry tracing, App Insights",
+      "Tracing — OTel spans of every model call, tool invocation, and decision; view in the Foundry portal or ship to App Insights",
       "Evaluation — retrieval, single-agent, multi-agent, continuous",
       "Cost & latency — model tiers, caching, batching, routing",
       "Deployment — Container Apps, Functions, AKS",
@@ -1482,7 +1502,7 @@ agent = FoundryAgent(
         "Managed endpoint (a stable URL)",
         "Autoscale — container instances per session and request volume",
         "Dedicated Microsoft Entra identity per agent",
-        "End-to-end tracing + App Insights integration",
+        "End-to-end tracing — every model call, tool invocation, decision; App Insights integration built in",
         "Content safety and prompt-injection mitigation",
         "Foundry Toolbox tools (web search, code interpreter, MCP servers, …)",
         "Managed conversations / memory (BYO also supported)",
