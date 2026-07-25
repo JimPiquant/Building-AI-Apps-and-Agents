@@ -676,6 +676,51 @@ function buildModule2() {
     ]);
   }
 
+  // New: Portal for learning · CLI for production — codifies the operating norm
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Portal for learning · CLI for production" });
+    T.addProse(slide,
+      "The portal is a great teacher and a great debugger. For creating resources and shipping changes, real teams use code.",
+      { y: 1.15, h: 0.55, fontSize: 14, italic: true });
+    T.addTwoColumn(slide,
+      [
+        "Exploring what Foundry can do",
+        "Sanity-checking a prompt in the playground",
+        "Inspecting a trace when something goes wrong",
+        "Monitoring dashboards and metrics",
+      ],
+      [
+        "Creating projects, deployments, agents",
+        "Wiring connections to Storage / Key Vault / AI Search",
+        "Deploying Hosted agents (zip + Foundry portal is a shortcut; azd / az is the norm)",
+        "Anything that needs a repeatable, reviewable change",
+      ],
+      { y: 1.85, h: 2.8, leftHeader: "Use the portal for", rightHeader: "Use az / azd / SDK for" }
+    );
+    slide.addShape("rect", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.5,
+      fill: { color: T.COLORS.ice }, line: { type: "none" },
+    });
+    slide.addText([
+      { text: "Publix operating norm: ", options: { bold: true } },
+      { text: "resource creation and programmatic operations live in code. Every lab this week reflects that." },
+    ], {
+      x: 0.55, y: 4.78, w: 8.9, h: 0.44,
+      fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
+    });
+    T.notes(slide, [
+      "Codifies the Publix operating norm — attendees should nod along",
+      "Portal is fine for: exploring, playground, tracing, monitoring",
+      "Code is the norm for: creating anything, deploying anything, changing anything",
+      "az CLI = the general Azure command line",
+      "azd = Azure Developer CLI, higher-level (deploy an app end-to-end)",
+      "SDK = for programmatic operations from your code (creating agents, indexes, etc.)",
+      "Terraform is Publix's default IaC — out of scope for this workshop's content",
+      "In today's lab: Part A creates the Prompt agent with the SDK, not the portal",
+      "Day 5 deployment: az / azd paths lead, not portal deploy",
+    ]);
+  }
+
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Common portal gotchas" });
     T.addBullets(slide, [
@@ -1435,7 +1480,7 @@ function buildModule6() {
   {
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Path A — Prompt agent" });
     T.addProse(slide,
-      "A Prompt agent is defined entirely as configuration: instructions, model, tools. Author in the Foundry portal, via SDK / REST, or as a declarative YAML definition. Foundry runs it — no application code to maintain, no compute to manage.",
+      "A Prompt agent is defined entirely as configuration: instructions, model, tools. Author via the SDK / REST (Publix norm, CI/CD-friendly), as a declarative YAML definition, or in the Foundry portal (fine for exploration). Foundry runs it — no application code to maintain, no compute to manage.",
       { y: 1.15, h: 0.9, fontSize: 13 });
     T.addCode(slide, `from agent_framework.foundry import FoundryAgent
 from azure.identity import AzureCliCredential
@@ -1453,7 +1498,7 @@ result = await agent.run("What is Foundry IQ?")`, { y: 2.15, h: 2.55 });
     T.notes(slide, [
       "Path A = Prompt agent = Foundry's 'start here' recommendation",
       "Zero code, zero compute — just configuration",
-      "Two authoring modes: portal-first (interactive) or code-first (SDK/REST/YAML for CI/CD)",
+      "Two authoring modes: SDK/REST/YAML (Publix norm, CI/CD-friendly) or Foundry portal (exploration)",
       "Best for: fast start, internal tools, agents without custom orchestration",
       "Fastest way to see an agent working",
       "Attendees do this in Part A of the lab today",
@@ -1791,9 +1836,10 @@ function buildModule7() {
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 7", title: "Environment check — before you start" });
     T.addCode(slide, `az login
 az account show --query name -o tsv
+azd version              # Azure Developer CLI (used from Day 3 onward)
 python --version         # 3.11+
 dotnet --version         # 10.0+ (optional, if doing C#)
-uv --version             # required for Python labs`, { y: 1.2, h: 1.9 });
+uv --version             # required for Python labs`, { y: 1.2, h: 2.2 });
     T.addBullets(slide, [
       "FOUNDRY_PROJECT_ENDPOINT (from the portal tour)",
       "A model deployment name in that project (e.g., gpt-4o or gpt-5.4-mini)",

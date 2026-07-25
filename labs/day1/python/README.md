@@ -26,9 +26,10 @@ This creates a `.venv` and installs everything pinned by `uv.lock`.
 ## Run
 
 ```bash
-uv run python part_a_prompt_agent.py     # Part A — Prompt agent
-uv run python part_b_hosted_agent.py     # Part B — Hosted agent
-uv run python part_c_responses_api.py    # Part C — your code, calling the Responses API
+uv run python create_prompt_agent.py    # Part A · SDK-based creation (run once)
+uv run python part_a_prompt_agent.py    # Part A · connect to the Prompt agent you created
+uv run python part_b_hosted_agent.py    # Part B · Hosted agent
+uv run python part_c_responses_api.py   # Part C · your code, calling the Responses API
 ```
 
 Make sure `../.env` is filled in first — see [`../README.md`](../README.md).

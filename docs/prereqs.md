@@ -15,7 +15,9 @@ If you can answer **yes** to every item below, you're ready for Day 1. If you ca
 
 ### Development environment
 - Comfortable in a terminal on your OS of choice.
-- **Python** — Python 3.11+, `pip`, virtual environments (or `uv`).
+- **Azure CLI (`az`)** — Publix is an IaC-first shop; workshop labs create resources from the command line, not the portal. Install if you don't have it.
+- **Azure Developer CLI (`azd`)** — used from Day 3 forward for deploy scenarios. Install ahead of Day 1.
+- **Python** — Python 3.11+, `uv` (recommended) or `pip` + venv.
 - **C# / .NET** — .NET 10 SDK, `dotnet` CLI, basic project structure. Optional if you're only doing Python labs.
 - **VS Code** with the Python and C# extensions installed.
 - **Git** — clone, branch, commit, push.

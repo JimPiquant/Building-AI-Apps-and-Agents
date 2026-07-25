@@ -29,8 +29,10 @@ Open a terminal and run:
 ```bash
 az login
 az account show --query name -o tsv
+azd version              # Azure Developer CLI (used from Day 3 onward)
 python --version         # 3.11+
 dotnet --version         # 10.0+  (optional, if doing C#)
+uv --version             # required for Python labs
 ```
 
 You should also have:

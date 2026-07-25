@@ -156,6 +156,26 @@ Days 2–3 map cleanly onto this pair.
 
 ---
 
+## Portal for learning · CLI for production
+
+The portal is a great teacher and a great debugger. For creating resources and shipping changes, real teams use code.
+
+**Use the portal for:**
+- Exploring what Foundry can do
+- Sanity-checking a prompt in the playground
+- Inspecting a trace when something goes wrong
+- Monitoring dashboards and metrics
+
+**Use `az` / `azd` / SDK for:**
+- Creating projects, deployments, agents
+- Wiring connections to Storage / Key Vault / AI Search
+- Deploying Hosted agents (zip + portal is a shortcut; `azd` / `az` is the norm)
+- Anything that needs a repeatable, reviewable change
+
+*Publix operating norm: resource creation and programmatic operations live in code. Every lab this week reflects that — Day 1's Part A creates the Prompt agent from the SDK; Day 5's deployment content leads with `az` / `azd`.*
+
+---
+
 ## Common portal gotchas
 
 - **Quota errors** on deployment → request a quota bump in the region before Day 1.

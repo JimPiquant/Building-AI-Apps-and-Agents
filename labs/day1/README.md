@@ -32,22 +32,30 @@ Fill in the values described inside. Never commit `.env`.
 
 ## Part A — Prompt agent (~30 min)
 
-**What you'll do:** create a **Prompt agent** in the Foundry portal (instructions, model, tools defined as configuration), then connect to it from an MAF app. You write **no runtime code** for the agent itself — Foundry runs it.
+**What you'll do:** create a **Prompt agent** in your Foundry project from **code** (using the Azure AI Projects SDK), then connect to it from an MAF app. You write **no runtime code** for the agent itself — Foundry runs it.
 
-**Portal steps** (facilitator will demo the first one live)
+Publix is an IaC-first shop: workshop labs create Foundry resources from the command line and SDKs, not the portal. The portal path is provided as an alternative and is fine for exploration.
+
+**Steps (SDK path — primary)**
+1. Confirm `FOUNDRY_PROJECT_ENDPOINT`, `FOUNDRY_MODEL`, and `FOUNDRY_PROMPT_AGENT_NAME=docs-assistant` are set in `.env`.
+2. `cd labs/day1/python && uv sync`
+3. `uv run python create_prompt_agent.py`
+   - This calls `client.agents.create_version(...)` with a `PromptAgentDefinition` (instructions + model + temperature) and prints the resulting agent name and version.
+4. Copy the printed version into `.env` as `FOUNDRY_PROMPT_AGENT_VERSION` (typically `1.0` on first run).
+5. `uv run python part_a_prompt_agent.py`
+   - Connects to the Prompt agent you just created and runs the multi-turn prompts.
+
+**Alternative: portal path** *(useful for exploration; not the norm for real work)*
 1. Foundry portal → your project → **Agents** → **New Prompt agent**.
-2. Name it `docs-assistant`. Instructions: use the docs-assistant system prompt from the starter (`labs/day1/python/part_a_prompt_agent.py`).
-3. Attach the model deployment from Module 2.
-4. Publish version `1.0`.
-
-**Code steps**
-1. Set `FOUNDRY_PROMPT_AGENT_NAME=docs-assistant` and `FOUNDRY_PROMPT_AGENT_VERSION=1.0` in `.env`.
-2. Run `uv run python part_a_prompt_agent.py`.
+2. Name it `docs-assistant`. Instructions: same system prompt used in `create_prompt_agent.py`.
+3. Attach the model deployment from Module 2 and publish version `1.0`.
+4. Skip the SDK step above; run `uv run python part_a_prompt_agent.py` directly.
 
 **Definition of done for Part A**
-- Your Prompt agent shows up in the portal under **Agents**.
+- Your Prompt agent shows up in the Foundry portal under **Agents** (regardless of which path you used to create it).
 - Your MAF app connects to it and gets responses.
 - You can articulate what "versioned Prompt agent" means in practice: what changes to publish `1.1`, and what happens to consumers pinned to `1.0`?
+- (If you used the SDK path) you understand why an IaC-first shop like Publix prefers code creation: the `create_prompt_agent.py` script is repeatable, reviewable, and CI-friendly. The portal isn't.
 
 ---
 
