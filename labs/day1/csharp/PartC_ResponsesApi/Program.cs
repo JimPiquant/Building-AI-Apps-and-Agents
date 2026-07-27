@@ -61,5 +61,5 @@ Console.WriteLine();
 // ----- Reflection prompts (save the transcript above; cite it in reflection.md) -----
 // 1. Where did the thread state live during the multi-turn run?
 // 2. This same code could run in Container Apps, App Service, AKS, or Functions.
-//    Which host would you pick for a real Publix scenario and why?
+//    Which host would you pick for a real production scenario and why?
 // 3. What would you have to add to run this as a Hosted agent (Part B)?

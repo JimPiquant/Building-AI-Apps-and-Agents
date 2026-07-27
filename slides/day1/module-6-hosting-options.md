@@ -26,7 +26,7 @@ Path B and Path C use the **same MAF code**. The difference is where that code e
 
 ## Path A — Prompt agent
 
-A **Prompt agent** is authored entirely as configuration — instructions, model, tools. Author via the **SDK / REST** (the Publix norm, CI/CD-friendly), via a **declarative YAML** definition, or **in the Foundry portal** (fine for exploration). Either way, **Foundry runs it**. No application code to maintain, no compute to pay for, no containers to patch.
+A **Prompt agent** is authored entirely as configuration — instructions, model, tools. Author via the **SDK / REST** (the IaC-first norm, CI/CD-friendly), via a **declarative YAML** definition, or **in the Foundry portal** (fine for exploration). Either way, **Foundry runs it**. No application code to maintain, no compute to pay for, no containers to patch.
 
 Connect to a Prompt agent from your app:
 

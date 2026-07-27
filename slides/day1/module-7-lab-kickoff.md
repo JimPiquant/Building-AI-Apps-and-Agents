@@ -77,7 +77,7 @@ At the end of the lab you should have:
 4. **A short reflection** committed to your fork:
    - Which path felt fastest to iterate on and why?
    - What does Foundry Agent Service manage for you in Path A / Path B that you'd otherwise build yourself in Path C?
-   - Which path would you pick for a shared, cross-team agent at Publix? Why?
+   - Which path would you pick for a shared, cross-team production agent? Why?
 
 ---
 
@@ -93,7 +93,7 @@ The instructor is on for questions during the async portion; response times vary
 
 ## Common early gotchas (skim before you start)
 
-- **`az login` succeeded but MAF still 401s** → you may not have `Azure AI User` on the project. Ask a facilitator.
+- **`az login` succeeded but MAF still 401s** → you may not have `Azure AI User` on the project. Ask a instructor.
 - **`FOUNDRY_PROJECT_ENDPOINT` not set** → copy from `.env.example` to `.env` and paste the value from Module 2.
 - **Model deployment name mismatch** → the deployment name is not the same as the model name; check the portal.
 - **Python — package missing** → run `pip install -r labs/day1/python/requirements.txt` from the repo root.
@@ -107,7 +107,7 @@ The instructor is on for questions during the async portion; response times vary
 - Part C → about **45 min** (most of the code writing lives here; stretch deploy adds ~30 min)
 - Reflection commit → about **10 min**
 
-Total: about **2 hours** of async work. If you're going long, ping a facilitator — we'll help you scope down.
+Total: about **2 hours** of async work. If you're going long, ping a instructor — we'll help you scope down.
 
 ---
 

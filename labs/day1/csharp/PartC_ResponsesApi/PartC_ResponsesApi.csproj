@@ -5,7 +5,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Publix.Workshop.Day1.PartC</RootNamespace>
+    <RootNamespace>Workshop.Day1.PartC</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

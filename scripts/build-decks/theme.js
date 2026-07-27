@@ -34,7 +34,7 @@ const SIZES = {
 // 16:9 layout — 10" x 5.625"
 function newDeck(pres) {
   pres.layout = "LAYOUT_16x9";
-  pres.author = "Publix Workshop — Building AI Apps and Agents";
+  pres.author = "Building AI Apps and Agents Workshop";
   return pres;
 }
 

@@ -24,7 +24,7 @@ A **post-workshop capstone project** (solo or teams of 2–3, ~4–6 weeks) clos
 ## Repository layout
 ```
 docs/          Prerequisites, curriculum overview, terminology
-manifests/     Pinned SDK / runtime versions for each cohort
+manifests/     Pinned SDK / runtime versions for each workshop delivery
 slides/        Markdown slides, one folder per day
 labs/          Lab instructions and starter templates (labs/dayN/{python,csharp})
 ```
@@ -42,7 +42,7 @@ When docs and code disagree, we run the code, follow the working sample, and fil
 This workshop does **not** cover Copilot Studio, Semantic Kernel, or AutoGen. See the curriculum overview for the full out-of-scope list and the rationale.
 
 ## Status
-This is workshop material under active development for Publix Cohort 1 (Aug–Oct 2026). Content will be refreshed for Cohort 2 (Jan–Mar 2027) post-Ignite 2026.
+This is workshop material under active development. Content will be refreshed periodically as the underlying SDKs evolve.
 
 ## License
 Materials in this repository are provided for educational use by workshop attendees. See `LICENSE` when published.

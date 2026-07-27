@@ -1,18 +1,15 @@
 """
 Day 1 Lab — Part A — Prompt agent.
 
-Connect from your app to a Prompt agent you authored in the Foundry portal.
+Connect from your app to a Prompt agent already published in your Foundry
+project. Run `create_prompt_agent.py` first — it creates version 1.0 of the
+`docs-assistant` Prompt agent using the Azure AI Projects SDK. This script
+then connects to that agent and runs a set of multi-turn prompts.
 
 A **Prompt agent** is a Foundry-authored agent: instructions, model, and tools
 are defined as configuration. Foundry Agent Service runs it. There is no
-application code to maintain and no compute to manage on your side. The version
-you publish is what your consumers pin to.
-
-Portal setup (do this first):
-    1. Foundry portal → your project → Agents → New Prompt agent
-    2. Name it `docs-assistant`. Give it a short docs-assistant system prompt.
-    3. Attach a model deployment.
-    4. Publish version 1.0.
+application code to maintain and no compute to manage on your side. The
+version you publish is what your consumers pin to.
 
 Environment variables (set in labs/day1/.env):
     FOUNDRY_PROJECT_ENDPOINT
@@ -70,7 +67,7 @@ async def main() -> None:
 #    scaling, identity — where does each live?)
 # 2. What would you change to publish a v1.1 of this Prompt agent, and what
 #    happens to existing consumers pinned to v1.0?
-# 3. If three different Publix apps consumed this Prompt agent, what benefits
+# 3. If three different apps in your organization consumed this Prompt agent, what benefits
 #    does "versioned in Foundry" give you over the same instructions duplicated
 #    across three codebases?
 # ---------------------------------------------------------------------------

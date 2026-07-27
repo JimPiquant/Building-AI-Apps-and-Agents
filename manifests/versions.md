@@ -1,6 +1,6 @@
-# Pinned versions — Cohort 1 (Aug–Oct 2026)
+# Pinned versions — 2026 baseline
 
-This manifest fixes the runtime and SDK versions used across every day and lab in Cohort 1. Cohort 2 will re-freeze after Ignite 2026.
+This manifest fixes the runtime and SDK versions used across every day and lab in the current release. Manifest will be refreshed post-Ignite 2026.
 
 ## Runtimes
 | Runtime | Version |

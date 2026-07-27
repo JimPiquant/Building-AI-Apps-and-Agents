@@ -107,7 +107,7 @@ Attendees who leave with the stack in their head can:
 - **Estimate cost and risk.** Adding an MCP server is an *Actions* + *Ops* concern, not a model concern.
 - **Communicate cleanly with stakeholders.** Product, ops, and security stakeholders all live at different layers.
 
-Bring this back to Publix as a shared vocabulary.
+Bring this back to your team as a shared vocabulary.
 
 ---
 

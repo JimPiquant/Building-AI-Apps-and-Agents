@@ -84,7 +84,7 @@ async def main() -> None:
 #
 # 1. Where did the thread state live during the multi-turn run?
 # 2. This same code could run in Container Apps, App Service, AKS, or Functions.
-#    Which host would you pick for a real Publix scenario and why?
+#    Which host would you pick for a real production scenario and why?
 # 3. Stretch: zip this Part C code and deploy it as a Hosted agent (like the
 #    one you connected to in Part B). What does Foundry add on top of the same
 #    MAF code once it's hosted?

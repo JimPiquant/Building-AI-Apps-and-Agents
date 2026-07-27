@@ -55,7 +55,7 @@ function buildModule1() {
       "MAF → the SDK your code uses on top of Foundry",
       "Be explicit: 'if your target audience is makers, this is not your workshop'",
       "Do not disparage Copilot Studio — it's the right tool for a different job",
-      "Publix has both audiences; this workshop targets the developer audience",
+      "This workshop is for the developer audience",
     ]);
   }
 
@@ -336,7 +336,7 @@ function buildModule1() {
       "If someone came expecting Copilot Studio depth: not this workshop",
       "If someone came expecting fine-tuning or model training: not this workshop",
       "Copilot Studio, SK, AutoGen, LangChain, CrewAI — all out of scope",
-      "Explain why: MAF is the forward direction for Publix code",
+      "Explain why: MAF is the forward direction for production agent code",
       "Redirect anyone who needs the excluded topics to appropriate resources",
     ]);
   }
@@ -502,7 +502,7 @@ function buildModule2() {
       "RBAC scopes at BOTH resource level and project level",
       "Day 1 lab access is covered by the resource-scope assignment",
       "401 / 403 in the lab almost always = missing Foundry User at resource scope",
-      "If facilitator hears '401' in chat: 'check RBAC first, then endpoint, then deployment name'",
+      "If instructor hears '401' in chat: 'check RBAC first, then endpoint, then deployment name'",
     ]);
   }
 
@@ -702,20 +702,20 @@ function buildModule2() {
       fill: { color: T.COLORS.ice }, line: { type: "none" },
     });
     slide.addText([
-      { text: "Publix operating norm: ", options: { bold: true } },
+      { text: "IaC-first operating norm: ", options: { bold: true } },
       { text: "resource creation and programmatic operations live in code. Every lab this week reflects that." },
     ], {
       x: 0.55, y: 4.78, w: 8.9, h: 0.44,
       fontFace: T.FONTS.body, fontSize: 12, color: T.COLORS.navy, valign: "middle", margin: 0,
     });
     T.notes(slide, [
-      "Codifies the Publix operating norm — attendees should nod along",
+      "Codifies the IaC-first operating norm — attendees should nod along",
       "Portal is fine for: exploring, playground, tracing, monitoring",
       "Code is the norm for: creating anything, deploying anything, changing anything",
       "az CLI = the general Azure command line",
       "azd = Azure Developer CLI, higher-level (deploy an app end-to-end)",
       "SDK = for programmatic operations from your code (creating agents, indexes, etc.)",
-      "Terraform is Publix's default IaC — out of scope for this workshop's content",
+      "Terraform is a common default for IaC-first teams — out of scope for this workshop's content",
       "In today's lab: Part A creates the Prompt agent with the SDK, not the portal",
       "Day 5 deployment: az / azd paths lead, not portal deploy",
     ]);
@@ -1028,7 +1028,7 @@ function buildModule4() {
       "  Chat client, Agent, Thread, Run, Tool, Message",
       "Every day this week uses all six",
       "Ask: 'do any of these names collide with your team's vocabulary?'",
-      "  (Some Publix teams may already use 'thread' or 'run' differently)",
+      "  (some teams may already use 'thread' or 'run' differently in their codebases)",
       "If yes, agree on how you'll disambiguate for the week",
     ]);
   }
@@ -1161,7 +1161,7 @@ r2 = await agent.run("What's my name?")   # answer: Alex`, { y: 1.9, h: 1.0, fon
     T.notes(slide, [
       "Package cheat sheet — attendees don't need to memorize",
       "Point them at manifests/versions.md for the frozen versions",
-      "Cohort 1 freeze happens now; Cohort 2 re-freezes post-Ignite",
+      "Manifest freeze for current baseline; refreshed post-Ignite",
       "Ask attendees NOT to chase newer packages during the workshop",
       "If something breaks with a newer package version, downgrade to the manifest",
     ]);
@@ -1372,7 +1372,7 @@ function buildModule5() {
       "Estimate cost and risk — adding an MCP server is an Actions + Ops concern, not a model concern",
       "Communicate cleanly with stakeholders — product, ops, security all live at different layers",
     ], { y: contentTop });
-    slide.addText("Bring this back to Publix as a shared vocabulary.", {
+    slide.addText("Bring this back to your team as a shared vocabulary.", {
       x: 0.4, y: 4.55, w: 9.2, h: 0.4,
       fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy,
     });
@@ -1382,7 +1382,7 @@ function buildModule5() {
       "'The agent isn't grounded' = Knowledge problem, not Model problem",
       "'Adding an MCP tool' = Actions + Ops concern, not Model concern",
       "Attendees will use this to argue for budget and roadmap items later",
-      "Encourage them to bring the vocabulary back to Publix",
+      "Encourage them to bring the vocabulary back to their teams",
     ]);
   }
 
@@ -1480,7 +1480,7 @@ function buildModule6() {
   {
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "Path A — Prompt agent" });
     T.addProse(slide,
-      "A Prompt agent is defined entirely as configuration: instructions, model, tools. Author via the SDK / REST (Publix norm, CI/CD-friendly), as a declarative YAML definition, or in the Foundry portal (fine for exploration). Foundry runs it — no application code to maintain, no compute to manage.",
+      "A Prompt agent is defined entirely as configuration: instructions, model, tools. Author via the SDK / REST (IaC-first norm, CI/CD-friendly), as a declarative YAML definition, or in the Foundry portal (fine for exploration). Foundry runs it — no application code to maintain, no compute to manage.",
       { y: 1.15, h: 0.9, fontSize: 13 });
     T.addCode(slide, `from agent_framework.foundry import FoundryAgent
 from azure.identity import AzureCliCredential
@@ -1498,7 +1498,7 @@ result = await agent.run("What is Foundry IQ?")`, { y: 2.15, h: 2.55 });
     T.notes(slide, [
       "Path A = Prompt agent = Foundry's 'start here' recommendation",
       "Zero code, zero compute — just configuration",
-      "Two authoring modes: SDK/REST/YAML (Publix norm, CI/CD-friendly) or Foundry portal (exploration)",
+      "Two authoring modes: SDK/REST/YAML (IaC-first norm, CI/CD-friendly) or Foundry portal (exploration)",
       "Best for: fast start, internal tools, agents without custom orchestration",
       "Fastest way to see an agent working",
       "Attendees do this in Part A of the lab today",
@@ -1891,7 +1891,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "A short reflection.md committed to your fork:",
       { text: "What does Foundry manage for you in Parts A and B that you'd handle yourself in Part C?", indent: 1 },
       { text: "Which felt faster to iterate on?", indent: 1 },
-      { text: "Which would you pick for a shared cross-team agent at Publix? Why?", indent: 1 },
+      { text: "Which would you pick for a shared cross-team production agent? Why?", indent: 1 },
     ], { y: contentTop });
     T.notes(slide, [
       "The reflection is the deliverable, not the code output",
@@ -1899,7 +1899,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "Four questions to answer:",
       "  1. Which path felt fastest to iterate on and why?",
       "  2. What does Foundry manage in A/B that you'd handle in C?",
-      "  3. For a Publix scenario you know, which path would you pick?",
+      "  3. For a scenario you know, which path would you pick?",
       "  4. What would you want to try next?",
       "Attendee who completes Parts A + C with good reflection > attendee who completes all 3 with none",
     ]);
@@ -1917,7 +1917,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "Set the norm: asking questions is encouraged, not embarrassing",
       "First-hour blocker rate matters more than final completion rate",
       "Channels: workshop chat for blockers, pair programming for stuck code",
-      "Facilitator is on during async time; response times vary",
+      "Instructor is on during async time; response times vary",
       "If stuck > 20 min on the same thing, ping the channel",
     ]);
   }
@@ -1949,7 +1949,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "Reflection commit → ~10 min",
       "Total: ~2 hours of async work",
     ], { y: contentTop });
-    slide.addText("Going long? Ping a facilitator — we'll help you scope down.", {
+    slide.addText("Going long? Ping a instructor — we'll help you scope down.", {
       x: 0.4, y: 4.55, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 14, italic: true, color: T.COLORS.muted,
     });
     T.notes(slide, [
@@ -2009,7 +2009,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "Plant the seed on Day 1 — attendees have all week to marinate on scenarios",
       "Everyone on a team of 2–3 — no solo path this time",
       "Timeline: 2–3 weeks between Day 5 close and demo day",
-      "Cohort 1: workshop ends wk of Oct 12; demo day lands wk of Nov 2 or Nov 9",
+      "Workshop timing: workshop ends wk of Oct 12; demo day lands wk of Nov 2 or Nov 9",
       "Format: shared demo day, not 1:1 reviews",
       "  ~15 min per team (10 demo + 5 Q&A / coaching)",
       "  Pradeep + Jim attend; attendees also see each other's work",

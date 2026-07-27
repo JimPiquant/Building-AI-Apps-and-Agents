@@ -7,14 +7,14 @@ Estimated time: **~2 hours async**.
 ## Prerequisites
 
 - You completed the [prereqs self-check](../../docs/prereqs.md).
-- `az login` works against the Publix tenant.
+- `az login` works against your Azure tenant.
 - You have a Foundry project and know its **project endpoint** and **at least one model deployment name** (surfaced in Module 2).
 - You've cloned this repo and are working from `labs/day1/`.
 
 ## Choose your language
 
 - **Python**: all three parts implemented under [`python/`](python/).
-- **C#**: **Part C** implemented under [`csharp/PartC_ResponsesApi/`](csharp/PartC_ResponsesApi/). Parts A and B are Python-only for Cohort 1; C# reference samples for those paths live in the `microsoft/agent-framework` repo — see [`csharp/README.md`](csharp/README.md).
+- **C#**: **Part C** implemented under [`csharp/PartC_ResponsesApi/`](csharp/PartC_ResponsesApi/). Parts A and B are Python-only in the current release; C# reference samples for those paths live in the `microsoft/agent-framework` repo — see [`csharp/README.md`](csharp/README.md).
 
 You can mix — Part C in C# is fine, then switch to Python for Parts A and B.
 
@@ -26,36 +26,69 @@ Copy the example:
 cp labs/day1/.env.example labs/day1/.env
 ```
 
+> **Note:** dotfiles (files whose names start with `.`) are hidden by default in Finder / File Explorer. If you're using a GUI file manager, enable "show hidden files" — or just use your terminal.
+>   - macOS Finder: `Cmd+Shift+.` toggles hidden files
+>   - Windows Explorer: View → Show → Hidden items
+>   - VS Code: hidden files are visible by default in the Explorer view
+
 Fill in the values described inside. Never commit `.env`.
 
 ---
 
-## Part A — Prompt agent (~30 min)
+## Part A — Prompt agent (~45 min, including one-time Azure setup)
 
-**What you'll do:** create a **Prompt agent** in your Foundry project from **code** (using the Azure AI Projects SDK), then connect to it from an MAF app. You write **no runtime code** for the agent itself — Foundry runs it.
+**What you'll do:** create a **Foundry resource** and **Foundry project** in Azure (one-time), then create a **Prompt agent** in that project from **code** using the Azure AI Projects SDK, and finally connect to it from an MAF app. You write **no runtime code** for the agent itself — Foundry runs it.
 
-Publix is an IaC-first shop: workshop labs create Foundry resources from the command line and SDKs, not the portal. The portal path is provided as an alternative and is fine for exploration.
+This workshop targets IaC-first teams: labs create Foundry resources from the command line and SDKs, not the portal. A portal alternative is provided at the end and is fine for exploration.
 
-**Steps (SDK path — primary)**
-1. Confirm `FOUNDRY_PROJECT_ENDPOINT`, `FOUNDRY_MODEL`, and `FOUNDRY_PROMPT_AGENT_NAME=docs-assistant` are set in `.env`.
-2. `cd labs/day1/python && uv sync`
-3. `uv run python create_prompt_agent.py`
+### Pre-work — one-time Azure setup (~15 min)
+
+You need a Foundry resource + a Foundry project + a deployed model before you can create the Prompt agent. Do this once; you'll reuse the same resource and project across every day of the workshop.
+
+Follow the official Learn tutorial (**Azure CLI** tab):
+
+**[Quickstart: Create Foundry resources with the Azure CLI](https://learn.microsoft.com/en-us/azure/foundry/tutorials/quickstart-create-foundry-resources?tabs=azurecli)**
+
+Key decisions to make as you follow it:
+- **Model deployment name:** recommended **`gpt-5.4-mini`** — good balance of capability and cost for this workshop's scenarios. Any equivalent chat-capable model will also work.
+- **Region:** pick a region where your target model has quota (the tutorial explains how to check).
+- Record the **project endpoint** URL and the **deployment name** — you'll paste them into `.env` next.
+
+When you're done, populate `.env`:
+
+```bash
+FOUNDRY_PROJECT_ENDPOINT=https://<your-project>.services.ai.azure.com
+FOUNDRY_MODEL=gpt-5.4-mini           # or your chosen deployment name
+FOUNDRY_PROMPT_AGENT_NAME=docs-assistant
+```
+
+### Create the Prompt agent from code
+
+1. `cd labs/day1/python && uv sync`
+2. `uv run python create_prompt_agent.py`
    - This calls `client.agents.create_version(...)` with a `PromptAgentDefinition` (instructions + model + temperature) and prints the resulting agent name and version.
-4. Copy the printed version into `.env` as `FOUNDRY_PROMPT_AGENT_VERSION` (typically `1.0` on first run).
+3. Copy the printed version into `.env` as `FOUNDRY_PROMPT_AGENT_VERSION` (typically `1.0` on first run).
+4. **See your new agent in the portal.** Open [https://ai.azure.com](https://ai.azure.com) → your project → **Agents**. You should see `docs-assistant` v1.0 in the list. Open it — the instructions, model, and version you set in code are all visible in the portal.
+
+### Connect to it and run
+
 5. `uv run python part_a_prompt_agent.py`
-   - Connects to the Prompt agent you just created and runs the multi-turn prompts.
+   - Connects to the Prompt agent you just created and runs a set of multi-turn prompts.
 
-**Alternative: portal path** *(useful for exploration; not the norm for real work)*
+### Alternative: create the agent in the portal *(useful for exploration; not the norm for real work)*
+
+Instead of the SDK step:
 1. Foundry portal → your project → **Agents** → **New Prompt agent**.
-2. Name it `docs-assistant`. Instructions: same system prompt used in `create_prompt_agent.py`.
-3. Attach the model deployment from Module 2 and publish version `1.0`.
-4. Skip the SDK step above; run `uv run python part_a_prompt_agent.py` directly.
+2. Name it `docs-assistant`. Use the docs-assistant system prompt from `create_prompt_agent.py` as the instructions.
+3. Attach your model deployment and publish version `1.0`.
+4. Skip step 2 above; run `uv run python part_a_prompt_agent.py` directly.
 
-**Definition of done for Part A**
+### Definition of done for Part A
+- Your Foundry resource + project exist and have a deployed model.
 - Your Prompt agent shows up in the Foundry portal under **Agents** (regardless of which path you used to create it).
 - Your MAF app connects to it and gets responses.
 - You can articulate what "versioned Prompt agent" means in practice: what changes to publish `1.1`, and what happens to consumers pinned to `1.0`?
-- (If you used the SDK path) you understand why an IaC-first shop like Publix prefers code creation: the `create_prompt_agent.py` script is repeatable, reviewable, and CI-friendly. The portal isn't.
+- (If you used the SDK path) you understand why IaC-first teams prefer code creation: the `create_prompt_agent.py` script is repeatable, reviewable, and CI-friendly. The portal isn't.
 
 ---
 
@@ -63,10 +96,11 @@ Publix is an IaC-first shop: workshop labs create Foundry resources from the com
 
 **What you'll do:** connect to a **Hosted agent** that was pre-deployed to the shared Foundry Agent Service sandbox. Walk the portal to see what Foundry manages for you: managed endpoint, tracing, dedicated Entra identity, attached Toolbox tools, content safety. This is where Foundry stops being "model host" and starts being "agent app + tooling host."
 
-**Setup (facilitator does this ahead of Day 1)**
-- Package a small MAF agent (essentially the Part C starter code) as a zip and upload it to Foundry Agent Service via the portal. Foundry builds the container image from the zip.
-- Name the deployment `docs-assistant-hosted`.
-- Attach one Foundry Toolbox tool to it (e.g., **web search**) so attendees can see a platform tool in the traces.
+**Setup (instructor does this ahead of Day 1)**
+See [`instructor/deploy-hosted-agent-day1.md`](instructor/deploy-hosted-agent-day1.md) for the step-by-step deployment guide. Summary of what the instructor sets up:
+- A Hosted agent named `docs-assistant-hosted` in the shared project (source is essentially the Part C code, packaged as a zip; Foundry builds the container).
+- One Foundry Toolbox tool attached (recommended: **web search**) so attendees see a platform tool call in the trace.
+- Attendee access via **Foundry User** role at the Foundry resource scope.
 
 **Attendee steps**
 1. Set `FOUNDRY_HOSTED_AGENT_NAME=docs-assistant-hosted` in `.env`.
@@ -111,7 +145,7 @@ Add a file `labs/day1/reflection.md` in your fork of this repo answering:
 
 1. **Which path felt fastest to iterate on** — Part A (portal edits), Part B (zip upload), or Part C (code redeploy)? Why?
 2. **What does Foundry Agent Service manage for you** in Parts A and B that you'd have to build or wire up yourself in Part C? List at least three concrete things.
-3. **For a Publix scenario you know**, which of the three paths would you pick? Consider: who owns the prompt, how many apps consume the agent, and what identity/observability you'd need.
+3. **For a scenario you know**, which of the three paths would you pick? Consider: who owns the prompt, how many apps consume the agent, and what identity/observability you'd need.
 4. **What scenario would your team build for your capstone?** Jot down 2–3 candidate ideas — real work you'd want to sharpen with an agent — and any teammates you'd want to work with. You'll form teams and pick one scenario during Day 5's capstone scoping session; this is where you start.
 
 Commit that file and push to your fork. Reflection > code.
@@ -122,7 +156,7 @@ Commit that file and push to your fork. Reflection > code.
 
 | Symptom | Likely cause | Fix |
 |---------|-------------|-----|
-| `az login` fine but MAF 401 | Missing `Azure AI User` role on the project | Ask a facilitator to assign it |
+| `az login` fine but MAF 401 | Missing `Azure AI User` role on the project | Ask a instructor to assign it |
 | `FOUNDRY_PROJECT_ENDPOINT` not found | `.env` missing or wrong path | Copy from `.env.example`; run from `labs/day1/` |
 | `Model not found` | Deployment name mismatch | Copy the exact deployment name from Portal → Deployments |
 | Prompt agent connection fails on version | You didn't publish version 1.0 in the portal | Publish, then retry |

@@ -6,9 +6,10 @@ Agent Service sandbox. A Hosted agent is your agent code — packaged as a
 container or a source zip — that Foundry runs for you with a managed endpoint,
 autoscale, a dedicated Microsoft Entra identity, and end-to-end observability.
 
-For Cohort 1 the workshop facilitator pre-deploys a `docs-assistant-hosted`
-Hosted agent whose source is essentially the Part C code, packaged for Agent
-Service. You connect to it here to feel the difference vs. Parts A and C.
+The workshop instructor pre-deploys a `docs-assistant-hosted` Hosted agent
+whose source is essentially the Part C code, packaged for Agent Service (see
+labs/day1/instructor/deploy-hosted-agent-day1.md). You connect to it here to
+feel the difference vs. Parts A and C.
 
 Then, in the portal, walk through what Foundry manages for you:
     - Managed endpoint (the URL you're calling)

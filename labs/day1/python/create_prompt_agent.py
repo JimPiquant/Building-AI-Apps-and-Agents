@@ -1,7 +1,7 @@
 """
 Day 1 Lab — Part A (SDK creation) — Create a Prompt agent from code.
 
-Publix operating norm: create resources from code, not the portal. This script
+IaC-first operating norm: create resources from code, not the portal. This script
 creates (or updates) a Prompt agent version in your Foundry project using the
 Azure AI Projects SDK. Run this once before `part_a_prompt_agent.py`.
 
