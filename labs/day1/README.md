@@ -78,10 +78,12 @@ FOUNDRY_PROMPT_AGENT_NAME=docs-assistant
 ### Alternative: create the agent in the portal *(useful for exploration; not the norm for real work)*
 
 Instead of the SDK step:
-1. Foundry portal → your project → **Agents** → **New Prompt agent**.
+1. Foundry portal → your project → **Agents** → **New agent** (top-right) → **Build an agent**.
 2. Name it `docs-assistant`. Use the docs-assistant system prompt from `create_prompt_agent.py` as the instructions.
 3. Attach your model deployment and publish version `1.0`.
 4. Skip step 2 above; run `uv run python part_a_prompt_agent.py` directly.
+
+> **Portal vocabulary note:** the portal's *"Build an agent"* creates a **Prompt agent** (configuration-only, no code) — that's what you want here. *"Code an agent"* is used for **Hosted agents** (Part B setup, done by the instructor). *"Link external agent"* is a separate scenario not used in this workshop.
 
 ### Definition of done for Part A
 - Your Foundry resource + project exist and have a deployed model.

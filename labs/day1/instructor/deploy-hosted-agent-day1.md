@@ -67,10 +67,12 @@ zip -r ../docs-assistant-hosted.zip .
 ### 2. Upload via the Foundry portal
 
 1. Open [https://ai.azure.com](https://ai.azure.com) → your project.
-2. **Agents** → **New Hosted agent**.
+2. **Agents** → **New agent** (top-right) → **Code an agent** from the dropdown.
 3. Name: `docs-assistant-hosted`.
 4. Upload `/tmp/docs-assistant-hosted.zip` as the source. Foundry builds the container image for you.
 5. Wait for the build to complete (typically 5–10 minutes).
+
+> **Portal vocabulary note:** the portal's *"Code an agent"* corresponds to what the docs call a **Hosted agent** (your code, run by Foundry). *"Build an agent"* creates a **Prompt agent** (configuration-only). *"Link external agent"* is a separate scenario not used in this workshop.
 
 ### 3. Attach a Toolbox tool
 
