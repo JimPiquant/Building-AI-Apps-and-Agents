@@ -57,7 +57,7 @@ You always operate inside a **project**, but the project is nested inside a Foun
 Every project has an endpoint that looks like:
 
 ```
-https://<project-name>.services.ai.azure.com
+https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>
 ```
 
 You'll set this as `FOUNDRY_PROJECT_ENDPOINT` in every lab's `.env`.

@@ -509,7 +509,7 @@ function buildModule2() {
   {
     const { slide } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Project endpoints" });
     T.addProse(slide, "Every Foundry project has an endpoint like:", { y: 1.15, h: 0.4, fontSize: 15 });
-    T.addCode(slide, "https://<project-name>.services.ai.azure.com", { y: 1.55, h: 0.6, fontSize: 18 });
+    T.addCode(slide, "https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>", { y: 1.55, h: 0.6, fontSize: 18 });
     T.addProse(slide,
       "Set this as FOUNDRY_PROJECT_ENDPOINT in every lab's .env. MAF connects with this endpoint plus a credential — AzureCliCredential in dev, managed identity in production.",
       { y: 2.4, h: 1.5, fontSize: 15 });
@@ -517,7 +517,7 @@ function buildModule2() {
       "Show attendees where the project endpoint lives in the portal",
       "Path (verify live — portal wording moves): Overview → Endpoints and keys",
       "Have them copy it now — they'll need it in every lab",
-      "Format: https://<project>.services.ai.azure.com",
+      "Format: https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>",
       "Never commit this to source control — it belongs in .env",
       "The credential (AzureCliCredential) authenticates against this endpoint",
     ]);
@@ -1486,7 +1486,7 @@ function buildModule6() {
 from azure.identity import AzureCliCredential
 
 agent = FoundryAgent(
-    project_endpoint="https://<project>.services.ai.azure.com",
+    project_endpoint="https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>",
     agent_name="docs-assistant",
     agent_version="1.0",
     credential=AzureCliCredential(),
@@ -1515,7 +1515,7 @@ result = await agent.run("What is Foundry IQ?")`, { y: 2.15, h: 2.55 });
 from agent_framework.foundry import FoundryAgent
 
 agent = FoundryAgent(
-    project_endpoint="https://<project>.services.ai.azure.com",
+    project_endpoint="https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>",
     agent_name="docs-assistant-hosted",
     credential=AzureCliCredential(),
 )`, { y: 2.5, h: 2.05, fontSize: 12 });

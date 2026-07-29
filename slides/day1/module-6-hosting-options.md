@@ -35,7 +35,7 @@ from agent_framework.foundry import FoundryAgent
 from azure.identity import AzureCliCredential
 
 agent = FoundryAgent(
-    project_endpoint="https://<project>.services.ai.azure.com",
+    project_endpoint="https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>",
     agent_name="docs-assistant",
     agent_version="1.0",
     credential=AzureCliCredential(),
@@ -63,7 +63,7 @@ Connect to a Hosted agent from any client (including another agent):
 from agent_framework.foundry import FoundryAgent
 
 agent = FoundryAgent(
-    project_endpoint="https://<project>.services.ai.azure.com",
+    project_endpoint="https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>",
     agent_name="docs-assistant-hosted",
     credential=AzureCliCredential(),
 )

@@ -57,7 +57,7 @@ Key decisions to make as you follow it:
 When you're done, populate `.env`:
 
 ```bash
-FOUNDRY_PROJECT_ENDPOINT=https://<your-project>.services.ai.azure.com
+FOUNDRY_PROJECT_ENDPOINT=https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>
 FOUNDRY_MODEL=gpt-5.4-mini           # or your chosen deployment name
 FOUNDRY_PROMPT_AGENT_NAME=docs-assistant
 ```
