@@ -70,7 +70,7 @@ using Azure.Identity;
 using Microsoft.Agents.AI;
 
 var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")!;
-var model = Environment.GetEnvironmentVariable("FOUNDRY_MODEL") ?? "gpt-4o";
+var model = Environment.GetEnvironmentVariable("FOUNDRY_MODEL") ?? "gpt-5.4-mini";
 
 AIAgent agent = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential())
     .AsAIAgent(model: model,
