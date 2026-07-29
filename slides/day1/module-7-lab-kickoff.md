@@ -15,7 +15,7 @@ Day 1 · 25 minutes
 Same underlying docs-assistant behavior — three ways to run an agent with Foundry:
 
 - **Part A** — Prompt agent (created in the portal, no code to maintain)
-- **Part B** — Hosted agent (connect to a pre-deployed one; explore what Foundry manages)
+- **Part B** — Hosted agent (deploy your own with `azd`; explore what Foundry manages)
 - **Part C** — Your own code, calling the Responses API (MAF in Python or C#)
 
 You'll ask each the same questions and compare where the runtime lives, who manages what, and how you'd choose between them.
@@ -72,7 +72,7 @@ labs/day1/
 At the end of the lab you should have:
 
 1. **Part A runs** — you created a Prompt agent in the Foundry portal (version 1.0) and your MAF app connects to it.
-2. **Part B runs** — you connect to a pre-deployed Hosted agent in the sandbox and walk the portal to see what Foundry manages (endpoint, tracing, identity, an attached Toolbox tool).
+2. **Part B runs** — you deploy your own Hosted agent with `azd`, connect to it, and walk the portal to see what Foundry manages (endpoint, tracing, identity, content safety).
 3. **Part C runs** — your MAF app (Python or C#) calls the Responses API and handles multi-turn conversation, streaming, and non-streaming. (Stretch: zip and deploy as your own Hosted agent.)
 4. **A short reflection** committed to your fork:
    - Which path felt fastest to iterate on and why?

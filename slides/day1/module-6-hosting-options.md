@@ -185,8 +185,8 @@ Prototype locally. Decide the hosting later. Foundry-specific features (Toolbox 
 ## What you'll do in the lab
 
 - **Part A — Prompt agent.** Create a Prompt agent in the Foundry portal. Connect to it from your MAF app.
-- **Part B — Hosted agent.** Connect to a pre-deployed Hosted agent in the shared sandbox. Explore what Foundry manages: endpoint, tracing, agent identity, an attached Toolbox tool.
-- **Part C — Your own code + Responses API.** Build an MAF app in Python (or C#) that calls the Responses API from your process. **Stretch:** zip your Part C code and deploy it as your own Hosted agent.
+- **Part B — Hosted agent.** Deploy your own Hosted agent to Foundry Agent Service with `azd`. Connect to it and explore what Foundry manages: endpoint, tracing, dedicated agent identity, content safety.
+- **Part C — Your own code + Responses API.** Build an MAF app in Python (or C#) that calls the Responses API from your process. **Stretch:** extend your Part C code with a custom function tool or a Foundry IQ knowledge source (both deep-dive on Days 2–3).
 
 Same underlying docs-assistant behavior three ways. You'll feel the trade-offs.
 

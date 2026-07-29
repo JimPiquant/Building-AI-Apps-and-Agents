@@ -1,26 +1,24 @@
 """
 Day 1 Lab — Part B — Hosted agent.
 
-Connect from your app to a **Hosted agent** deployed in the shared Foundry
-Agent Service sandbox. A Hosted agent is your agent code — packaged as a
-container or a source zip — that Foundry runs for you with a managed endpoint,
-autoscale, a dedicated Microsoft Entra identity, and end-to-end observability.
+Connect from your app to a **Hosted agent** you deployed to Foundry Agent
+Service using the Azure Developer CLI. A Hosted agent is your agent code
+(source uploaded via `azd`) that Foundry runs for you with a managed
+endpoint, autoscale, a dedicated Microsoft Entra identity, and end-to-end
+observability.
 
-The workshop instructor pre-deploys a `docs-assistant-hosted` Hosted agent
-whose source is essentially the Part C code, packaged for Agent Service (see
-labs/day1/instructor/deploy-hosted-agent-day1.md). You connect to it here to
-feel the difference vs. Parts A and C.
+You should have already deployed the `docs-assistant-hosted` agent by
+following the guide at labs/day1/part_b_deploy_hosted_agent.md. That guide
+walks you through creating main.py, running `azd ai agent init`, and running
+`azd provision && azd deploy`. This script then connects to that deployed
+agent.
 
 Then, in the portal, walk through what Foundry manages for you:
     - Managed endpoint (the URL you're calling)
     - Autoscale metrics
     - Agent identity (dedicated Entra identity)
     - Tracing / observability dashboard
-    - At least one attached Toolbox tool (for example, web search)
     - Content safety filters
-
-Stretch (belongs in Part C): after you finish Part C, zip your own Part C code
-and deploy it as your own Hosted agent through the Foundry portal.
 """
 
 import asyncio

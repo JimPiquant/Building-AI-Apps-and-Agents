@@ -1768,9 +1768,9 @@ Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));`, { y: 1.2, h: 3
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 6", title: "What you'll do in the lab" });
     T.addBullets(slide, [
       "Part A — Prompt agent: create in the Foundry portal, connect from your MAF app",
-      "Part B — Hosted agent: connect to a pre-deployed Hosted agent in the sandbox; walk the portal to see what Foundry manages (endpoint, tracing, identity, Toolbox tool, content safety)",
+      "Part B — Hosted agent: deploy your own Hosted agent with azd; connect to it and walk the portal to see what Foundry manages (endpoint, tracing, dedicated identity, content safety)",
       "Part C — Your own code + Responses API: build an MAF app in Python (or C#) that runs in your process",
-      "Stretch (Part C): zip your Part C code and deploy it as your own Hosted agent",
+      "Stretch (Part C): extend your Part C code with a custom function tool or a Foundry IQ knowledge source (both deep-dive on Days 2–3)",
     ], { y: contentTop, fontSize: 14 });
     slide.addText("Same underlying docs-assistant behavior three ways. You'll feel the trade-offs.",
       { x: 0.4, y: 4.55, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy });
@@ -1778,7 +1778,7 @@ Console.WriteLine(await agent.RunAsync("What is Foundry IQ?"));`, { y: 1.2, h: 3
       "Bridge to Module 7 (lab kickoff)",
       "Three parts map 1:1 to the three paths just covered",
       "Part A: Prompt agent (~30 min)",
-      "Part B: Hosted agent — connect to pre-deployed (~30 min)",
+      "Part B: Hosted agent — deploy your own with azd (~45 min)",
       "Part C: your code + Responses API — the meaty coding part (~45 min)",
       "Stretch: zip your Part C code and deploy as your own Hosted agent",
       "Attendees should feel prepared, not overwhelmed",
@@ -1819,7 +1819,7 @@ function buildModule7() {
     T.addBullets(slide, [
       "The same small docs assistant, three ways",
       "Part A — Prompt agent (created in the portal, no code to maintain)",
-      "Part B — Hosted agent (connect to a pre-deployed one; explore what Foundry manages)",
+      "Part B — Hosted agent (deploy your own with azd; explore what Foundry manages)",
       "Part C — Your own code calling the Responses API (MAF in Python or C#)",
       "Ask each the same questions and compare behavior, latency, and where thread state lives",
     ], { y: contentTop });
@@ -1886,7 +1886,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 7", title: "Success criteria — what 'done' looks like" });
     T.addBullets(slide, [
       "Part A runs — you created a Prompt agent in the Foundry portal (version 1.0) and your MAF app connects to it",
-      "Part B runs — you connect to a pre-deployed Hosted agent and walk the portal to see what Foundry manages",
+      "Part B runs — you deploy your own Hosted agent with azd and walk the portal to see what Foundry manages",
       "Part C runs — your MAF app calls the Responses API and handles multi-turn, streaming, and non-streaming",
       "A short reflection.md committed to your fork:",
       { text: "What does Foundry manage for you in Parts A and B that you'd handle yourself in Part C?", indent: 1 },
@@ -1944,7 +1944,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 7", title: "Time expectations" });
     T.addBullets(slide, [
       "Part A → about 30 min (portal setup + connection)",
-      "Part B → about 30 min (connect + portal exploration)",
+      "Part B → about 45 min (deploy your own Hosted agent via azd + connect + portal exploration)",
       "Part C → about 45 min (most of the code writing lives here; stretch deploy adds ~30 min)",
       "Reflection commit → ~10 min",
       "Total: ~2 hours of async work",

@@ -94,30 +94,39 @@ Instead of the SDK step:
 
 ---
 
-## Part B — Hosted agent (~30 min)
+## Part B — Hosted agent (~45 min, including deploy)
 
-**What you'll do:** connect to a **Hosted agent** that was pre-deployed to the shared Foundry Agent Service sandbox. Walk the portal to see what Foundry manages for you: managed endpoint, tracing, dedicated Entra identity, attached Toolbox tools, content safety. This is where Foundry stops being "model host" and starts being "agent app + tooling host."
+**What you'll do:** deploy your own **Hosted agent** to the Foundry Agent Service in your Foundry project using the Azure Developer CLI (`azd`), then connect to it from your MAF app and walk the portal to see what Foundry manages for you: managed endpoint, tracing, dedicated Entra identity, content safety.
 
-**Setup (instructor does this ahead of Day 1)**
-See [`instructor/deploy-hosted-agent-day1.md`](instructor/deploy-hosted-agent-day1.md) for the step-by-step deployment guide. Summary of what the instructor sets up:
-- A Hosted agent named `docs-assistant-hosted` in the shared project (source is essentially the Part C code, packaged as a zip; Foundry builds the container).
-- One Foundry Toolbox tool attached (recommended: **web search**) so attendees see a platform tool call in the trace.
-- Attendee access via **Foundry User** role at the Foundry resource scope.
+This is where Foundry stops being "model host" and starts being "agent app + tooling host."
 
-**Attendee steps**
+### Deploy the Hosted agent
+
+Follow the step-by-step guide: **[`part_b_deploy_hosted_agent.md`](part_b_deploy_hosted_agent.md)**.
+
+Summary of what you'll do in that guide:
+- Create a `docs-assistant-hosted/main.py` that wraps an MAF `Agent` in a `ResponsesHostServer` (essentially the Part C code, packaged for hosting).
+- Use `azd ai agent init` to configure the deployment interactively (project, entry point, runtime, protocol).
+- Run `azd provision && azd deploy` to package and deploy to Foundry Agent Service. Foundry builds the container image from your source.
+- Verify with `azd ai agent invoke docs-assistant-hosted 'what are you able to do?'`.
+
+Estimated time for the deploy portion: ~20 min (mostly waiting on the container build).
+
+### Connect from MAF and explore the portal
+
 1. Set `FOUNDRY_HOSTED_AGENT_NAME=docs-assistant-hosted` in `.env`.
 2. Run `uv run python part_b_hosted_agent.py`.
 3. Ask the multi-turn questions from the starter. Save the transcript.
 4. In the Foundry portal, walk through:
    - The Hosted agent's **managed endpoint** URL (the URL your code just called).
-   - **Tracing / observability** — open the most recent run's trace. You should see: the model call, any tool invocations (including the attached Toolbox tool), decisions the agent made, latency for each step, and token counts. Click into a tool call to see its arguments and return value. This is the same tracing you'd get with any OTel-instrumented service; Foundry emits spans automatically for Prompt and Hosted agents.
+   - **Tracing / observability** — open the most recent run's trace. You should see: the model call, any tool invocations, decisions the agent made, latency for each step, and token counts. Click into a tool call to see its arguments and return value. This is the same tracing you'd get with any OTel-instrumented service; Foundry emits spans automatically for Prompt and Hosted agents.
    - **Agent identity** — the dedicated Microsoft Entra identity for this agent.
-   - The attached **Toolbox tool** and its call in the trace.
    - **Content safety** filters that ran on the response.
 
-**Definition of done for Part B**
-- Your MAF app connects to the pre-deployed Hosted agent and gets responses.
-- You've spent time in the portal for that agent and can name at least three things Foundry manages that you'd have to build yourself in Part C.
+### Definition of done for Part B
+- Your Hosted agent is deployed and shows up in the Foundry portal under **Agents**.
+- Your MAF app connects to it and gets responses.
+- You've spent time in the portal for the agent and can name at least three things Foundry manages that you'd have to build yourself in Part C.
 
 ---
 
@@ -137,7 +146,7 @@ See [`instructor/deploy-hosted-agent-day1.md`](instructor/deploy-hosted-agent-da
 - You can articulate where thread state is stored, and what it would take to move this same code inside a Hosted agent (Part B).
 
 **Stretch (optional, ~30 min)**
-Take *your* Part C code, zip it, upload it via the Foundry portal as your own Hosted agent, and connect to your deployment the same way you did in Part B. Notice what Foundry adds around the same MAF code.
+Extend your Part C code with a custom function tool (e.g. `get_current_time()` or `lookup_something()`) and observe the tool call appear in the trace when you run again. Both function tools and Foundry IQ knowledge sources get deep coverage on Days 2–3, so this is just a taste.
 
 ---
 
@@ -162,7 +171,7 @@ Commit that file and push to your fork. Reflection > code.
 | `FOUNDRY_PROJECT_ENDPOINT` not found | `.env` missing or wrong path | Copy from `.env.example`; run from `labs/day1/` |
 | `Model not found` | Deployment name mismatch | Copy the exact deployment name from Portal → Deployments |
 | Prompt agent connection fails on version | You didn't publish version 1.0 in the portal | Publish, then retry |
-| Hosted agent 404 | `FOUNDRY_HOSTED_AGENT_NAME` doesn't match the pre-deployed agent | Check the exact name in the portal |
+| Hosted agent 404 | `FOUNDRY_HOSTED_AGENT_NAME` doesn't match your deployed agent | Check the exact name in the portal, and confirm `azd deploy` succeeded |
 | Python — package missing | `uv sync` from `labs/day1/python/` | Install uv first if needed |
 
 If none of these apply, ping the workshop channel with the exact error and the file you're running.
