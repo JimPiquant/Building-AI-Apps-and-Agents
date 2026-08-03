@@ -2478,6 +2478,596 @@ main_agent = Agent(
   return pres.writeFile({ fileName: path.join(OUT_DIR, "module-6-authoring-tools.pptx") });
 }
 
+// ---------- MODULE 7 — Combining Knowledge + Tools ----------
+function buildModule7() {
+  const pres = T.newDeck(new pptxgen());
+
+  T.notes(T.titleSlide(pres, {
+    eyebrow: "DAY 2 · MODULE 7 · 25 MIN",
+    title: "Combining Knowledge + Tools",
+    subtitle: "The pattern that brings Day 2 together",
+    footer: "Building AI Apps and Agents",
+  }), [
+    "Day 2 synthesis module",
+    "25 min target; 13 slides ≈ 26 min at 2 min/slide — right at target",
+    "Bridges Modules 1-3 (Knowledge) with Modules 4-6 (Actions)",
+    "Sets up Part C of the lab (combined flows)",
+  ]);
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Where we are" });
+    T.addProse(slide, "Today you learned two families of capabilities:", { y: contentTop, h: 0.4, fontSize: 13 });
+    T.addBullets(slide, [
+      "Knowledge (Modules 1-3): Foundry IQ, custom RAG on AI Search, retrieval eval",
+      "Actions (Modules 4-6): the tools layer, Toolbox, authoring custom function tools",
+    ], { y: 1.65, h: 1.5, fontSize: 13 });
+    slide.addText("Real agents use both. This module: how they interact — and how they fail when combined naively.", {
+      x: 0.4, y: 3.5, w: 9.2, h: 0.8,
+      fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Two families synthesized here",
+      "Real agents rarely use just one",
+      "Set expectation: this module is about the INTERACTION",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "The two composition orders" });
+    T.addProse(slide, "Every turn that touches both knowledge and tools follows one of two orders:",
+      { y: contentTop, h: 0.5, fontSize: 12 });
+    T.addTable(slide, [
+      ["Pattern", "Sequence", "Best for"],
+      ["Retrieve-then-act", "Grounded context first, then call a tool", "Actions that depend on facts (policies, entitlements, docs)"],
+      ["Act-then-retrieve", "Call a tool to fetch state, then reason over it", "User-specific state (my orders, my tickets, my quota)"],
+    ], { y: 1.75, colW: [2.4, 3.4, 3.4], rowH: 0.75, fontSize: 11 });
+    T.addBullets(slide, [
+      "Most real workflows are one or the other. Some are both, in sequence.",
+      "The agent's instructions steer which order it picks.",
+    ], { y: 4.15, h: 1.0, fontSize: 12 });
+    T.notes(slide, [
+      "Two orders — memorize the names",
+      "Retrieve-then-act = docs shape the action",
+      "Act-then-retrieve = state grounds the explanation",
+      "Instructions are the steering wheel",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Retrieve-then-act (the docs-assistant pattern)" });
+    T.addCode(slide, `User: "My login keeps failing with a 500 — can you file a ticket?"
+
+1. Model retrieves: "Login troubleshooting" doc chunk
+2. Model reads: doc says "500 errors mean auth service is down"
+3. Model calls: create_ticket(title="Auth service 500",
+                              priority="high",
+                              body="Confirmed via login troubleshooting doc")`,
+      { y: 1.2, h: 2.6, fontSize: 11 });
+    T.addProse(slide, "Knowledge shapes the tool call. The ticket is better because retrieval ran first.",
+      { y: 3.95, h: 0.5, fontSize: 13 });
+    slide.addText('Instruction cue: "Before creating tickets, consult the documentation to classify the problem accurately."', {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.6,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Concrete example — login 500 error",
+      "Retrieval provides classification info",
+      "Tool call is BETTER because retrieval ran first",
+      "The italic instruction cue is what steers this order",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Act-then-retrieve (the lookup-first pattern)" });
+    T.addCode(slide, `User: "Why is my order still processing?"
+
+1. Model calls: lookup_order_status(order_id from ctx)
+2. Tool returns: {status: "held", reason: "payment_review"}
+3. Model retrieves: "Payment review" policy doc
+4. Model answers: grounded explanation of what "payment_review" means`,
+      { y: 1.2, h: 2.4, fontSize: 11 });
+    T.addProse(slide, "The tool provides the fact; retrieval provides the explanation.",
+      { y: 3.75, h: 0.5, fontSize: 13 });
+    slide.addText('Instruction cue: "For account-specific questions, look up the current state first, then explain using policy documentation."', {
+      x: 0.4, y: 4.4, w: 9.2, h: 0.7,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Reverse order — tool call FIRST",
+      "Retrieval grounds the EXPLANATION, not the action",
+      "Common for user-specific questions",
+      "Instruction cue is different from the previous pattern",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Attach retrieval as a tool vs. hosted knowledge" });
+    T.addProse(slide, "Two ways to expose knowledge to an MAF agent:", { y: contentTop, h: 0.4, fontSize: 13 });
+    T.addTable(slide, [
+      ["Approach", "How", "When"],
+      ["Hosted knowledge (Foundry IQ)", "Attached at agent creation", "Managed retrieval, no custom logic needed"],
+      ["Retrieval as a function tool", "@tool wraps your AI Search / custom RAG", "Custom scoring, filtering, hybrid, per-tenant scoping"],
+    ], { y: 1.65, colW: [2.8, 3.2, 3.2], rowH: 0.8, fontSize: 11 });
+    slide.addText("Rule: start with hosted IQ; drop to a custom retrieval tool when you need control IQ doesn't give you.", {
+      x: 0.4, y: 4.35, w: 9.2, h: 0.6,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Two ways to expose knowledge — both look like 'knowledge' to the model",
+      "Operational trade-off is what you're picking",
+      "Hosted IQ = fastest to production",
+      "Custom retrieval tool = when you need control (filters, hybrid, tenant scoping)",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Instruction patterns for combining" });
+    T.addProse(slide, "Well-written instructions tell the model which order to prefer:",
+      { y: 1.15, h: 0.4, fontSize: 12 });
+    T.addCode(slide, `You are a support assistant.
+
+For product questions, use the documentation knowledge source.
+
+For account-specific questions (orders, tickets, entitlements),
+look up the current state with the lookup_* tools BEFORE explaining.
+
+When creating tickets, first check documentation for the correct
+category, then call create_ticket with that category.
+
+If you don't find an answer in documentation and no tool applies,
+say "I don't have that information."`,
+      { y: 1.6, h: 3.1, fontSize: 11 });
+    slide.addText("Four lines carry the whole policy: default source, state-first, retrieve-before-act, refusal fallback.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "This is the four-line template attendees will use in Part C",
+      "Each line covers a distinct policy",
+      "Default source, state-first, retrieve-before-act, refusal",
+      "Cheap to write, catches 80% of naive-composition bugs",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Failure mode 1 — Tool called before retrieval" });
+    T.addBullets(slide, [
+      "Symptom: agent creates a ticket without checking docs, ticket has wrong category or priority",
+      "Root cause: instructions don't say 'check docs first'",
+    ], { y: contentTop, h: 1.4, fontSize: 12 });
+    T.addProse(slide, "Fix:", { y: 2.7, h: 0.3, fontSize: 13 });
+    T.addBullets(slide, [
+      "Add explicit ordering to instructions",
+      "Golden set: add a query that requires retrieve-then-act; assert doc chunk appears BEFORE tool call in trace",
+    ], { y: 3.0, h: 1.2, fontSize: 11 });
+    T.addCode(slide, `step 1: model retrieved  ← should exist BEFORE step 2
+step 2: model called create_ticket`, { y: 4.3, h: 0.9, fontSize: 11 });
+    T.notes(slide, [
+      "Failure mode #1 of 3",
+      "Common when defaults are missing",
+      "Trace inspection is the tell",
+      "Day 5 goes deep on trace shape",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Failure mode 2 — Retrieval used when a tool should have been called" });
+    T.addBullets(slide, [
+      "Symptom: user asks 'What's my order status?' → agent quotes a general policy doc instead of calling lookup_order_status",
+      "Root cause: tool description is too narrow OR knowledge source description is too broad",
+    ], { y: contentTop, h: 1.7, fontSize: 12 });
+    T.addProse(slide, "Fixes (in order of preference):", { y: 3.15, h: 0.4, fontSize: 13 });
+    T.addBullets(slide, [
+      'Tighten knowledge source description: "General product documentation. Does NOT contain account-specific state."',
+      'Broaden tool description with triggers: "Use whenever the user references their own orders, tickets, or account."',
+      "Add a golden-set entry that fails until (1) and (2) are correct",
+    ], { y: 3.55, h: 1.7, fontSize: 11 });
+    T.notes(slide, [
+      "Failure mode #2 of 3",
+      "Fix ORDER matters — knowledge description first, tool description second",
+      "Tightening descriptions is cheaper than restructuring the agent",
+      "Golden set entry is the guardrail against regression",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Failure mode 3 — Both fire, model gets confused" });
+    T.addBullets(slide, [
+      "Symptom: agent retrieves AND calls a tool for a simple question, produces a rambling combined answer",
+      "Root cause: instructions don't set a default source. Model tries everything.",
+    ], { y: contentTop, h: 1.7, fontSize: 12 });
+    T.addProse(slide, "Fix — set a default and constrain:", { y: 3.15, h: 0.4, fontSize: 13 });
+    T.addCode(slide, `Default source: documentation.
+Only call a tool when the user references their own account
+or asks you to perform an action.`, { y: 3.55, h: 1.2, fontSize: 12 });
+    slide.addText("Explicit defaults are cheap and prevent 80% of 'why is this so slow?' complaints.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Failure mode #3 of 3",
+      "Most common failure in the wild",
+      "Defaults + constraints is the fix",
+      "80% impact on latency complaints",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Cost + latency implications" });
+    T.addProse(slide, "Each pattern has a different cost/latency profile:", { y: contentTop, h: 0.4, fontSize: 13 });
+    T.addTable(slide, [
+      ["Pattern", "Extra LLM calls", "Extra retrieval", "Extra tool calls"],
+      ["Retrieve-then-act", "+0", "+1", "+1"],
+      ["Act-then-retrieve", "+0", "+1", "+1"],
+      ["Both (retrieve + act + retrieve)", "+1 (reasoning between)", "+2", "+1"],
+      ["Naive → tries all", "+1 to +2", "+1 to +2", "+1 to +2"],
+    ], { y: 1.65, colW: [2.9, 2.1, 2.1, 2.1], rowH: 0.55, fontSize: 11 });
+    T.addBullets(slide, [
+      "Naive prompts hit the last row. Well-steered prompts hit rows 1-2.",
+      "The last row can easily double p95 time-to-first-token.",
+    ], { y: 4.35, h: 1.0, fontSize: 11 });
+    T.notes(slide, [
+      "Cost/latency is where combined flows earn or lose their keep",
+      "Naive prompts = 2x LLM calls, 2x retrieval, 2x tool calls",
+      "Well-steered = minimum needed",
+      "p95 latency is where users notice",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "Approval gates in combined flows" });
+    T.addProse(slide, "Recall from Module 4: approval_mode='always_require' prompts before a tool call.",
+      { y: 1.15, h: 0.5, fontSize: 12 });
+    T.addProse(slide, "In a combined flow, the gate falls AFTER retrieval but BEFORE the tool call:",
+      { y: 1.7, h: 0.5, fontSize: 12 });
+    T.addCode(slide, `1. Retrieve docs → (no gate)
+2. Model formulates create_ticket call → GATE
+3. User approves → tool executes
+4. Model summarizes result`, { y: 2.3, h: 1.7, fontSize: 12 });
+    slide.addText("Design point: put gates on the ACTION, not the retrieval. Retrieval is safe by default; actions have side effects.", {
+      x: 0.4, y: 4.15, w: 9.2, h: 0.7,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Approval gate ORDER matters in combined flows",
+      "Retrieval before gate, tool call after gate",
+      "Retrieval is safe (no side effects)",
+      "Actions get the gate",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 7", title: "MAF vs. Foundry Agent Service — combined lens" });
+    T.addProse(slide, "Combining knowledge + tools sharpens the Day 1 framing:",
+      { y: contentTop, h: 0.4, fontSize: 13 });
+    T.addTable(slide, [
+      ["Use...", "When..."],
+      ["Foundry Agent Service (Prompt agents)", "Hosted retrieval + hosted tools cover your needs; you want the portal + REST"],
+      ["MAF in-process", "Custom retrieval, custom tools, or fine-grained control over composition order"],
+    ], { y: 1.65, colW: [3.4, 5.8], rowH: 0.9, fontSize: 11 });
+    slide.addText("Publix will mix both — a Prompt agent for the docs-Q&A path, an MAF agent for the ticket-triage path.", {
+      x: 0.4, y: 4.25, w: 9.2, h: 0.6,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Reinforce Day 1 framing with combined-lens sharpening",
+      "Composition order = the key differentiator",
+      "Publix likely mixes both — call this out",
+      "Not either/or; use both for what each is good at",
+    ]);
+  }
+
+  T.notes(T.takeawaysSlide(pres, {
+    tag: "Day 2 · Module 7", title: "Takeaways",
+    bullets: [
+      "Two orders: retrieve-then-act and act-then-retrieve. Pick per workflow.",
+      "Instructions steer order. Four lines is often enough.",
+      "Three failure modes: tool-before-retrieval, retrieval-when-tool-expected, both-fire. All fix with description tightening.",
+      "Set a default source. Prevents naive 'try everything' behavior.",
+      "Approval gates go on the action, not on retrieval.",
+      "MAF for custom composition; Prompt agents when hosted defaults fit.",
+    ],
+    next: "Module 8 — Day 2 lab kickoff. You'll build the docs-assistant with ticket triage + evaluation.",
+  }), [
+    "Six-bullet recap",
+    "Emphasize: order matters, instructions steer, failure modes are fixable via descriptions",
+    "Bridge to Module 8 — lab kickoff",
+    "Time check — Modules 1-7 = ~220 min against 240 budget",
+  ]);
+
+  return pres.writeFile({ fileName: path.join(OUT_DIR, "module-7-combining.pptx") });
+}
+
+// ---------- MODULE 8 — Day 2 Lab Kickoff ----------
+function buildModule8() {
+  const pres = T.newDeck(new pptxgen());
+
+  T.notes(T.titleSlide(pres, {
+    eyebrow: "DAY 2 · MODULE 8 · 20 MIN",
+    title: "Day 2 Lab Kickoff",
+    subtitle: "Docs assistant with ticket triage + evaluation",
+    footer: "Building AI Apps and Agents",
+  }), [
+    "Final Day 2 module — kickoff for the ~2-hour lab",
+    "20 min target; 12 slides ≈ 24 min at 2 min/slide — slight over, coverage > trim per policy",
+    "Purely orientation: what/where/how, not new concepts",
+  ]);
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "What you'll build" });
+    T.addProse(slide, "Extend the Day 1 docs assistant into a support triage agent that:",
+      { y: contentTop, h: 0.5, fontSize: 13 });
+    T.addBullets(slide, [
+      "Answers product questions from documentation (Day 1 baseline)",
+      "Files a support ticket when the docs don't cover it (Module 6)",
+      "Looks up the status of an existing ticket (Module 6)",
+      "Is measured with a retrieval eval and a tool-use eval (Module 3)",
+    ], { y: 1.7, h: 2.5, fontSize: 13 });
+    slide.addText("All Python. Mock function tools — Day 3 swaps to a real Azure DevOps MCP.", {
+      x: 0.4, y: 4.4, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Frame the lab as an EXTENSION of Day 1 — not a from-scratch build",
+      "Four capabilities to add",
+      "Mock backends now, real MCP tomorrow",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "The three parts" });
+    T.addTable(slide, [
+      ["Part", "Focus", "Modules", "Time"],
+      ["A", "Add a Foundry IQ knowledge source; run retrieval eval", "1-3", "~40 min"],
+      ["B", "Author create_ticket + lookup_status; add tool-use eval", "4-6", "~50 min"],
+      ["C", "Combine knowledge + tools; iterate on instructions", "7", "~30 min"],
+    ], { y: contentTop, colW: [0.9, 5.0, 1.6, 1.6], rowH: 0.7, fontSize: 12 });
+    slide.addText("Total lab time budget: ~2 hours (with breaks).", {
+      x: 0.4, y: 4.35, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Three parts map to today's modules",
+      "Part A = knowledge (Modules 1-3)",
+      "Part B = tools (Modules 4-6)",
+      "Part C = combining (Module 7)",
+      "~2 hours with breaks",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "Part A — Knowledge grounding + retrieval eval" });
+    T.addProse(slide, "Goal: move the Day 1 assistant from 'prompt-only' to 'grounded in docs.'",
+      { y: contentTop, h: 0.5, fontSize: 13 });
+    T.addBullets(slide, [
+      "Create a Foundry IQ knowledge source from a small docs corpus (provided)",
+      "Attach it to your Day 1 agent",
+      "Ask three questions the docs answer + two the docs cannot",
+      "Run Retrieval and Groundedness evaluators from Module 3",
+      "Record baseline scores in evals/part_a_baseline.json",
+    ], { y: 1.7, h: 2.7, fontSize: 12 });
+    slide.addText("Definition of done: Retrieval score >= 0.7 on the answerable set; Groundedness >= 0.8.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Part A = Knowledge layer",
+      "Five concrete steps",
+      "'Two the docs cannot answer' — teaches the refusal path",
+      "Explicit DoD numbers — attendees know when to move on",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "Part B — Author function tools + tool-use eval" });
+    T.addProse(slide, "Goal: add real actions to the assistant.", { y: contentTop, h: 0.4, fontSize: 13 });
+    T.addBullets(slide, [
+      "Author create_ticket(title, body, priority) — mock backend, Pydantic schema",
+      "Author lookup_status(ticket_id) — mock backend, async",
+      "Write pytest tests for both tools in isolation",
+      "Wire the tools to the agent",
+      "Create evals/tools_golden_set.jsonl — 6 queries: 2 create, 2 lookup, 2 none",
+      "Run the tool-use eval; iterate on descriptions until you pass",
+    ], { y: 1.6, h: 3.0, fontSize: 11 });
+    slide.addText("Definition of done: 6/6 tool selections match tools_golden_set.jsonl.", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Part B = Actions layer",
+      "Six concrete steps",
+      "Isolation testing before wiring — Module 6 discipline",
+      "Golden set has TWO 'none' entries — model must know when NOT to call",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "Part C — Combine knowledge + tools" });
+    T.addProse(slide, "Goal: the agent picks the right order.", { y: contentTop, h: 0.4, fontSize: 13 });
+    T.addBullets(slide, [
+      "Add the Part A knowledge source AND the Part B tools to one agent",
+      "Write instructions using the Module 7 four-line template",
+      "Add three combined queries to combined_golden_set.jsonl:",
+      "   - Retrieve-then-act (docs → ticket)",
+      "   - Act-then-retrieve (lookup → policy explanation)",
+      "   - Docs-only (no tool call)",
+      "Iterate on instructions until all three pass",
+    ], { y: 1.6, h: 3.2, fontSize: 11 });
+    slide.addText("Definition of done: all three combined queries produce the expected trace order.", {
+      x: 0.4, y: 4.95, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Part C = Combining",
+      "Uses Module 7's four-line template",
+      "Three query types cover the three interesting composition cases",
+      "Trace order is what's validated — not just the final answer",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "The starter repo layout" });
+    T.addCode(slide, `labs/day2/
+├── README.md                     # you're here
+├── data/
+│   └── docs/                     # mock product docs (10 files)
+├── python/
+│   ├── pyproject.toml            # uv-managed
+│   ├── .env.example              # FOUNDRY_PROJECT_ENDPOINT, etc.
+│   ├── agent.py                  # start here — Day 1 baseline copy
+│   ├── tools.py                  # your create_ticket + lookup_status
+│   └── mock_backend.py           # in-memory ticket store (provided)
+├── tests/
+│   ├── test_tools.py             # your isolation tests
+│   └── test_golden_set.py        # your eval runner
+└── evals/
+    ├── retrieval_eval.py         # provided
+    ├── tools_golden_set.jsonl    # you'll author
+    └── combined_golden_set.jsonl # you'll author`,
+      { y: 1.15, h: 4.0, fontSize: 10 });
+    T.notes(slide, [
+      "Layout walk-through",
+      "Same structure as Day 1 lab for continuity",
+      "Bold on what attendees author vs. what's provided",
+      "Point out the .env.example line — reuses Day 1 endpoint format",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "Prerequisites" });
+    T.addProse(slide, "Before starting:", { y: contentTop, h: 0.3, fontSize: 13 });
+    T.addBullets(slide, [
+      "Day 1 lab complete and working",
+      "uv installed (from Day 1)",
+      "FOUNDRY_PROJECT_ENDPOINT in .env (from Day 1)",
+      "Recommended model: gpt-5.4-mini (from Day 1)",
+      "Fresh MSDN subscription with Foundry project — same as Day 1",
+    ], { y: 1.55, h: 2.2, fontSize: 12 });
+    T.addProse(slide, "Setup: uv sync in labs/day2/python/ then cp .env.example .env.",
+      { y: 3.85, h: 0.5, fontSize: 12 });
+    slide.addText("If Day 1 isn't fully working, we'll pair you with a helper before proceeding.", {
+      x: 0.4, y: 4.5, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Prereqs all from Day 1 — no new setup",
+      "Fresh MSDN sub with Foundry project",
+      "If Day 1 didn't work, don't push forward — pair with a helper",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "What we WON'T do today" });
+    T.addProse(slide, "Explicitly out of scope for Day 2 lab:", { y: contentTop, h: 0.4, fontSize: 13 });
+    T.addBullets(slide, [
+      "Real Azure DevOps integration → Day 3 (MCP)",
+      "Multi-agent orchestration → Day 4",
+      "Production instrumentation / OTel → Day 5",
+      "Approval-mode UX → mentioned in Module 6, not implemented today",
+      "C# implementation → Python only per workshop policy",
+    ], { y: 1.65, h: 2.7, fontSize: 12 });
+    slide.addText("Keeping scope tight means Parts A-C actually finish in ~2 hours.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Explicit non-goals prevent scope creep",
+      "Each non-goal has a home in a later day",
+      "This is HOW we finish in 2 hours",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "Iteration is the point" });
+    T.addProse(slide, "You will NOT pass every eval on the first try. That's designed in.",
+      { y: contentTop, h: 0.5, fontSize: 13 });
+    T.addProse(slide, "Expect to:", { y: 1.75, h: 0.3, fontSize: 13 });
+    T.addBullets(slide, [
+      "Rewrite a tool description at least once",
+      "Adjust the four-line instructions in Part C at least twice",
+      "See the model pick the wrong tool and fix it via description tightening (Module 7 failure mode 2)",
+    ], { y: 2.1, h: 1.7, fontSize: 12 });
+    slide.addText("The goal isn't to write it right the first time — the goal is to build the eval → iterate → re-eval muscle. That's the day-in day-out workflow.", {
+      x: 0.4, y: 4.15, w: 9.2, h: 0.9,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Set expectations — iteration is expected",
+      "Attendees should feel PERMISSION to iterate, not stress about first-try correctness",
+      "The MUSCLE is the deliverable, not the perfect agent",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "Support during the lab" });
+    T.addBullets(slide, [
+      "Instructor pod: dedicated Slack channel",
+      "Two TAs on call",
+    ], { y: contentTop, h: 1.0, fontSize: 13 });
+    T.addProse(slide, "Common issues pre-baked into the troubleshooting table:",
+      { y: 2.4, h: 0.4, fontSize: 12 });
+    T.addBullets(slide, [
+      "Foundry endpoint format",
+      "IQ knowledge source ingestion delay",
+      "Tool selection when descriptions overlap",
+      ".env vs. environment precedence",
+    ], { y: 2.95, h: 1.7, fontSize: 12 });
+    slide.addText("Ask early. If you're 15 min stuck on something not in the troubleshooting table, flag it.", {
+      x: 0.4, y: 4.7, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Support structure — Slack + 2 TAs",
+      "Four pre-baked common issues",
+      "15 min stuck rule — flag it",
+      "Don't lose an hour to something we've already documented",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "Takeaways before you start" });
+    T.addBullets(slide, [
+      "Three parts, ~2 hours, Python only",
+      "Definition of done is explicit in every part — chase it, not perfection",
+      "Mock tools now, real MCP tomorrow",
+      "Iteration is the point — build the eval-loop muscle",
+      "Ask early if stuck",
+    ], { y: contentTop, h: 2.8, fontSize: 13 });
+    slide.addText("Let's build. See you at the debrief.", {
+      x: 0.4, y: 4.4, w: 9.2, h: 0.6,
+      fontFace: T.FONTS.body, fontSize: 16, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Five-bullet handoff",
+      "'Definition of done, not perfection' — reset expectations",
+      "Close with 'let's build' — energizing",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 8", title: "What's next after the lab" });
+    T.addProse(slide, "Tomorrow (Day 3): we swap mocks for real integrations.",
+      { y: contentTop, h: 0.5, fontSize: 13 });
+    T.addBullets(slide, [
+      "create_ticket becomes a real Azure DevOps MCP call",
+      "lookup_status becomes a real Azure DevOps MCP query",
+      "Same conceptual pattern you built today — different backend",
+      "Adds MCP tool authoring on top of Day 2's function tool authoring",
+    ], { y: 1.7, h: 2.6, fontSize: 12 });
+    slide.addText("Everything you build today carries forward.", {
+      x: 0.4, y: 4.45, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Day 3 preview — carries the pattern forward",
+      "Mocks → real MCP",
+      "Reassure: today's work is not throwaway",
+    ]);
+  }
+
+  return pres.writeFile({ fileName: path.join(OUT_DIR, "module-8-lab-kickoff.pptx") });
+}
+
 // ---------- Main runner ----------
 async function main() {
   console.log("Building Day 2 decks…");
@@ -2493,6 +3083,10 @@ async function main() {
   console.log("  module-5-foundry-toolbox.pptx");
   await buildModule6();
   console.log("  module-6-authoring-tools.pptx");
+  await buildModule7();
+  console.log("  module-7-combining.pptx");
+  await buildModule8();
+  console.log("  module-8-lab-kickoff.pptx");
   console.log("Done.");
 }
 
