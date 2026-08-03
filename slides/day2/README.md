@@ -10,8 +10,8 @@ Eight modules total (~240 min live · budget). Each markdown file is the source 
 | 4 | Tools layer deep dive — function calling model | 35m | [`module-4-tools-layer.md`](module-4-tools-layer.md) | [`decks/day2/module-4-tools-layer.pptx`](../../decks/day2/module-4-tools-layer.pptx) |
 | 5 | Foundry Toolbox in practice | 25m | [`module-5-foundry-toolbox.md`](module-5-foundry-toolbox.md) | [`decks/day2/module-5-foundry-toolbox.pptx`](../../decks/day2/module-5-foundry-toolbox.pptx) |
 | 6 | Authoring custom function tools in MAF | 35m | [`module-6-authoring-tools.md`](module-6-authoring-tools.md) | [`decks/day2/module-6-authoring-tools.pptx`](../../decks/day2/module-6-authoring-tools.pptx) |
-| 7 | Combining knowledge + tools | 25m | (pending) | (pending) |
-| 8 | Lab kickoff | 20m | (pending) | (pending) |
+| 7 | Combining knowledge + tools | 25m | [`module-7-combining.md`](module-7-combining.md) | [`decks/day2/module-7-combining.pptx`](../../decks/day2/module-7-combining.pptx) |
+| 8 | Lab kickoff | 20m | [`module-8-lab-kickoff.md`](module-8-lab-kickoff.md) | [`decks/day2/module-8-lab-kickoff.pptx`](../../decks/day2/module-8-lab-kickoff.pptx) |
 
 Total live time: **240 min** (right at budget; if we overrun, Module 3 or 5 is the trim candidate).
 
