@@ -728,6 +728,374 @@ agent = Agent(client=..., instructions="Cite sources from search_docs.", tools=[
   return pres.writeFile({ fileName: path.join(OUT_DIR, "module-2-custom-rag.pptx") });
 }
 
+// ---------- MODULE 3 — Evaluating Retrieval ----------
+function buildModule3() {
+  const pres = T.newDeck(new pptxgen());
+
+  T.notes(T.titleSlide(pres, {
+    eyebrow: "DAY 2 · MODULE 3 · 25 MIN",
+    title: "Evaluating Retrieval",
+    subtitle: "Know if your knowledge layer actually works",
+    footer: "Building AI Apps and Agents",
+  }), [
+    "Shortest module of Day 2 — 25 min",
+    "Bridges the Knowledge modules (1–2) into the Actions modules (4–7)",
+    "Sets up the eval habit that runs through Day 3, Day 4 anchor, Day 5 production",
+    "Focus attendees on the two must-know evaluators: Retrieval + Groundedness",
+    "Don't over-teach — Day 4 is the anchor",
+  ]);
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Why evaluate retrieval separately" });
+    T.addProse(slide, "Attendees who skip this step do one of two things:",
+      { y: contentTop, h: 0.4, fontSize: 14 });
+    T.addBullets(slide, [
+      "Ship an agent that seems to work — until it doesn't, and they can't tell why",
+      "Tune prompts forever, when the real problem was chunking or embeddings",
+    ], { y: contentTop + 0.5, h: 1.5 });
+    slide.addText("Retrieval failures and generation failures look identical from the outside. Evaluate separately, fix separately.", {
+      x: 0.4, y: 3.3, w: 9.2, h: 0.7,
+      fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    slide.addText("Day 4 anchors evaluation for full workflows. Today's module gets the habit started.",
+      { x: 0.4, y: 4.7, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted });
+    T.notes(slide, [
+      "Frame the whole module in one line: 'evaluate retrieval separately'",
+      "Two failure modes attendees will recognize — usually a few laughs",
+      "The italicized line is the key insight — say it out loud",
+      "Set expectation that Day 4 goes deeper on eval; today is the starter",
+      "Don't dwell — get to the evaluators",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Two evaluation modes for RAG" });
+    T.addTable(slide, [
+      ["Mode", "What it evaluates", "Ground truth required"],
+      ["Process evaluation", "The retrieval step itself — did we get relevant chunks?", "Depends on evaluator"],
+      ["System evaluation", "The end-to-end response — did the agent answer correctly?", "Sometimes"],
+    ], { colW: [2.0, 4.6, 2.6], rowH: 0.75, fontSize: 12 });
+    T.addBullets(slide, [
+      "Process eval finds the retrieval-side bug",
+      "System eval confirms the whole thing works",
+      "Attendees do a small dose of each in today's lab",
+    ], { y: 3.7, h: 1.3 });
+    T.notes(slide, [
+      "Two modes = two questions",
+      "Process = 'did retrieval get the right chunks?'",
+      "System = 'did the agent answer correctly?'",
+      "Both matter; today teaches one of each",
+      "Ground truth (labeled correct answers) is optional for most evaluators",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "The Foundry evaluator catalog for RAG" });
+    T.addTable(slide, [
+      ["Evaluator", "Type", "Needs ground truth?"],
+      ["Retrieval", "Process", "No — LLM judges context relevance"],
+      ["Groundedness", "System", "No — LLM judges if response is grounded in context"],
+      ["Groundedness Pro (preview)", "System", "No — Content Safety service, boolean"],
+      ["Relevance", "System", "No — LLM judges if response addresses query"],
+      ["Response Completeness (preview)", "System", "Yes — needs expected answer"],
+      ["Document Retrieval", "Process", "Yes — needs query-relevance labels (qrels)"],
+    ], { colW: [3.0, 1.5, 4.7], rowH: 0.45, fontSize: 11 });
+    slide.addText("Start with the top four. Add ground truth when you're ready to invest in labels.",
+      { x: 0.4, y: 4.9, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy });
+    T.notes(slide, [
+      "Six evaluators — sorted lightest to heaviest ground-truth requirement",
+      "Top four need no ground truth — LLM judges based on context",
+      "Bottom two need ground truth (labeled correct answers or relevance judgments)",
+      "Ground truth is expensive to produce — earn the investment",
+      "Verify preview status before delivery — this space moves",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "The two must-know evaluators" });
+    T.addProse(slide, "For today's lab and most real-world starting points:",
+      { y: 1.15, h: 0.4, fontSize: 14, italic: true });
+
+    // Two columns for the two evaluators
+    T.addTwoColumn(slide,
+      [
+        "Input: query, retrieved context",
+        "Output: 1–5 score (pass ≥ 3), plus reasoning",
+        "Answers: 'Are the chunks we pulled actually relevant to the question?'",
+      ],
+      [
+        "Input: query, response, retrieved context",
+        "Output: 1–5 score (pass ≥ 3), plus reasoning",
+        "Answers: 'Did the response stay in the context, or did the model fabricate?'",
+      ],
+      { y: 1.7, h: 2.7, leftHeader: "Retrieval (process)", rightHeader: "Groundedness (system)" }
+    );
+
+    slide.addText("Together, these two isolate retrieval-side vs. generation-side failure.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.45,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "These are the two evaluators the lab focuses on",
+      "Neither needs ground truth — LLM judges based on the context",
+      "Retrieval scores the retrieval; Groundedness scores the generation",
+      "Together = complete diagnostic",
+      "1–5 scale, default pass threshold 3",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Groundedness vs. Response Completeness" });
+    T.addProse(slide, "Two sides of the same coin:",
+      { y: contentTop, h: 0.3, fontSize: 14, italic: true });
+    T.addBullets(slide, [
+      "Groundedness = precision. Did the response contain anything not in the context? (Fabrication check.)",
+      "Response Completeness = recall. Did the response leave anything out that the ground truth expected? (Coverage check.)",
+    ], { y: 1.6, h: 1.9 });
+    T.addProse(slide,
+      "A high-groundedness, low-completeness response is accurate but partial. A low-groundedness, high-completeness response is comprehensive but making things up. Track both.",
+      { y: 3.6, h: 1.1, fontSize: 13 });
+    slide.addText("Response Completeness needs ground truth — invest when you have a benchmark corpus.",
+      { x: 0.4, y: 4.8, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted });
+    T.notes(slide, [
+      "Precision vs. recall — attendees know these terms already",
+      "Groundedness = 'nothing extra'; Completeness = 'nothing missing'",
+      "You want high on both — but they trade off",
+      "High-groundedness low-completeness = safe but useless",
+      "Low-groundedness high-completeness = comprehensive but hallucinating",
+      "Response Completeness needs ground truth — earn the investment",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Document Retrieval — the deep debug tool" });
+    T.addProse(slide,
+      "When retrieval quality is the bottleneck, this is your parameter-sweep evaluator.",
+      { y: contentTop, h: 0.5, fontSize: 14, italic: true });
+    T.addBullets(slide, [
+      "Input: query-relevance labels (qrels) and the ranked retrieval output",
+      "Output: NDCG, XDCG, Fidelity, Max Relevance, Holes at various k",
+      { text: "Use it to answer:", indent: 0 },
+      { text: "Should I use vector, keyword, or hybrid?", indent: 1 },
+      { text: "What's the right top_k?", indent: 1 },
+      { text: "Is 500-token chunking better than 1000?", indent: 1 },
+    ], { y: 1.75, h: 2.8, fontSize: 12 });
+    slide.addText("You need labeled data — a person judged which docs are relevant for each query. Worth it when tuning matters.", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "This is the tuning evaluator — not for today's lab",
+      "Attendees will use it when they're serious about retrieval quality",
+      "Requires labeled data — someone graded 'this doc is a 4/5 for this query'",
+      "NDCG is the classic search-quality metric",
+      "Parameter sweep = run with vector/keyword/hybrid, top_k=5/10/20, chunk 500/1000, compare NDCG",
+      "Introduce the concept, don't require it in the lab",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Configuring an evaluator (Python SDK)" });
+    T.addCode(slide, `testing_criteria = [
+    {
+        "type": "azure_ai_evaluator",
+        "name": "groundedness",
+        "evaluator_name": "builtin.groundedness",
+        "initialization_parameters": {"deployment_name": model_deployment},
+        "data_mapping": {
+            "context": "{{item.context}}",
+            "response": "{{item.response}}",
+        },
+    },
+    {
+        "type": "azure_ai_evaluator",
+        "name": "retrieval",
+        "evaluator_name": "builtin.retrieval",
+        "initialization_parameters": {"deployment_name": model_deployment},
+        "data_mapping": {"query": "{{item.query}}", "context": "{{item.context}}"},
+    },
+]`, { y: 1.2, h: 3.6, fontSize: 11 });
+    slide.addText("Same JSON shape for each evaluator. The data_mapping tells the evaluator where to find fields on your test dataset.",
+      { x: 0.4, y: 4.9, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted });
+    T.notes(slide, [
+      "Show the shape — attendees will copy this into the lab",
+      "Every evaluator has: type, name, evaluator_name, initialization_parameters, data_mapping",
+      "The {{item.field}} syntax refers to fields on your JSONL test dataset (next slide)",
+      "deployment_name = the model that judges (usually a smaller one than production)",
+      "Attendees don't need to memorize the JSON — pattern-match it",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "The test dataset — smaller than you think" });
+    T.addProse(slide, "A JSONL file, one line per test case:",
+      { y: 1.15, h: 0.4, fontSize: 14 });
+    T.addCode(slide, `{"query": "How do I set up a Prompt agent?",
+ "context": "A Prompt agent is authored in the Foundry portal or SDK...",
+ "response": "You create a Prompt agent by..."}
+{"query": "What models does Foundry support?",
+ "context": "Foundry hosts models from Azure OpenAI, Anthropic, Meta...",
+ "response": "Foundry supports multiple models including..."}`,
+      { y: 1.65, h: 2.4, fontSize: 11 });
+    T.addBullets(slide, [
+      "Start with 10–15 examples",
+      "Enough signal to catch obvious regressions; small enough to actually maintain",
+      "Add examples over time as you find failure modes",
+    ], { y: 4.15, h: 1.0, fontSize: 12 });
+    T.notes(slide, [
+      "JSONL — one JSON object per line",
+      "Fields match the data_mapping from the previous slide",
+      "10–15 items = the useful floor",
+      "Smaller than most attendees expect — don't overinvest before you know the eval works",
+      "The dataset is a living artifact — grow it as production surfaces failures",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Reading the output" });
+    T.addCode(slide, `{
+  "type": "azure_ai_evaluator",
+  "name": "Groundedness",
+  "metric": "groundedness",
+  "score": 4,
+  "label": "pass",
+  "reason": "The response is well-grounded without fabricating content.",
+  "threshold": 3,
+  "passed": true
+}`, { y: contentTop, h: 2.7, fontSize: 12 });
+    T.addBullets(slide, [
+      "score — 1–5 numeric (or true/false for Pro)",
+      "label / passed — pass or fail against the threshold",
+      "reason — the LLM judge's explanation (read this when things fail)",
+      "metric — which evaluator produced this row",
+    ], { y: 4.05, h: 1.1, fontSize: 12 });
+    slide.addText("The reason field is where debugging happens. Read it.", {
+      x: 0.4, y: 5.2, w: 9.2, h: 0.3,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Four fields matter — score, label, reason, metric",
+      "Most attendees only look at score — that's a mistake",
+      "The reason field is the debugging surface",
+      "Read the reasons on failures — that tells you what to fix",
+      "Threshold defaults to 3 — you can override per evaluator",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "The iteration loop" });
+    T.addProse(slide, "Same shape as Day 1's prompt-engineering loop:",
+      { y: contentTop, h: 0.4, fontSize: 14, italic: true });
+    T.addBullets(slide, [
+      "Author an eval dataset (10–15 items)",
+      "Run Retrieval + Groundedness against your current pipeline",
+      "Read the failures — retrieval bug or generation bug?",
+      "Change one thing (chunk size, top_k, prompt, model)",
+      "Rerun. Compare scores.",
+    ], { y: 1.55, h: 2.6 });
+    slide.addText("Change one thing at a time. Three changes at once = you learned nothing about what worked.", {
+      x: 0.4, y: 4.25, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    slide.addText("Same discipline shows up Day 4 for multi-agent workflow eval.",
+      { x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted });
+    T.notes(slide, [
+      "This slide's job: install the iteration habit",
+      "Same five-step loop as Day 1 Module 3 (prompt engineering)",
+      "The 'change one thing' rule is the discipline",
+      "Attendees will resist — 'but I have three ideas' — insist",
+      "The habit lands again Day 4 (multi-agent) and Day 5 (production)",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "LLM-as-judge caveats" });
+    T.addProse(slide, "You're using an LLM to judge an LLM. Some caveats:",
+      { y: contentTop, h: 0.4, fontSize: 14 });
+    T.addBullets(slide, [
+      "Judge bias — the judge model has preferences. Same prompt, different judges = different scores.",
+      "Judge cost — every eval item is an extra LLM call. Budget accordingly.",
+      "Judge drift — model updates can shift baseline scores. Version-pin your judge.",
+      "Judge as a check, not truth — cross-check with the reason field and spot-check the actual failures.",
+    ], { y: 1.55, h: 2.9, fontSize: 12 });
+    slide.addText("Day 5 covers online eval and drift more deeply. Today: know the judge isn't infallible.", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Honesty slide — don't oversell the judge",
+      "Judge bias is real — same eval, different model, different scores",
+      "Judge cost — pin the judge model to something cheap; don't use GPT-5.4 to judge GPT-5.4-mini output",
+      "Drift is a real problem — pin your judge version",
+      "The reason field cross-check is the antidote to blind trust in scores",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Common traps" });
+    T.addBullets(slide, [
+      "Testing end-to-end only — a bad answer might be retrieval OR generation; can't tell without process eval",
+      "Test set too small — 3 items = coin flip; 10–15 is the useful floor",
+      "Test set too large — every eval run costs LLM calls; 50 hand-labeled > 5,000 unlabeled",
+      "Changing three things at once — you learn nothing about what worked",
+      "Ignoring the reason field — score tells you if it failed; reason tells you why",
+      "Judge model = production model — conflict of interest; use a different (usually smaller) judge",
+    ], { y: contentTop, h: 3.5, fontSize: 12 });
+    T.notes(slide, [
+      "Same pattern as Modules 1 and 2 — a full slide of traps",
+      "Six bullets, ~15 sec each",
+      "The 'ignoring reason' bullet is worth reinforcing",
+      "The 'judge = production' bullet is subtle — worth a beat",
+      "Attendees who nail these six traps will do 80% of eval right in production",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Where eval shows up the rest of the week" });
+    T.addBullets(slide, [
+      "Day 3 (single-agent depth) — evaluator patterns extend to tool-use correctness",
+      "Day 4 (multi-agent anchor) — trajectory eval, cost-per-successful-outcome, regression harness",
+      "Day 5 (production) — online eval, drift detection, red-teaming",
+      "Capstone — required elements include a golden set + eval scores",
+    ], { y: contentTop, h: 2.5, fontSize: 13 });
+    slide.addText("The habit that starts today runs through the whole week.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Continuity slide — attendees see where eval reappears",
+      "Day 4 is the anchor — most eval depth lands there",
+      "Day 5 pushes into production eval (drift, red-teaming)",
+      "Capstone requires a golden set + eval score",
+      "The through-line: eval is a workshop-wide theme, not a Day 5 topic",
+    ]);
+  }
+
+  T.notes(T.takeawaysSlide(pres, {
+    tag: "Day 2 · Module 3", title: "Takeaways",
+    bullets: [
+      "Evaluate retrieval separately or you can't tell retrieval bugs from generation bugs.",
+      "Foundry evaluators: Retrieval + Groundedness are the two must-know starting points.",
+      "Groundedness (precision) + Response Completeness (recall) — track both when you have ground truth.",
+      "Small test sets beat big untested claims — 10–15 hand-labeled items is the floor.",
+      "Change one thing, then rerun — same iteration loop as prompt engineering.",
+    ],
+    next: "Tools layer — how agents do things beyond talking.",
+  }), [
+    "Quick recap — five bullets",
+    "Emphasize: Retrieval + Groundedness as the two starter evaluators",
+    "Bridge to Module 4 — 'we've covered Knowledge; now Actions'",
+    "Time check — Modules 1+2+3 combined = ~100 min in",
+  ]);
+
+  return pres.writeFile({ fileName: path.join(OUT_DIR, "module-3-eval-retrieval.pptx") });
+}
+
 // ---------- Main runner ----------
 async function main() {
   console.log("Building Day 2 decks…");
@@ -735,6 +1103,8 @@ async function main() {
   console.log("  module-1-foundry-iq.pptx");
   await buildModule2();
   console.log("  module-2-custom-rag.pptx");
+  await buildModule3();
+  console.log("  module-3-eval-retrieval.pptx");
   console.log("Done.");
 }
 
