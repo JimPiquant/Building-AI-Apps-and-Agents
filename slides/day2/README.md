@@ -4,8 +4,8 @@ Eight modules total (~240 min live · budget). Each markdown file is the source 
 
 | # | Module | Time | Plan | Deck |
 |---|--------|------|------|------|
-| 1 | Foundry IQ deep dive — knowledge and grounding | 35m | (in progress) | (pending) |
-| 2 | Custom RAG when you need it — AI Search + vector stores | 40m | (pending) | (pending) |
+| 1 | Foundry IQ deep dive — knowledge and grounding | 35m | [`module-1-foundry-iq.md`](module-1-foundry-iq.md) | [`decks/day2/module-1-foundry-iq.pptx`](../../decks/day2/module-1-foundry-iq.pptx) |
+| 2 | Custom RAG when you need it — AI Search + vector stores | 40m | [`module-2-custom-rag.md`](module-2-custom-rag.md) | [`decks/day2/module-2-custom-rag.pptx`](../../decks/day2/module-2-custom-rag.pptx) |
 | 3 | Evaluating retrieval | 25m | (pending) | (pending) |
 | 4 | Tools layer deep dive — function calling model | 35m | (pending) | (pending) |
 | 5 | Foundry Toolbox in practice | 25m | (pending) | (pending) |

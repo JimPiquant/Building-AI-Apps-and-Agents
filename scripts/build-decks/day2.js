@@ -354,11 +354,387 @@ agent = Agent(
   return pres.writeFile({ fileName: path.join(OUT_DIR, "module-1-foundry-iq.pptx") });
 }
 
+// ---------- MODULE 2 — Custom RAG on AI Search ----------
+function buildModule2() {
+  const pres = T.newDeck(new pptxgen());
+
+  T.notes(T.titleSlide(pres, {
+    eyebrow: "DAY 2 · MODULE 2 · 40 MIN",
+    title: "Custom RAG on AI Search",
+    subtitle: "When Foundry IQ isn't the right answer",
+    footer: "Building AI Apps and Agents",
+  }), [
+    "Second knowledge module — the counterweight to Module 1",
+    "40 min — the longest module of Day 2",
+    "Frame as complementary to IQ, not competitive",
+    "Attendees should leave able to pick IQ vs. classic RAG per scenario",
+    "This module is code-heavier than Module 1 — one code slide each for query and MAF tool wiring",
+  ]);
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Why this module" });
+    T.addProse(slide,
+      "Module 1 introduced Foundry IQ — the managed knowledge layer. It's the right answer most of the time.",
+      { y: contentTop, h: 0.6, fontSize: 15 });
+    T.addProse(slide, "Sometimes it isn't. This module covers the tools you reach for when it isn't:",
+      { y: contentTop + 0.7, h: 0.4, fontSize: 14 });
+    T.addBullets(slide, [
+      "Your source isn't a supported IQ connector",
+      "You need control over indexing, chunking, or ranking that IQ doesn't yet expose",
+      "You're already deep into an AI Search index with heavy customization",
+      "You have latency SLAs below what IQ's pipeline delivers",
+    ], { y: contentTop + 1.15, h: 2.6 });
+    slide.addText("Same platform under the hood — Azure AI Search. Different surface.", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Set the frame — IQ is usually right; sometimes it isn't",
+      "Four bullets = the diagnostic criteria for 'not IQ'",
+      "Emphasize: this is the same platform (AI Search) either way",
+      "The choice is IQ's managed surface vs. classic RAG's direct surface",
+      "Not either-or — real systems mix",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "The classic RAG pattern — recap" });
+    T.addProse(slide, "Your app orchestrates three steps:", { y: contentTop, h: 0.4, fontSize: 14 });
+    T.addBullets(slide, [
+      "Retrieve — send a query to AI Search, get back the top-K passages",
+      "Augment — inject those passages into the prompt for your LLM",
+      "Generate — LLM produces an answer grounded on what you retrieved",
+    ], { y: contentTop + 0.5, h: 2.0 });
+    T.addProse(slide,
+      "Simple. Fast. Fewer moving parts than agentic retrieval. You own the query pipeline end-to-end.",
+      { y: contentTop + 2.65, h: 0.55, fontSize: 13, italic: true });
+    slide.addText("IQ hides steps 1 and 2 behind agentic retrieval; classic RAG puts you in the driver's seat.", {
+      x: 0.4, y: 4.65, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "R-A-G — retrieve, augment, generate",
+      "Attendees should recognize this from any RAG article they've read",
+      "Contrast: IQ's pipeline plans + parallelizes for you (Module 1 slide on agentic retrieval)",
+      "Classic RAG's win = simpler, faster, fewer failure modes",
+      "Classic RAG's loss = you build it and eval it yourself",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Five RAG challenges — and how AI Search addresses them" });
+    T.addTable(slide, [
+      ["Challenge", "AI Search answer"],
+      ["Query understanding — users' words rarely match your docs", "Hybrid search + semantic ranker"],
+      ["Multi-source data — content is scattered", "Indexers pull from 10+ sources; skills pipeline preprocesses"],
+      ["Token constraints — LLM context isn't infinite", "Chunking + top-K + scoring profiles"],
+      ["Response time — users expect seconds", "Millisecond queries; single-shot; you control retries"],
+      ["Security — private content stays private", "Document-level trimming, filter-based ACLs, private endpoints"],
+    ], { colW: [4.2, 5.0], rowH: 0.55, fontSize: 12 });
+    slide.addText("Module 1 solved these with IQ's LLM-driven pipeline. Classic RAG solves them with your own orchestration.", {
+      x: 0.4, y: 4.9, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Same five challenges as Module 1 — you're showing the second solution to the same problems",
+      "Walk each row briefly (~10 sec)",
+      "For attendees who've built RAG before: this table is 'the answers you already know'",
+      "For attendees who haven't: this is the map",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Content pipeline — indexers and skillsets" });
+    T.addBullets(slide, [
+      "Indexers — pull content from Azure Blob, OneLake, SharePoint, Cosmos, SQL, and other sources on a schedule; keep the index fresh",
+      "Skillsets — apply transformations during indexing: OCR, image analysis, text splitting, embedding generation, custom skills",
+      "Push API — when you'd rather pre-process content yourself and just load it in",
+    ], { y: contentTop, h: 3.0 });
+    slide.addText("Rule: prefer indexers + skillsets when your source is a supported connector. Push API for full control.", {
+      x: 0.4, y: 4.65, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Three paths in — indexers, skillsets, push API",
+      "Indexers + skillsets = the batteries-included path",
+      "Skills include OCR, image analysis, text-split, embedding gen, custom Azure Function skills",
+      "Push API when your source isn't supported or you have a heavy custom pipeline already",
+      "For most workshop scenarios: indexer + integrated vectorization skill",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "The three query modes" });
+    T.addTable(slide, [
+      ["Mode", "What it does", "When"],
+      ["Keyword (full text)", "Inverted index, BM25, exact-term matching", "Structured content, exact-match, shared vocabulary"],
+      ["Vector", "Similarity over embeddings — matches concepts", "Conversational or vague queries, cross-language"],
+      ["Hybrid", "Both in one query — merged and reranked", "Almost always. Best recall."],
+    ], { y: contentTop, colW: [1.9, 3.7, 3.6], rowH: 0.65, fontSize: 12 });
+    slide.addText("Default recommendation for classic RAG: hybrid search + semantic ranker. Every Learn reference lands there.", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Three modes = three tools. Hybrid combines the first two.",
+      "Keyword is not obsolete — exact-match queries (product SKUs, IDs) still crush keyword",
+      "Vector without keyword can miss exact matches",
+      "Hybrid gets you the best of both — this is the Learn default",
+      "The lab uses hybrid + semantic ranker",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Hybrid search — how it actually works" });
+    T.addCode(slide, `results = search_client.search(
+    search_text="How do I set up a Prompt agent?",
+    vector_queries=[VectorizableTextQuery(
+        text="How do I set up a Prompt agent?",
+        k_nearest_neighbors=5,
+        fields="contentVector",
+    )],
+    query_type=QueryType.SEMANTIC,
+    semantic_configuration_name="default",
+    top=10,
+)`, { y: 1.2, h: 3.1, fontSize: 12 });
+    T.addBullets(slide, [
+      "Same query, two lanes — keyword search on search_text; vector search on the same string embedded",
+      "Reciprocal Rank Fusion (RRF) merges the two result lists",
+      "Semantic ranker rescores the top 50 by learned relevance",
+      "Returns the top-K to your app",
+    ], { y: 4.45, h: 0.8, fontSize: 11 });
+    T.notes(slide, [
+      "One method call does hybrid + semantic ranker",
+      "search_text = keyword lane; vector_queries = vector lane",
+      "RRF is the merge algorithm — no LLM involved yet",
+      "Semantic ranker (query_type=SEMANTIC) rescores the merged top 50",
+      "This is the pipeline attendees will hand-roll in Part C of the lab — 20 lines",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Semantic ranker — the quiet weapon" });
+    T.addProse(slide,
+      "Turns query understanding from 'keyword lookup' into 'did this passage actually answer the question?'",
+      { y: 1.15, h: 0.7, fontSize: 14, italic: true });
+    T.addBullets(slide, [
+      "Rescores your top 50 results using a learned model",
+      "Extracts semantic captions — the sentence(s) that best answer the query",
+      "Extracts semantic answers — extractive answer text, when the passage has one",
+      "Same API call — set query_type=\"semantic\" and pick a semantic configuration",
+    ], { y: 1.95, h: 2.4 });
+    slide.addText("Cost: pennies per query at typical volumes. Quality lift: usually 15–30% higher answer relevance. Almost always on.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.55,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "This is the single highest-leverage feature in classic RAG",
+      "Learned model — Microsoft trains + updates it",
+      "Semantic captions = the actual sentence that answered — great for citations",
+      "Semantic answers = extractive answer text when the passage is a Q&A style match",
+      "Attendees often skip it thinking they'll save cost — the quality lift is huge",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Chunking strategy" });
+    T.addProse(slide, "The single biggest lever for retrieval quality.",
+      { y: contentTop, h: 0.4, fontSize: 14, italic: true, bold: true });
+    T.addTable(slide, [
+      ["Approach", "Pros", "Cons"],
+      ["Fixed-size (e.g., 500 tokens)", "Simple, predictable", "Cuts across semantic boundaries"],
+      ["Semantic (paragraph, section)", "Chunks respect meaning", "Uneven sizes; needs document structure"],
+      ["Sliding window with overlap", "Preserves context across chunks", "Duplicates content; more storage"],
+      ["Structured (per-record)", "Perfect for tabular / DB content", "N/A for unstructured text"],
+    ], { y: 1.55, colW: [2.6, 3.3, 3.3], rowH: 0.55, fontSize: 12 });
+    slide.addText("Start with fixed-size 500-token chunks with 100-token overlap. Tune from there based on your eval scores (Module 3).", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Say it out loud: chunking is the biggest quality lever",
+      "Attendees will get stuck tuning prompts when the fix is bigger chunks / smaller chunks / better boundaries",
+      "500 + 100 overlap is the safe starting point",
+      "Semantic chunking (respecting section boundaries) is the next tuning step",
+      "Module 3 shows how to measure whether your chunking is working",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Embedding models" });
+    T.addBullets(slide, [
+      "text-embedding-3-small — most workshop scenarios; cheap, fast, 1536-dim, good multilingual",
+      "text-embedding-3-large — better recall on hard queries; 3072-dim; more storage/compute",
+      "Integrated vectorization in AI Search — pipe raw text through indexers; the service embeds it for you",
+      "Match query-time embedding to index-time embedding (same model, same dimensions)",
+    ], { y: contentTop, h: 3.0 });
+    slide.addText("Building today? text-embedding-3-small with integrated vectorization: 90% of the way with 10% of the code.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Two embedding models most attendees will pick between",
+      "text-embedding-3-small = the sensible default",
+      "text-embedding-3-large is a 2x storage cost — earn it with eval",
+      "Integrated vectorization = AI Search calls the embedding model for you at index and query time",
+      "Match dimensions rule = the #1 trap on this slide. Different dim = broken query.",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Custom RAG in your MAF agent" });
+    T.addProse(slide,
+      "Wire the search call into an MAF tool. The agent decides when to retrieve; your tool does the work.",
+      { y: 1.15, h: 0.6, fontSize: 13 });
+    T.addCode(slide, `from agent_framework import Agent, tool
+from azure.search.documents import SearchClient
+
+@tool(approval_mode="never_require")
+def search_docs(query: str) -> str:
+    """Search the docs index for content that answers a technical question.
+    Use this whenever the user asks something specific about Foundry, MAF, or agents.
+    Returns the top passages with citations."""
+    results = search_client.search(
+        search_text=query,
+        vector_queries=[VectorizableTextQuery(text=query, k_nearest_neighbors=5, fields="contentVector")],
+        query_type="semantic",
+        semantic_configuration_name="default",
+        top=5,
+    )
+    return format_results_with_citations(results)
+
+agent = Agent(client=..., instructions="Cite sources from search_docs.", tools=[search_docs])`,
+      { y: 1.85, h: 3.0, fontSize: 11 });
+    slide.addText("Your tool docstring is the LLM's guide for when to call it. Day 1 Module 3 lesson pays off here.", {
+      x: 0.4, y: 4.95, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "The MAF integration is trivial — wrap the search call in a @tool",
+      "Agent decides when to call it (based on the docstring)",
+      "Docstring is your control surface — good docstring = agent calls it correctly",
+      "Format results with citations — attendees do this in the lab",
+      "Same @tool decorator we teach in Module 6 — one primitive, two uses",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Security — document-level trimming" });
+    T.addBullets(slide, [
+      "Store user/group tags on each document at ingestion time",
+      "Pass the caller's identity or group memberships as a filter at query time",
+      "AI Search returns only documents the caller is authorized to see",
+      "Same query, different results per user — the classic RAG equivalent of IQ's permission model",
+    ], { y: contentTop, h: 2.8 });
+    slide.addText("Trade-off vs. IQ: you build the ACL sync pipeline yourself. IQ syncs from SharePoint / OneLake for you.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Classic RAG can do permission-aware retrieval — but you build the ACL sync",
+      "Store tags on each doc (user IDs, group IDs)",
+      "Filter query with the caller's identity — AI Search does the intersection",
+      "The unglamorous part: sync those tags when SharePoint/OneLake ACLs change",
+      "This is why IQ's managed ACL sync is a big deal for enterprise content",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "When to choose classic RAG over Foundry IQ" });
+    T.addTwoColumn(slide,
+      [
+        "You need GA features only — no preview surface for prod",
+        "Existing orchestration or heavily-tuned index to preserve",
+        "Fine-grained control over pipeline, ranking, filtering",
+        "Very tight latency budget",
+        "Source IQ doesn't yet connect to",
+      ],
+      [
+        "Source is a supported IQ connector",
+        "Multiple agents will share the knowledge base",
+        "Need permission-aware answers per caller without building it",
+        "Want the agentic retrieval pipeline for free",
+      ],
+      { leftHeader: "Classic RAG", rightHeader: "Foundry IQ" }
+    );
+    slide.addText("Not either-or in real systems — often IQ for most content, classic RAG for a specialty index.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Mirror of Module 1's decision framework",
+      "Left column = the classic RAG signal set",
+      "Right column = the IQ signal set (Module 1)",
+      "Real systems mix — say it explicitly",
+      "Ask: 'anyone see themselves needing both?' — expect nods",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Sample repos to steal from" });
+    T.addBullets(slide, [
+      "azure-search-openai-demo — reference RAG chat app; agentic-retrieval-updated; ~15-min deploy via azd",
+      "azure-search-classic-rag — classic RAG quickstarts in REST, Python, .NET, Java, JS, TS",
+      "azure-search-vector-samples — vector-search patterns beyond the basics",
+      "microsoft/rag-time — classic RAG time-journey scenarios",
+    ], { y: contentTop, h: 3.0 });
+    slide.addText("Repos are the source of truth for working code; Learn docs for concepts. Both apply.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "These four repos cover most of what attendees will need to look at",
+      "azure-search-openai-demo is the biggest — full azd-deployable chat app",
+      "azure-search-classic-rag is the fastest way to see classic RAG in your language",
+      "azure-search-vector-samples for edge cases (multimodal, custom analyzers)",
+      "rag-time is more tutorial-flavored",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Common traps" });
+    T.addBullets(slide, [
+      "Skipping the semantic ranker — 'it costs money' is a bad reason at typical volumes. Turn it on.",
+      "Wrong chunk size — 100-token chunks lose context; 4000-token chunks blow past LLM context. 500 is safe.",
+      "Mismatched embedding models — index with -small, query with -large. Vector queries return garbage. Match dimensions.",
+      "Not evaluating retrieval separately — end-to-end tests can't tell retrieval bugs from generation bugs. Module 3 fixes this.",
+      "No filter-based security — ships without ACLs, retrofit is painful.",
+    ], { y: contentTop, h: 3.3, fontSize: 12 });
+    T.notes(slide, [
+      "Same shape as Module 1's traps slide — five bullets, ~40 sec each",
+      "Mismatched embedding models is the sneakiest — no error, just bad results",
+      "The 'evaluate retrieval separately' bullet sets up Module 3",
+      "The 'no filter-based security' bullet reinforces the classic RAG trade-off vs. IQ",
+    ]);
+  }
+
+  T.notes(T.takeawaysSlide(pres, {
+    tag: "Day 2 · Module 2", title: "Takeaways",
+    bullets: [
+      "Classic RAG = you own the query pipeline. Same platform as IQ (Azure AI Search); different surface.",
+      "Default recipe: hybrid search + semantic ranker. Rarely wrong.",
+      "Chunk size is the biggest quality lever. Start at 500 tokens; tune with eval.",
+      "Wire retrieval into a tool so the agent decides when to search; tool docstring is your control surface.",
+      "Mix and match IQ and classic RAG in real systems.",
+    ],
+    next: "Evaluating retrieval — how you actually know if your knowledge layer works.",
+  }), [
+    "Quick recap — five bullets",
+    "Emphasize: hybrid + semantic ranker is the recipe worth memorizing",
+    "Bridge to Module 3: 'you can't tune what you don't measure'",
+    "Time check — Modules 1+2 combined should be about 75 min in (halfway to lunch or first break)",
+  ]);
+
+  return pres.writeFile({ fileName: path.join(OUT_DIR, "module-2-custom-rag.pptx") });
+}
+
 // ---------- Main runner ----------
 async function main() {
   console.log("Building Day 2 decks…");
   await buildModule1();
   console.log("  module-1-foundry-iq.pptx");
+  await buildModule2();
+  console.log("  module-2-custom-rag.pptx");
   console.log("Done.");
 }
 
