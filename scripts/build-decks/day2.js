@@ -1096,6 +1096,479 @@ function buildModule3() {
   return pres.writeFile({ fileName: path.join(OUT_DIR, "module-3-eval-retrieval.pptx") });
 }
 
+// ---------- MODULE 4 — Tools Layer Deep Dive ----------
+function buildModule4() {
+  const pres = T.newDeck(new pptxgen());
+
+  T.notes(T.titleSlide(pres, {
+    eyebrow: "DAY 2 · MODULE 4 · 35 MIN",
+    title: "Tools Layer Deep Dive",
+    subtitle: "How agents do things beyond talking",
+    footer: "Building AI Apps and Agents",
+  }), [
+    "Framing module for Actions layer",
+    "35 min — concepts and API surface, not lab code (that's Module 6)",
+    "Attendees leave knowing HOW function calling works under the hood",
+    "Bridge from Knowledge (Modules 1–3) to Actions (Modules 4–7)",
+    "Some code slides but they're for understanding — Module 6 is the hands-on",
+  ]);
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Where we are in the stack" });
+    T.addProse(slide,
+      "Modules 1–3 covered Knowledge. Modules 4–7 cover Actions.",
+      { y: contentTop, h: 0.5, fontSize: 14, italic: true });
+    T.addBullets(slide, [
+      "Model — your Foundry-deployed model",
+      "Runtime — Prompt agent, Hosted agent, your own code + Responses API",
+      { text: "Actions ← Modules 4–7", indent: 0 },
+      "Knowledge — Modules 1–3",
+      "Ops — Day 5",
+    ], { y: contentTop + 0.7, h: 2.7 });
+    slide.addText("Actions = how the agent DOES things. Retrieval = how it KNOWS things.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Re-anchor in the five-layer stack",
+      "Half of Day 2 (Modules 1–3) covered Knowledge",
+      "Modules 4–7 now cover Actions",
+      "The italic line — Actions vs Knowledge in one sentence",
+      "Set expectation: Modules 4–7 build on each other",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Module 4's job" });
+    T.addProse(slide, "This module is the framing module for Actions.",
+      { y: contentTop, h: 0.4, fontSize: 14, italic: true });
+    T.addBullets(slide, [
+      "Module 4 (this one) — what function calling is, tool schema, error contracts, streaming — the concepts",
+      "Module 5 — Foundry Toolbox (managed tools you attach)",
+      "Module 6 — authoring your own function tools in MAF",
+      "Module 7 — combining knowledge + tools (bringing it together)",
+    ], { y: contentTop + 0.55, h: 2.8, fontSize: 13 });
+    slide.addText("You leave Module 4 knowing HOW tool calling works under the hood. Module 6 turns that into code.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Set expectation — this is concepts, not lab code",
+      "Attendees will see code snippets for understanding, not to type in",
+      "Module 6 is where hands-on tool authoring happens",
+      "The 4-module structure is deliberate — don't jump ahead",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "The function-calling model in one picture" });
+    T.addCode(slide, `User: "What's the weather in Amsterdam?"
+
+  → Agent calls model with:
+       - system prompt (instructions)
+       - user message
+       - list of tool schemas [{name, description, params}, ...]
+
+  → Model returns: tool_call(name="get_weather", args={"location": "Amsterdam"})
+
+  → Agent invokes get_weather("Amsterdam") LOCALLY, gets: "cloudy, 15°C"
+
+  → Agent calls model again with tool result appended
+
+  → Model returns: "The weather in Amsterdam is cloudy with a high of 15°C."`,
+      { y: 1.2, h: 3.5, fontSize: 11 });
+    slide.addText("The model never runs your code. It emits INTENT — your process runs the code. This is the fundamental contract.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Walk each arrow — 15 seconds per line",
+      "Emphasize: 'the model never runs your code'",
+      "This is the fundamental contract of function calling",
+      "The model emits intent (tool_call); your process executes",
+      "Second model call includes the tool result — that's how the final answer gets grounded",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Why this works — the model as decision-maker" });
+    T.addProse(slide, "The model doesn't know how to check the weather. It knows:",
+      { y: contentTop, h: 0.5, fontSize: 14 });
+    T.addBullets(slide, [
+      "When to use a weather tool (based on the tool description)",
+      "What arguments to pass (based on the parameter schema and descriptions)",
+      "What to do with the result (based on the tool's return value and shape)",
+    ], { y: contentTop + 0.6, h: 2.0 });
+    T.addProse(slide,
+      "The model is picking from a menu of tools you defined. Your tool schema IS the menu. Bad schema = bad picks.",
+      { y: 3.65, h: 1.0, fontSize: 14, italic: true, bold: true });
+    T.notes(slide, [
+      "Reframe: the model is a decision-maker, not an executor",
+      "Three things the model uses: description, param schema, return shape",
+      "Attendees who nail this understand why 'schema is a prompt' matters",
+      "The 'menu' metaphor — well-designed menu = right choices",
+      "Set up the next few slides on schema anatomy",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Tool schema anatomy" });
+    T.addProse(slide, "Every function tool exposes four things to the model:",
+      { y: 1.15, h: 0.4, fontSize: 14 });
+    T.addTable(slide, [
+      ["Field", "What the model uses it for"],
+      ["Name", "Referenced when calling — should be a clean identifier"],
+      ["Description", "The primary 'when to call this' signal"],
+      ["Parameter schema", "Types, required/optional, per-param descriptions"],
+      ["Return type", "What comes back after the tool runs"],
+    ], { y: 1.7, colW: [2.5, 6.7], rowH: 0.55, fontSize: 12 });
+    slide.addText("The description carries more weight than most attendees realize. Modules 3 and 6 both come back to this.", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Four fields — name, description, params, return",
+      "Description is the biggest lever — most attendees underinvest",
+      "Parameter schemas can carry type hints, enums, min/max",
+      "Return type shapes how the model uses the result",
+      "Same as Day 1 Module 3's 'docstring quality = model tool-use quality'",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "In MAF — the shortest possible tool" });
+    T.addProse(slide, "Python — any function is a tool:", { y: 1.15, h: 0.35, fontSize: 13 });
+    T.addCode(slide, `def get_weather(
+    location: Annotated[str, Field(description="The location to get the weather for.")],
+) -> str:
+    """Get the weather for a given location."""
+    return f"The weather in {location} is cloudy with a high of 15°C."
+
+agent = Agent(
+    client=FoundryChatClient(credential=AzureCliCredential()),
+    instructions="You are a helpful weather assistant.",
+    tools=[get_weather],
+)`, { y: 1.55, h: 2.8, fontSize: 11 });
+    slide.addText("Docstring → description. Field(description=...) → parameter description. Type hints → schema.", {
+      x: 0.4, y: 4.4, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    slide.addText("Module 6 goes deeper on authoring. Note the shape now.", {
+      x: 0.4, y: 4.8, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Simplest possible tool — just a Python function passed to tools=",
+      "Docstring becomes the description",
+      "Annotated[type, Field(description=...)] becomes the parameter description",
+      "Type hints define the schema",
+      "No decorator needed for the simple case",
+      "Preview Module 6 — this is what attendees will build later today",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "In MAF — the C# equivalent" });
+    T.addProse(slide, "Same shape, different syntax:", { y: 1.15, h: 0.35, fontSize: 13 });
+    T.addCode(slide, `[Description("Get the weather for a given location.")]
+static string GetWeather(
+    [Description("The location to get the weather for.")] string location)
+    => $"The weather in {location} is cloudy with a high of 15°C.";
+
+AIAgent agent = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential())
+    .AsAIAgent(
+        model: "gpt-5.4-mini",
+        instructions: "You are a helpful assistant",
+        tools: [AIFunctionFactory.Create(GetWeather)]);`, { y: 1.55, h: 2.7, fontSize: 11 });
+    slide.addText("Attribute-based description; AIFunctionFactory.Create wraps the method. Same primitives, same model-facing contract.", {
+      x: 0.4, y: 4.4, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "For attendees who write C# — same primitives, different syntax",
+      "[Description(...)] attribute on method and parameter",
+      "AIFunctionFactory.Create wraps the method into an AIFunction",
+      "Lab is Python-only — this slide is for lecture reference",
+      "The model-facing contract is identical: same name, description, params, return",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "The @tool decorator — when you want control" });
+    T.addProse(slide, "Explicit name, description, and other options via @tool:", { y: 1.15, h: 0.4, fontSize: 13 });
+    T.addCode(slide, `from agent_framework import tool
+
+@tool(name="weather_tool", description="Retrieves weather information for any location")
+def get_weather(
+    location: Annotated[str, Field(description="The location to get the weather for.")],
+) -> str:
+    return f"The weather in {location} is cloudy with a high of 15°C."`,
+      { y: 1.6, h: 2.0, fontSize: 12 });
+    T.addBullets(slide, [
+      "The function's Python name isn't what you want the model to see",
+      "You want the description in one place (not a docstring)",
+      "You need parameters like approval_mode (Day 5) or explicit schemas (next slide)",
+    ], { y: 3.75, h: 1.4, fontSize: 12 });
+    T.notes(slide, [
+      "Two patterns: implicit (docstring) or explicit (@tool)",
+      "Both coexist — pick per tool",
+      "@tool gives you control over what the model sees",
+      "Also unlocks approval_mode, explicit schemas, etc.",
+      "Attendees will see both patterns in the lab",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Explicit schemas" });
+    T.addProse(slide, "When you need full control, pass a Pydantic model or a raw JSON schema:",
+      { y: 1.15, h: 0.4, fontSize: 13 });
+    T.addCode(slide, `class WeatherInput(BaseModel):
+    location: Annotated[str, Field(description="The city name")]
+    unit: Annotated[str, Field(description="celsius or fahrenheit")] = "celsius"
+
+@tool(name="get_weather", description="Get current weather.", schema=WeatherInput)
+def get_weather(location: str, unit: str = "celsius") -> str:
+    return f"Weather in {location} is 22 degrees {unit}."`,
+      { y: 1.6, h: 2.2, fontSize: 12 });
+    T.addBullets(slide, [
+      "Schema documented in one place (not spread across type hints)",
+      "Generating tools programmatically",
+      "Need enum constraints, min/max, or validation type hints can't express",
+    ], { y: 3.95, h: 1.2, fontSize: 12 });
+    T.notes(slide, [
+      "Explicit schemas = maximum control",
+      "Pydantic model or raw JSON schema dict — both work",
+      "Use when you need constraints (enum, min/max, format) beyond type hints",
+      "Also useful when generating tools programmatically at startup",
+      "Most attendees start with implicit schemas — graduate to this later",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Runtime context — hidden from the model" });
+    T.addProse(slide,
+      "Some values shouldn't be model-visible: the calling user, session, DB handle.",
+      { y: 1.15, h: 0.4, fontSize: 13 });
+    T.addCode(slide, `@tool(approval_mode="never_require")
+def get_weather(
+    location: Annotated[str, Field(description="The location to get the weather for.")],
+    ctx: FunctionInvocationContext,
+) -> str:
+    user_id = ctx.kwargs.get("user_id", "unknown")
+    return f"The weather in {location} is cloudy with a high of 15°C."
+
+await agent.run("What's the weather in Amsterdam?",
+    function_invocation_kwargs={"user_id": "user_123"})`,
+      { y: 1.6, h: 2.6, fontSize: 11 });
+    slide.addText("ctx is injected by the framework. Hidden from the schema the model sees. Use for logging, personalization, tenancy.", {
+      x: 0.4, y: 4.35, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Pattern: model-facing args vs. framework-facing context",
+      "ctx: FunctionInvocationContext — MAF fills this in",
+      "The model never sees ctx in the schema",
+      "Use for user_id, tenant, session, DB handles, feature flags",
+      "Caller passes runtime values via function_invocation_kwargs",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Tool description patterns that work" });
+    T.addProse(slide, "The description is a mini-prompt. Same discipline as Day 1 Module 3.",
+      { y: 1.15, h: 0.4, fontSize: 13, italic: true });
+    T.addBullets(slide, [
+      "What it does — one clear sentence",
+      "When to use it — the condition that triggers this tool",
+      "When NOT to use it — differentiate from other tools",
+      "Parameter descriptions — meaning, valid values, examples",
+    ], { y: 1.65, h: 2.0, fontSize: 12 });
+    T.addCode(slide, `@tool
+def create_ticket(title: str, body: str, priority: str) -> str:
+    """Create a support ticket for a problem that needs a human engineer.
+
+    Use this when the user reports a problem you cannot answer from
+    documentation. Do NOT use for questions you can answer directly.
+
+    Priority must be one of: low, med, high.
+    """`, { y: 3.7, h: 1.6, fontSize: 11 });
+    T.notes(slide, [
+      "Four-part structure works for most tools",
+      "'When NOT to use' differentiates from overlapping tools",
+      "Same discipline attendees learned Day 1 Module 3 (prompt engineering)",
+      "Bad descriptions = wrong tool at wrong time",
+      "The create_ticket example carries into today's Part B lab",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Streaming tool progress" });
+    T.addProse(slide, "For long-running tools, don't block the user. MAF streams tool-call events alongside model tokens:",
+      { y: 1.15, h: 0.6, fontSize: 12 });
+    T.addCode(slide, `async for event in agent.run("Look up my account status", stream=True):
+    if event.type == "tool_call_start":
+        print(f"→ calling {event.tool_name}({event.args})")
+    elif event.type == "tool_call_result":
+        print(f"← {event.tool_name} returned")
+    elif event.text:
+        print(event.text, end="", flush=True)`, { y: 1.85, h: 2.3, fontSize: 12 });
+    slide.addText("Tool call, tool result, tokens — all in one async stream. Day 3 covers streaming UX and cancellation.", {
+      x: 0.4, y: 4.3, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Streaming isn't just for tokens — tool events stream too",
+      "Three event types: tool_call_start, tool_call_result, text",
+      "UX pattern: show 'checking your account…' while the tool runs",
+      "Day 3 goes deeper on streaming (backpressure, cancellation, error events)",
+      "Attendees see this fire in Module 6's lab today",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Error contracts" });
+    T.addProse(slide, "Your tool will fail. What does it return?", { y: contentTop, h: 0.4, fontSize: 14 });
+    T.addBullets(slide, [
+      "String describing the error — model can incorporate ('couldn't reach the service, try again')",
+      "Structured error object — model can retry with different args or route to a different tool",
+      "Raise an exception — MAF surfaces it back to the model with the exception message",
+    ], { y: 1.6, h: 2.2, fontSize: 12 });
+    slide.addText("Rule of thumb: return errors as data when you want the model to recover. Raise when the failure is unrecoverable.", {
+      x: 0.4, y: 3.9, w: 9.2, h: 0.55,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    slide.addText("Day 3 covers robust agents in depth — retries, timeouts, guardrails.",
+      { x: 0.4, y: 4.65, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted });
+    T.notes(slide, [
+      "Errors matter — every tool WILL fail eventually",
+      "Three options: string, structured error, exception",
+      "The rule: 'errors as data' when the model should recover",
+      "Raise exceptions only when nothing sensible can be done",
+      "Day 3 covers full robust-agent patterns",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Approval mode" });
+    T.addProse(slide,
+      "For tools with side effects (create ticket, send email, delete record), you don't always want the model to fire them autonomously.",
+      { y: contentTop, h: 0.7, fontSize: 12 });
+    T.addCode(slide, `@tool(approval_mode="always_require")
+def send_email(to: str, subject: str, body: str) -> str:
+    """Send an email. Requires user approval before firing."""
+    ...`, { y: 1.75, h: 1.4, fontSize: 12 });
+    T.addBullets(slide, [
+      "never_require — safe / idempotent tools (read-only, no side effects)",
+      "always_require — every call needs human approval",
+      "Heuristic — MAF's default: approve safe patterns, prompt on risky ones",
+    ], { y: 3.3, h: 1.5, fontSize: 12 });
+    slide.addText("Day 5 (Responsible AI) revisits this for production HITL patterns.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Side effects = things you can't undo",
+      "Three approval modes — pick per tool",
+      "never_require for read-only tools",
+      "always_require for anything that writes",
+      "Default heuristic is smart but not psychic — override for risky tools",
+      "Day 5 covers full production HITL patterns",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Three kinds of tools you'll encounter" });
+    T.addTable(slide, [
+      ["Kind", "What it is", "Where"],
+      ["Function tool", "Your Python or C# code, exposed to the model", "Module 6 today"],
+      ["Foundry Toolbox tool", "Managed tool in the Foundry catalog (Bing, code interpreter, SharePoint…)", "Module 5 today"],
+      ["MCP tool", "Any tool exposed by an MCP server, local or remote", "Day 3"],
+    ], { colW: [2.2, 5.5, 2.0], rowH: 0.7, fontSize: 12 });
+    slide.addText("All three go through the same function-calling contract. Same schema shape. Same tool call → tool result flow.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    slide.addText("Differences: who wrote the code, where it runs, who authenticates it.", {
+      x: 0.4, y: 4.95, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Three tool origins, one contract",
+      "Function tool — you wrote the code, runs in your process",
+      "Toolbox tool — Microsoft (or whoever) wrote it, managed by Foundry",
+      "MCP tool — any MCP server, local or remote",
+      "The model doesn't care where the code lives — sees the same schema",
+      "Attendees will see all three across today (function + Toolbox) and Day 3 (MCP)",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "The tool-vs-knowledge decision" });
+    T.addProse(slide,
+      "Attendees will build things where either could work: 'should I make this a tool call to search docs, or attach a knowledge base?'",
+      { y: contentTop, h: 0.8, fontSize: 12 });
+    T.addBullets(slide, [
+      "Tool when the retrieval is one option among many (agent decides)",
+      "Knowledge when the retrieval should happen on every relevant query (retrieval is grounding, not action)",
+    ], { y: 2.1, h: 1.6, fontSize: 13 });
+    slide.addText("You can have both. Common pattern: knowledge base for background grounding + function tools for actions.", {
+      x: 0.4, y: 4.0, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    slide.addText("Module 7 revisits this with instruction-design patterns.", {
+      x: 0.4, y: 4.7, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Common attendee question — 'should search be a tool or a knowledge base?'",
+      "Tool = 'agent may choose to call'",
+      "Knowledge = 'retrieval always happens for grounding'",
+      "Both together is the common production pattern",
+      "Module 7 covers instruction patterns for combining them",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "Common traps" });
+    T.addBullets(slide, [
+      "Vague tool descriptions — 'gets data' — model has no signal for when to call",
+      "Overlapping tools — two tools with fuzzy descriptions; model picks wrong one",
+      "Too many tools — 30 tools registered; model gets confused. Rule: <10 per agent.",
+      "Side effects in 'read' tools — check_status also logs, mutates, or bills. Keep side effects in write-tagged tools.",
+      "Missing parameter descriptions — model guesses arg values. Bad guesses = bugs.",
+      "Silent exceptions — tool raises, model doesn't know why. Return errors as data.",
+    ], { y: contentTop, h: 3.5, fontSize: 12 });
+    T.notes(slide, [
+      "Six traps — same pattern as Modules 1–3",
+      "The 'too many tools' bullet is worth pausing on — most attendees overload",
+      "'Side effects in read tools' is subtle — worth an example",
+      "Silent exceptions was already covered in the error-contracts slide",
+      "Attendees who avoid these six do 80% of tool design right in production",
+    ]);
+  }
+
+  T.notes(T.takeawaysSlide(pres, {
+    tag: "Day 2 · Module 4", title: "Takeaways",
+    bullets: [
+      "Function calling = the model picks tools from a menu you defined. Bad menu = bad picks.",
+      "Tool schema is a prompt. Name, description, parameter descriptions all matter.",
+      "In MAF, any Python function or C# method can be a tool — decorators and attributes give finer control.",
+      "Runtime context via ctx keeps sensitive values out of the model.",
+      "Return errors as data, not exceptions, when you want the model to recover.",
+      "All tools (function, Toolbox, MCP) share the same contract — different origins, same shape.",
+    ],
+    next: "Foundry Toolbox — managed tools you attach without writing.",
+  }), [
+    "Six-bullet recap — the biggest concept load of Day 2",
+    "Emphasize: 'schema is a prompt' — repeat it",
+    "Bridge to Module 5 — 'sometimes you don't write the tool at all'",
+    "Time check — Modules 1+2+3+4 combined = ~135 min in",
+  ]);
+
+  return pres.writeFile({ fileName: path.join(OUT_DIR, "module-4-tools-layer.pptx") });
+}
+
 // ---------- Main runner ----------
 async function main() {
   console.log("Building Day 2 decks…");
@@ -1105,6 +1578,8 @@ async function main() {
   console.log("  module-2-custom-rag.pptx");
   await buildModule3();
   console.log("  module-3-eval-retrieval.pptx");
+  await buildModule4();
+  console.log("  module-4-tools-layer.pptx");
   console.log("Done.");
 }
 
