@@ -1569,6 +1569,434 @@ def send_email(to: str, subject: str, body: str) -> str:
   return pres.writeFile({ fileName: path.join(OUT_DIR, "module-4-tools-layer.pptx") });
 }
 
+// ---------- MODULE 5 — Foundry Toolbox in Practice ----------
+function buildModule5() {
+  const pres = T.newDeck(new pptxgen());
+
+  T.notes(T.titleSlide(pres, {
+    eyebrow: "DAY 2 · MODULE 5 · 25 MIN",
+    title: "Foundry Toolbox in Practice",
+    subtitle: "Managed tools you attach without writing",
+    footer: "Building AI Apps and Agents",
+  }), [
+    "Second Actions-layer module",
+    "25 min target — 2-min/slide check suggests this may run long (~30–34 min)",
+    "Coverage over trim per Jim's direction",
+    "Attendees leave able to author + attach a toolbox to an agent",
+    "Bridge: Module 4 covered function-calling; this covers the FIRST tool origin",
+  ]);
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Where we are in Actions" });
+    T.addProse(slide, "Module 4 covered the function-calling contract — same for every tool.",
+      { y: contentTop, h: 0.5, fontSize: 14, italic: true });
+    T.addBullets(slide, [
+      "Module 5 (this one) — Toolbox tools — Microsoft-managed catalog of tools you attach without writing",
+      "Module 6 — Custom function tools you author in MAF",
+      "Module 7 — Combining knowledge + tools",
+    ], { y: contentTop + 0.7, h: 2.4, fontSize: 13 });
+    slide.addText("Toolbox is where you say: 'I need my agent to search the web. I don't need to build a web-search tool.'", {
+      x: 0.4, y: 4.35, w: 9.2, h: 0.6,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Re-anchor in Actions modules",
+      "Three tool origins — Toolbox is the first",
+      "The italic line = the pitch in one sentence",
+      "Contrast with Module 6 (custom code) coming next",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "What Foundry Toolbox is" });
+    T.addBullets(slide, [
+      "A curated catalog of ready-to-use tools an agent can attach to",
+      "A project-scoped resource — one toolbox per set of tools you want to reuse",
+      "Exposed to MAF over an MCP endpoint — same MCP protocol as Day 3",
+      "Versioned — publish v1, iterate to v2, consumers pin (or use the default)",
+      "Managed by Microsoft (or your organization) — you don't own the runtime",
+    ], { y: contentTop, h: 2.9 });
+    slide.addText("One toolbox can contain many tools. Multiple agents can consume the same toolbox.", {
+      x: 0.4, y: 4.35, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Five bullets = the essentials",
+      "Project-scoped — you have one Foundry project = one toolbox catalog",
+      "MCP-based — sets up the connection to Day 3's MCP module",
+      "Versioned — same discipline as Prompt agents (Day 1 Module 6)",
+      "Multiple agents consume one toolbox = key reuse benefit",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "The tools available in the catalog" });
+    T.addTable(slide, [
+      ["Category", "Examples"],
+      ["Web", "Web search (Bing), Bing Custom Search"],
+      ["Code", "Code interpreter (sandboxed Python)"],
+      ["Data & search", "Azure AI Search, File search"],
+      ["Enterprise", "SharePoint, Microsoft Fabric, WorkIQ"],
+      ["Custom", "Any MCP server (local or remote), Skills"],
+      ["Discovery", "Tool search (intent-based routing)"],
+    ], { y: contentTop, colW: [2.4, 6.8], rowH: 0.42, fontSize: 12 });
+    slide.addText("Two worth extra attention: MCP tools (attach any MCP server) and Toolbox search (LLM-driven routing).", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Six categories — walk them quickly",
+      "MCP tool = key extensibility point (Day 3 connection)",
+      "Toolbox search = the 'too many tools' solution",
+      "Enterprise tools (SharePoint, Fabric) require project connections",
+      "Verify current catalog vs. Learn — this space moves",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Why toolbox, and not just tools=[...] on the agent" });
+    T.addProse(slide, "Function tools attach to a specific agent. Toolboxes are reusable across agents.",
+      { y: 1.15, h: 0.5, fontSize: 13, italic: true });
+    T.addTable(slide, [
+      ["Question", "Function tools", "Toolbox"],
+      ["Where is the code?", "In your app", "In Foundry / MCP server"],
+      ["Who runs it?", "Your process", "Foundry or the MCP server"],
+      ["Auth to internal systems?", "Your code", "Project connections + MI"],
+      ["Shared across agents?", "Copy code", "One toolbox, many agents"],
+      ["Versioned?", "With your app", "First-class in Foundry"],
+      ["Governance?", "You audit", "Central catalog, RBAC, rai_config"],
+    ], { y: 1.75, colW: [2.4, 3.3, 3.5], rowH: 0.4, fontSize: 11 });
+    slide.addText("Toolbox wins on reuse, governance, and platform auth. Function tools win on flexibility.", {
+      x: 0.4, y: 4.75, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Six-question comparison table",
+      "The last row (governance) is the enterprise pitch",
+      "Function tools = flexibility; toolbox = platform-managed auth + reuse",
+      "Attendees will need both in real systems — not either/or",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Toolbox anatomy" });
+    T.addProse(slide, "A toolbox is a project resource with:",
+      { y: contentTop, h: 0.4, fontSize: 14 });
+    T.addBullets(slide, [
+      "Name — identifier",
+      "Description — human-readable",
+      "Tools — a list of tool entries (each with its own config)",
+      "Connections — project connections the toolbox references (AI Search, MCP server, Bing…)",
+      "Skills — Foundry skills packaged as MCP resources",
+      "Policies — optional RAI policy applied at the toolbox level",
+      "Versions — the whole thing is versioned; one version is the default",
+    ], { y: contentTop + 0.5, h: 3.2, fontSize: 12 });
+    slide.addText("Same 'publish version, consumers pin' pattern as Prompt agents from Day 1.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Seven parts — the toolbox spec",
+      "Connections are separate objects — YAML references by name",
+      "Skills are Foundry-specific — MCP-packaged expertise",
+      "RAI policy at toolbox level = central content-safety enforcement",
+      "Versioning is first-class — same discipline as Prompt agents",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Two authoring paths" });
+    T.addBullets(slide, [
+      { text: "Portal", indent: 0 },
+      { text: "Click-through UI in the Foundry portal for exploration", indent: 1 },
+      { text: "IaC-first (workshop path)", indent: 0 },
+      { text: "azd ai CLI or SDK", indent: 1 },
+      { text: "Two-step flow:", indent: 1 },
+      { text: "1. Create the connections (one per credential record)", indent: 2 },
+      { text: "2. Create the toolbox from a YAML file", indent: 2 },
+    ], { y: contentTop, h: 3.0, fontSize: 12 });
+    slide.addText("YAML references connections by name. Credentials never live in YAML — they live in connections.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Two paths — portal for learning, azd for production (Day 1's operating norm)",
+      "Two-step flow: connections first, THEN toolbox",
+      "This split is intentional — YAML is checkable into source; credentials aren't",
+      "azd ai is the same CLI attendees used for Day 1 Part B (Hosted agent deploy)",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "A minimal toolbox YAML" });
+    T.addCode(slide, `# my-toolbox.yaml
+description: Docs assistant helper toolbox
+
+tools:
+  - type: web_search
+    name: web
+
+  - type: code_interpreter
+    container: { type: auto }
+    name: code
+
+  - type: toolbox_search   # intent-based routing over the tools above`,
+      { y: 1.2, h: 2.6, fontSize: 12 });
+    T.addProse(slide, "Create it:", { y: 3.9, h: 0.3, fontSize: 12 });
+    T.addCode(slide, `azd ai project set $PROJECT_ENDPOINT
+azd ai toolbox create my-toolbox --from-file ./my-toolbox.yaml`,
+      { y: 4.25, h: 0.85, fontSize: 12 });
+    T.notes(slide, [
+      "Three tools attached — no custom code, no credentials in file",
+      "web_search + code_interpreter are Microsoft-managed",
+      "toolbox_search is the intent-based router — helps when many tools",
+      "First version becomes default automatically",
+      "The azd command is what attendees run in the lab",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Adding a tool that needs a connection" });
+    T.addProse(slide, "For tools that reach external systems, register a connection first:",
+      { y: 1.15, h: 0.4, fontSize: 12 });
+    T.addCode(slide, `azd ai connection create my-search-conn \\
+  --kind cognitive-search \\
+  --target https://<search>.search.windows.net \\
+  --auth-type project-managed-identity`, { y: 1.6, h: 1.3, fontSize: 12 });
+    T.addProse(slide, "Then reference by name in the toolbox YAML:", { y: 3.0, h: 0.3, fontSize: 12 });
+    T.addCode(slide, `tools:
+  - type: azure_ai_search
+    name: search
+    azure_ai_search:
+      indexes:
+        - project_connection_id: my-search-conn
+          index_name: docs-index`, { y: 3.35, h: 1.5, fontSize: 12 });
+    slide.addText("Managed identity means the toolbox authenticates as itself — no long-lived keys.", {
+      x: 0.4, y: 4.9, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 11, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Two-step pattern: connection, then tool that references it",
+      "Managed identity = the toolbox has its own Entra identity",
+      "No API keys in YAML, no keys checked into source",
+      "This is the Day 1 IaC-first operating norm in action",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Attaching an MCP server as a Toolbox tool" });
+    T.addProse(slide, "Any MCP server (public URL or your own) can be a toolbox tool:",
+      { y: 1.15, h: 0.4, fontSize: 13 });
+    T.addCode(slide, `tools:
+  - type: mcp
+    server_label: myserver
+    server_url: https://your-mcp-server.example.com
+    require_approval: never
+    project_connection_id: my-mcp-conn`, { y: 1.6, h: 1.8, fontSize: 12 });
+    T.addBullets(slide, [
+      "Auth flows through the connection — keys, OAuth, Entra tokens all supported",
+      "Same MCP protocol as Day 3 — Toolbox is one way to wire an MCP server in",
+    ], { y: 3.55, h: 1.2, fontSize: 12 });
+    slide.addText("Day 3 wires the Azure DevOps MCP server directly (not through Toolbox) — same protocol, different attachment.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 11, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Preview of Day 3 — this is one way to attach MCP servers",
+      "Day 3's approach: direct MAF wiring (no toolbox)",
+      "Both work; toolbox route gives you governance and reuse",
+      "require_approval='never' for safe tools; 'always' for anything with side effects",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Consuming a toolbox — the two endpoints" });
+    T.addProse(slide, "A toolbox exposes two MCP endpoints:", { y: contentTop, h: 0.4, fontSize: 13 });
+    T.addTable(slide, [
+      ["Role", "Endpoint", "Use"],
+      ["Consumer", "{project}/toolboxes/{name}/mcp?api-version=v1", "Always default version. Agents connect here."],
+      ["Developer", "{project}/toolboxes/{name}/versions/{v}/mcp?api-version=v1", "Version-pinned. For testing before promoting."],
+    ], { y: 1.65, colW: [1.6, 4.7, 2.9], rowH: 0.85, fontSize: 11 });
+    slide.addText("Rule of thumb: agents use the consumer endpoint. Promote new versions without redeploying the agent.", {
+      x: 0.4, y: 4.4, w: 9.2, h: 0.55,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Two endpoints — same information",
+      "Consumer = default version = production path",
+      "Developer = version-pinned = testing path",
+      "Rule: agents point at consumer, humans test at developer",
+      "Promote new toolbox version = live update for all agents on the consumer endpoint",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Attaching a toolbox to an agent (MAF, Python)" });
+    T.addCode(slide, `from agent_framework import Agent
+from agent_framework.foundry import FoundryChatClient
+from agent_framework.foundry.toolbox import FoundryToolbox
+from azure.identity import AzureCliCredential
+
+toolbox = FoundryToolbox(
+    project_endpoint="https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>",
+    name="my-toolbox",
+    credential=AzureCliCredential(),
+)
+
+agent = Agent(
+    client=FoundryChatClient(credential=AzureCliCredential()),
+    name="DocsAssistant",
+    instructions="Use the toolbox tools to answer questions and cite sources.",
+    tools=[toolbox],   # ← one line to attach all toolbox tools
+)`, { y: 1.2, h: 3.5, fontSize: 11 });
+    slide.addText("toolbox behaves as a tool collection. All its tools become available via the Module 4 function-calling contract.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "One line — tools=[toolbox] — attaches everything",
+      "Under the hood: MCP handshake, tool schemas fetched, wired to function calling",
+      "Attendees do this in the lab — very few lines of code",
+      "Point back to Module 4 — same contract, different origin",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Attaching a toolbox to a Prompt agent" });
+    T.addProse(slide, "For Prompt agents, the toolbox is attached in the agent configuration, not from code:",
+      { y: contentTop, h: 0.55, fontSize: 13 });
+    T.addBullets(slide, [
+      "Portal: Agents → your agent → Tools → Add Toolbox → select → save",
+      "SDK: pass toolbox reference in PromptAgentDefinition(..., toolbox=...)",
+      "YAML: reference the toolbox in the agent's declarative definition",
+    ], { y: 1.85, h: 2.0, fontSize: 12 });
+    slide.addText("Consuming agent code (FoundryAgent(agent_name=..., agent_version=...)) stays the same. All Prompt-agent version consumers automatically get the new tools.", {
+      x: 0.4, y: 4.0, w: 9.2, h: 0.7,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    slide.addText("Same pattern for Hosted agents — configuration, not code.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "For Prompt / Hosted agents: toolbox lives in configuration",
+      "Agent code that connects to the Prompt agent doesn't change",
+      "Portal, SDK, YAML — three ways to attach",
+      "Powerful pattern: update toolbox, all agents get new tools",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Governance you get from toolbox" });
+    T.addProse(slide, "Because toolboxes are a first-class Foundry resource:",
+      { y: contentTop, h: 0.4, fontSize: 14 });
+    T.addBullets(slide, [
+      "RBAC — who can create, update, and consume a toolbox is Entra-controlled",
+      "Audit — toolbox versions and consumption tracked centrally",
+      "RAI policy — apply a Responsible AI policy at the toolbox level (policies.rai_config)",
+      "Central catalog — one place to see every managed tool in the project",
+    ], { y: 1.55, h: 2.6, fontSize: 12 });
+    slide.addText("The platform answer to: 'how do we stop developers from wiring random tools into production agents?'", {
+      x: 0.4, y: 4.35, w: 9.2, h: 0.55,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Governance = the enterprise pitch",
+      "Four benefits: RBAC, audit, RAI, catalog",
+      "The italic line is the CIO-worthy framing",
+      "For attendees who work in regulated environments — this is why they'd choose Toolbox over function tools",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Versioning workflow" });
+    T.addProse(slide, "Standard workflow attendees will use:", { y: contentTop, h: 0.4, fontSize: 14 });
+    T.addBullets(slide, [
+      "Create v1 → automatically the default → agents consume via the consumer endpoint",
+      "Author v2 (add a tool, tighten a description, swap an MCP connection)",
+      "Test against the developer endpoint (/versions/2/mcp) before promotion",
+      "Promote v2 to default when validated → agents pick it up on their next call, no code change",
+    ], { y: 1.55, h: 2.6, fontSize: 12 });
+    slide.addText("The promote step is the 'ship' moment. Same discipline as Prompt agent versioning from Day 1.", {
+      x: 0.4, y: 4.45, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Four-step workflow — attendees will run this in production",
+      "Test at developer endpoint, promote to default",
+      "No agent redeploy — the consumer endpoint always serves default",
+      "Same publish discipline as Prompt agents (Day 1 Module 6)",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "When to build a function tool instead" });
+    T.addTwoColumn(slide,
+      [
+        "Logic doesn't fit any Toolbox catalog entry",
+        "Runtime context Toolbox model can't express (per-user filtering, session state)",
+        "Prototyping fast — don't want to publish a toolbox yet",
+        "Tool talks to something inside your app's process (in-memory cache, local model)",
+      ],
+      [
+        "Tool is a shared capability across agents",
+        "Want central governance, RBAC, and audit",
+        "Integrates with a supported enterprise system (SharePoint, Fabric, Bing, AI Search, MCP)",
+        "Want versioning as a first-class concern",
+      ],
+      { leftHeader: "Custom function tool (Module 6)", rightHeader: "Foundry Toolbox" }
+    );
+    slide.addText("Mix both. Real agents often have tools=[my_function_tool, my_toolbox].", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Decision framework — left vs. right",
+      "Function tools = flexibility, quick prototyping",
+      "Toolbox = shared, governed, enterprise-integrated",
+      "The bottom line = mix. Sets up Module 6 next.",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Common traps" });
+    T.addBullets(slide, [
+      "Credentials in the YAML — don't. Use connections. YAML is checked into source.",
+      "Consumer vs. developer endpoint confusion — agents = consumer; test = developer.",
+      "Not testing before promoting — v2 is default the moment you promote. Test /versions/2/mcp first.",
+      "Too many tools in one toolbox — ≤10 per agent applies. Use toolbox_search when >10.",
+      "Assuming toolbox tools are free — some have per-call costs (Bing, code interpreter). Budget.",
+      "Skipping RAI policy — toolbox is the right place to enforce content safety centrally. Use it.",
+    ], { y: contentTop, h: 3.5, fontSize: 12 });
+    T.notes(slide, [
+      "Six traps — same pattern as prior modules",
+      "The credentials-in-YAML trap is the biggest — attendees WILL try to shortcut",
+      "Endpoint confusion catches everyone once",
+      "'Cost' bullet is real — Bing has per-call pricing",
+      "RAI policy is the governance win most attendees skip",
+    ]);
+  }
+
+  T.notes(T.takeawaysSlide(pres, {
+    tag: "Day 2 · Module 5", title: "Takeaways",
+    bullets: [
+      "Foundry Toolbox = a curated catalog of managed tools you attach without writing.",
+      "Toolbox tools are exposed over MCP — same protocol as Day 3.",
+      "Two-step authoring: connections first, then a YAML that references them by name.",
+      "Two endpoints: consumer (default version) and developer (version-pinned).",
+      "Toolbox wins on reuse, governance, platform-managed auth. Function tools win on flexibility.",
+      "Mix both — real agents often have custom + toolbox tools together.",
+    ],
+    next: "Authoring your own function tools in MAF — hands-on.",
+  }), [
+    "Six-bullet recap",
+    "Bridge to Module 6 — the hands-on tool authoring",
+    "Time check — Modules 1+2+3+4+5 = ~160 min in against 240 budget",
+  ]);
+
+  return pres.writeFile({ fileName: path.join(OUT_DIR, "module-5-foundry-toolbox.pptx") });
+}
+
 // ---------- Main runner ----------
 async function main() {
   console.log("Building Day 2 decks…");
@@ -1580,6 +2008,8 @@ async function main() {
   console.log("  module-3-eval-retrieval.pptx");
   await buildModule4();
   console.log("  module-4-tools-layer.pptx");
+  await buildModule5();
+  console.log("  module-5-foundry-toolbox.pptx");
   console.log("Done.");
 }
 
