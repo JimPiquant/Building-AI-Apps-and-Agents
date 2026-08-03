@@ -1997,6 +1997,487 @@ agent = Agent(
   return pres.writeFile({ fileName: path.join(OUT_DIR, "module-5-foundry-toolbox.pptx") });
 }
 
+// ---------- MODULE 6 — Authoring Custom Function Tools in MAF ----------
+function buildModule6() {
+  const pres = T.newDeck(new pptxgen());
+
+  T.notes(T.titleSlide(pres, {
+    eyebrow: "DAY 2 · MODULE 6 · 35 MIN",
+    title: "Authoring Custom Function Tools in MAF",
+    subtitle: "Craft, testing, and patterns",
+    footer: "Building AI Apps and Agents",
+  }), [
+    "Third Actions-layer module — this is CRAFT depth",
+    "35 min target; 17 slides ≈ 34 min at 2 min/slide — comfortable",
+    "Module 4 was framing; this is 'author tools well'",
+    "Python-only for labs; C# equivalents referenced in Module 4",
+    "Directly precedes Part B of the lab — attendees code this immediately after",
+  ]);
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "What you're doing now" });
+    T.addBullets(slide, [
+      "Module 4 covered WHY function calling works",
+      "Module 5 covered NOT writing tools (Toolbox)",
+      "Module 6 is where you WRITE tools well",
+    ], { y: contentTop, h: 2.2, fontSize: 14 });
+    slide.addText("This module + the lab: from 'I can pass a function to tools=[...]' to 'I can author, test, and ship a production function tool.'", {
+      x: 0.4, y: 3.55, w: 9.2, h: 0.7,
+      fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    slide.addText("Focus: Python (labs are Python-only). C# equivalents referenced from Module 4.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Frame the module as CRAFT — quality of authoring",
+      "Bridge from Module 5 (managed tools) to authoring your own",
+      "Set expectation: hands-on lab immediately after this module",
+      "Python is the primary language for hands-on today",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "The four ways to author a function tool" });
+    T.addTable(slide, [
+      ["Pattern", "When to reach for it"],
+      ["Bare function", "Simplest case — no decorator needed"],
+      ["@tool decorator", "Explicit name, description, approval_mode"],
+      ["@tool(schema=...)", "Full Pydantic or JSON schema — enums, constraints, complex validation"],
+      ["Class-based tools", "Multiple tools that share state (client handles, config, cached data)"],
+    ], { colW: [2.4, 6.8], rowH: 0.65, fontSize: 12 });
+    slide.addText("Bare functions are fine for most cases. Reach for @tool when you need control, classes when you need shared state.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Four patterns — each has a sweet spot",
+      "Bare function = simplest; encourage it as the default",
+      "@tool when you need explicit control (name, approval)",
+      "@tool(schema=...) when you need Pydantic-level validation",
+      "Class when tools share state (DB clients, feature flags)",
+      "Next four slides drill into each",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Pattern 1 — Bare function (the default)" });
+    T.addProse(slide, "Fastest path. Any Python function becomes a tool.",
+      { y: 1.15, h: 0.4, fontSize: 13 });
+    T.addCode(slide, `from typing import Annotated
+from pydantic import Field
+
+def get_weather(
+    location: Annotated[str, Field(description="The location to get the weather for.")],
+) -> str:
+    """Get the weather for a given location."""
+    return f"The weather in {location} is cloudy with a high of 15°C."
+
+agent = Agent(client=..., instructions="...", tools=[get_weather])`,
+      { y: 1.6, h: 2.6, fontSize: 11 });
+    T.addBullets(slide, [
+      "Docstring → description; Field(description=...) → parameter description; type hints → schema",
+      "Use for: simple tools with straightforward params, no runtime context, no approval gate",
+    ], { y: 4.3, h: 0.9, fontSize: 12 });
+    T.notes(slide, [
+      "Simplest possible tool — just pass a function",
+      "Three sources of metadata: docstring, Field, type hints",
+      "No decorator ceremony required",
+      "80% of tools should look like this",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Pattern 2 — @tool decorator (when you need control)" });
+    T.addCode(slide, `from agent_framework import tool
+
+@tool(
+    name="weather_tool",
+    description="Retrieves weather information for any location",
+    approval_mode="never_require",
+)
+def get_weather(
+    location: Annotated[str, Field(description="The location to get the weather for.")],
+) -> str:
+    return f"The weather in {location} is cloudy with a high of 15°C."`,
+      { y: 1.2, h: 2.8, fontSize: 11 });
+    T.addProse(slide, "When to use:", { y: 4.1, h: 0.3, fontSize: 13 });
+    T.addBullets(slide, [
+      "Tool name differs from the Python function name",
+      "Description belongs in the decorator (not a docstring)",
+      "Explicit approval_mode (never_require / always_require)",
+      "You'll add schema=... later",
+    ], { y: 4.4, h: 1.0, fontSize: 11 });
+    T.notes(slide, [
+      "@tool = explicit control",
+      "Common reasons: rename tool, add approval_mode, use explicit schema later",
+      "Same tool body — just adds the decorator wrapper",
+      "Attendees should reach for this when bare function isn't enough",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Pattern 3 — Explicit schemas" });
+    T.addProse(slide, "For complex inputs, define the schema as a Pydantic model:",
+      { y: 1.15, h: 0.4, fontSize: 12 });
+    T.addCode(slide, `class TicketInput(BaseModel):
+    title: Annotated[str, Field(description="Short ticket title")]
+    body: Annotated[str, Field(description="Full description of the problem")]
+    priority: Annotated[
+        Literal["low", "med", "high"],
+        Field(description="Ticket priority"),
+    ] = "med"
+
+@tool(
+    name="create_ticket",
+    description="Create a support ticket. Use when the user reports a problem needing a human engineer.",
+    schema=TicketInput,
+    approval_mode="always_require",
+)
+def create_ticket(title: str, body: str, priority: str = "med") -> str:
+    ticket_id = ticket_system.create(title, body, priority)
+    return f"Created ticket {ticket_id}"`,
+      { y: 1.6, h: 3.1, fontSize: 10 });
+    slide.addText("Literal['low','med','high'] becomes a schema enum. Model can't pass invalid priorities.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Pydantic BaseModel gives you enum, min/max, format validation",
+      "Literal['low','med','high'] becomes a schema enum",
+      "Model can't pass invalid arg values",
+      "This is where the schema really becomes a contract",
+      "The create_ticket example carries into the Part B lab",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Pattern 4 — Class-based tools (shared state)" });
+    T.addProse(slide, "When several tools share a client, cache, or configuration:",
+      { y: 1.15, h: 0.4, fontSize: 12 });
+    T.addCode(slide, `class TicketTools:
+    def __init__(self, api_client: TicketAPIClient) -> None:
+        self._client = api_client
+
+    def create_ticket(
+        self,
+        title: Annotated[str, "Short ticket title"],
+        body: Annotated[str, "Full description"],
+    ) -> str:
+        """Create a support ticket."""
+        return self._client.create(title, body)
+
+    def lookup_status(self, ticket_id: Annotated[str, "The ticket ID"]) -> str:
+        """Look up the status of a ticket by ID."""
+        return self._client.get_status(ticket_id)
+
+tools_instance = TicketTools(api_client=my_client)
+agent = Agent(client=..., tools=[tools_instance.create_ticket, tools_instance.lookup_status])`,
+      { y: 1.6, h: 3.3, fontSize: 10 });
+    slide.addText("Class attributes (self._client) are hidden from the model. Bound methods are what the agent sees.",
+      { x: 0.4, y: 5.05, w: 9.2, h: 0.4,
+        fontFace: T.FONTS.body, fontSize: 11, italic: true, color: T.COLORS.muted });
+    T.notes(slide, [
+      "Class-based = shared state without a global",
+      "self._client is invisible to the model",
+      "Pass bound methods to tools=[...]",
+      "Great for injecting DB clients, feature flags, cached auth tokens",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Async is a first-class citizen" });
+    T.addProse(slide, "Function tools can be async def:", { y: 1.15, h: 0.3, fontSize: 13 });
+    T.addCode(slide, `@tool
+async def lookup_status(ticket_id: str) -> str:
+    """Look up the status of a ticket by ID."""
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"{API_BASE}/tickets/{ticket_id}") as r:
+            data = await r.json()
+    return f"Ticket {ticket_id}: {data['status']}"`,
+      { y: 1.55, h: 2.4, fontSize: 12 });
+    T.addBullets(slide, [
+      "MAF awaits your async tool — same schema surface, same invocation flow",
+      "Rule of thumb: if your tool does I/O (HTTP, DB, disk), make it async",
+    ], { y: 4.15, h: 1.0, fontSize: 12 });
+    T.notes(slide, [
+      "Async = free — the framework handles the await",
+      "For I/O-bound tools, async prevents blocking the whole agent",
+      "Same @tool decorator works on async functions",
+      "Simple rule: I/O = async",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Runtime context (recap from Module 4)" });
+    T.addProse(slide, "When you need per-call runtime values, add ctx: FunctionInvocationContext:",
+      { y: 1.15, h: 0.5, fontSize: 12 });
+    T.addCode(slide, `@tool(approval_mode="never_require")
+def get_user_orders(
+    limit: Annotated[int, Field(description="Max number of orders")],
+    ctx: FunctionInvocationContext,
+) -> str:
+    """Get the current user's recent orders."""
+    user_id = ctx.kwargs["user_id"]   # supplied by caller, not model
+    orders = orders_service.list(user_id, limit=limit)
+    return json.dumps(orders)
+
+await agent.run(
+    "What are my recent orders?",
+    function_invocation_kwargs={"user_id": "user_123"},
+)`, { y: 1.75, h: 3.0, fontSize: 11 });
+    slide.addText("ctx is hidden from the model. Use for tenancy, session, logging correlation IDs.", {
+      x: 0.4, y: 4.85, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Recap from Module 4 — Reinforce the ctx pattern",
+      "Model-visible args vs. framework-injected ctx",
+      "kwargs come from function_invocation_kwargs at run time",
+      "Attendees will use this in Part B for per-user context",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Return values — what the model sees" });
+    T.addProse(slide, "Return types matter more than most attendees realize:",
+      { y: contentTop, h: 0.4, fontSize: 13 });
+    T.addTable(slide, [
+      ["Return type", "What the model sees", "When to use"],
+      ["str", "Raw string", "Simple text results, error messages"],
+      ["dict / list", "JSON-serialized", "Structured data the model reasons over"],
+      ["Pydantic model", "JSON via .model_dump_json()", "Typed, validated returns"],
+      ["Custom class", "Serialized via MAF default", "Only if you must"],
+    ], { y: 1.55, colW: [1.9, 3.5, 3.8], rowH: 0.45, fontSize: 11 });
+    slide.addText("Rule: if the tool returns structured data the model will act on, prefer Pydantic. If it's just an outcome, str is fine.", {
+      x: 0.4, y: 4.35, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    slide.addText("Bad return shape = model can't parse the result = wrong follow-up action.", {
+      x: 0.4, y: 4.9, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 11, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Return shape is often overlooked",
+      "Four common patterns — str, dict, Pydantic, custom",
+      "Pydantic gives you the same type-safety on returns as on inputs",
+      "Common mistake: return a raw JSON string when a dict would work better",
+      "The italic line is the design rule",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Error contracts (recap from Module 4)" });
+    T.addCode(slide, `# 1. Return an error string — model can incorporate
+@tool
+def lookup_status(ticket_id: str) -> str:
+    try:
+        return ticket_system.get_status(ticket_id)
+    except NotFound:
+        return f"Ticket {ticket_id} not found. Verify the ID and try again."
+
+# 2. Return a structured error — model can route or retry
+@tool
+def lookup_status(ticket_id: str) -> dict:
+    try:
+        return {"status": ticket_system.get_status(ticket_id)}
+    except NotFound:
+        return {"error": "not_found", "message": "Verify the ticket ID"}
+
+# 3. Raise an exception — MAF surfaces the exception message
+@tool
+def lookup_status(ticket_id: str) -> str:
+    return ticket_system.get_status(ticket_id)   # raises if not found`,
+      { y: 1.2, h: 3.7, fontSize: 10 });
+    slide.addText("Pick per tool. Prefer 'error as data' when you want the model to recover.", {
+      x: 0.4, y: 4.95, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, bold: true, color: T.COLORS.navy,
+    });
+    T.notes(slide, [
+      "Three error contracts — same as Module 4",
+      "Show all three in one place so attendees see them as alternatives",
+      "String = human-readable, model may incorporate",
+      "Dict = structured, model may route or retry",
+      "Raise = MAF surfaces exception message",
+      "Rule: errors as data when the model should recover",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Docstring as prompt — the four-part template" });
+    T.addProse(slide, "You saw this in Module 4. Here's the discipline for authoring:",
+      { y: 1.15, h: 0.4, fontSize: 12 });
+    T.addCode(slide, `@tool
+def create_ticket(title: str, body: str, priority: str) -> str:
+    """Create a support ticket for a problem that needs a human engineer.
+
+    Use this when the user reports a problem you cannot answer from
+    documentation. Do NOT use for general questions.
+
+    Priority must be one of: low, med, high. Default med.
+    Returns the created ticket ID.
+    """`, { y: 1.6, h: 2.6, fontSize: 11 });
+    T.addBullets(slide, [
+      "What — one line describing the action",
+      "When to call it",
+      "When NOT to call it — the disambiguation",
+      "What comes back — return shape",
+    ], { y: 4.35, h: 1.0, fontSize: 12 });
+    T.notes(slide, [
+      "Four-sentence template — memorize it",
+      "Same discipline as Day 1 Module 3 (prompt engineering)",
+      "'When NOT' is the differentiator when tools overlap",
+      "Bad docstrings = wrong tool calls in production",
+      "Attendees will iterate their docstrings in the Part B eval loop",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Testing tools in isolation" });
+    T.addProse(slide, "Your tool is just a Python function. Test it like one.",
+      { y: 1.15, h: 0.4, fontSize: 13 });
+    T.addCode(slide, `# tests/test_create_ticket.py
+from labs.day2.tools import create_ticket
+
+def test_create_ticket_returns_id():
+    result = create_ticket(title="Login fails", body="500 on POST /login", priority="high")
+    assert result.startswith("Created ticket ")
+
+def test_create_ticket_invalid_priority_raises():
+    with pytest.raises(ValidationError):
+        create_ticket(title="X", body="Y", priority="urgent")`,
+      { y: 1.6, h: 2.4, fontSize: 11 });
+    T.addBullets(slide, [
+      "Test the tool WITHOUT an agent — faster feedback, no LLM calls",
+      "Catches schema and logic bugs before they get to the model",
+      "Pydantic validates args BEFORE your function body runs — the second test catches this automatically",
+    ], { y: 4.15, h: 1.15, fontSize: 11 });
+    T.notes(slide, [
+      "Testing = discipline attendees often skip for tools",
+      "Standard pytest — nothing special",
+      "Two test types: happy path + validation",
+      "Pydantic schema validation is a free layer of testing",
+      "This is the fastest feedback loop for tool authors",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Golden-set testing — the tool level" });
+    T.addProse(slide, "Attendees learned eval Day 2 Module 3 for retrieval. Same shape for tool use:",
+      { y: 1.15, h: 0.5, fontSize: 12 });
+    T.addCode(slide, `# tools_golden_set.jsonl
+{"query": "My login is failing with a 500", "expected_tool": "create_ticket",
+ "expected_args": {"priority": "high"}}
+{"query": "What are your business hours?", "expected_tool": null}
+{"query": "Look up ticket 12345", "expected_tool": "lookup_status",
+ "expected_args": {"ticket_id": "12345"}}`,
+      { y: 1.75, h: 2.0, fontSize: 11 });
+    T.addBullets(slide, [
+      "Run the agent against each query. Verify: which tool (or none), what args",
+      "Catches regressions when you change a description or add a competing tool",
+    ], { y: 3.9, h: 1.0, fontSize: 12 });
+    slide.addText("Day 4's evaluation anchor extends this pattern to full workflows.", {
+      x: 0.4, y: 4.95, w: 9.2, h: 0.4,
+      fontFace: T.FONTS.body, fontSize: 11, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Extend Module 3's eval pattern to tool selection",
+      "Three columns: query, expected_tool (or null), expected_args",
+      "'null' = 'model should NOT call a tool'",
+      "Catches regressions when descriptions drift",
+      "Day 4 goes deeper on workflow-level eval",
+    ]);
+  }
+
+  {
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Composition — using one agent as another's tool" });
+    T.addProse(slide, "MAF supports wrapping an agent as a tool. Useful for domain sub-agents:",
+      { y: 1.15, h: 0.5, fontSize: 12 });
+    T.addCode(slide, `# Sub-agent: focused on weather
+weather_agent = Agent(client=..., instructions="You answer weather questions.", tools=[get_weather])
+
+# Main agent uses the weather sub-agent as a tool
+main_agent = Agent(
+    client=...,
+    instructions="You answer questions in French. Use the weather agent for weather questions.",
+    tools=[weather_agent.as_tool(name="ask_weather", description="Ask the weather sub-agent")],
+)`, { y: 1.75, h: 2.4, fontSize: 11 });
+    slide.addText("The sub-agent's name and description become the tool signature. This is a preview of Day 4's multi-agent patterns.", {
+      x: 0.4, y: 4.35, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Agents-as-tools = a preview of Day 4",
+      "Useful for domain specialists (weather agent, docs agent, ops agent)",
+      "The wrapping agent sees a normal tool signature",
+      "Under the hood: main agent calls sub-agent's .run() as the tool body",
+      "Day 4 goes deep on multi-agent orchestration",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Common traps (deeper than Module 4)" });
+    T.addBullets(slide, [
+      "Docstring style + description in decorator — mismatch. One or the other, not both differing.",
+      "Optional params without defaults — model doesn't know what to pass; add a default.",
+      "Return None — no signal for the model. Return \"\" or \"OK\" explicitly.",
+      "Blocking I/O in a sync tool — blocks the agent. Use async def for I/O.",
+      "Skipping validation — Pydantic schema is your first line of defense against invalid args.",
+      "Assuming type hints are enough — write Field(description=...) for parameters; the model reads it.",
+    ], { y: contentTop, h: 3.5, fontSize: 12 });
+    T.notes(slide, [
+      "Six deeper traps — beyond Module 4's design-level traps",
+      "These are authoring-level issues",
+      "'Return None' is subtle but hits attendees hard",
+      "Async I/O rule earns its own bullet",
+      "Field descriptions on parameters catch new authors regularly",
+    ]);
+  }
+
+  {
+    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "What you'll build in Part B of the lab" });
+    T.addProse(slide, "Your Day 2 lab has three parts. Part B is a Module 6 hands-on:",
+      { y: contentTop, h: 0.5, fontSize: 13 });
+    T.addBullets(slide, [
+      "Two mock function tools: create_ticket and lookup_status",
+      "Test each in isolation before wiring to an agent",
+      "Wire them into the Day 1 docs-assistant agent",
+      "Add a small tool-use eval (which tool did the model pick?)",
+      "Iterate on descriptions until the model picks correctly",
+    ], { y: 1.7, h: 2.6, fontSize: 12 });
+    slide.addText("Day 3 swaps the mock ticket tool for a real Azure DevOps MCP server — same conceptual pattern, real backend.", {
+      x: 0.4, y: 4.55, w: 9.2, h: 0.5,
+      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
+    });
+    T.notes(slide, [
+      "Part B is the hands-on for this module",
+      "Five steps — code, test, wire, eval, iterate",
+      "Mock function tool now; real MCP tool on Day 3",
+      "Attendees should be primed for the lab — this is a clear hand-off",
+    ]);
+  }
+
+  T.notes(T.takeawaysSlide(pres, {
+    tag: "Day 2 · Module 6", title: "Takeaways",
+    bullets: [
+      "Four authoring patterns: bare function, @tool, @tool(schema=...), class-based. Pick the smallest that fits.",
+      "Async is first-class. If your tool does I/O, make it async def.",
+      "Docstring is a prompt. Four-part template: what, when, when-NOT, return shape.",
+      "Test tools in isolation with pytest. Add a tool-use golden set for the agent-level check.",
+      "Return shape matters — prefer Pydantic for structured returns.",
+      "Errors as data when the model should recover.",
+    ],
+    next: "Combining knowledge + tools — the module that brings Day 2 together.",
+  }), [
+    "Six-bullet recap",
+    "Emphasize: authoring pattern choice, four-part docstring, isolation testing",
+    "Bridge to Module 7 — Day 2 synthesis",
+    "Time check — Modules 1+2+3+4+5+6 = ~195 min in against 240 budget",
+  ]);
+
+  return pres.writeFile({ fileName: path.join(OUT_DIR, "module-6-authoring-tools.pptx") });
+}
+
 // ---------- Main runner ----------
 async function main() {
   console.log("Building Day 2 decks…");
@@ -2010,6 +2491,8 @@ async function main() {
   console.log("  module-4-tools-layer.pptx");
   await buildModule5();
   console.log("  module-5-foundry-toolbox.pptx");
+  await buildModule6();
+  console.log("  module-6-authoring-tools.pptx");
   console.log("Done.");
 }
 
