@@ -1,0 +1,17 @@
+// combined_golden_set.jsonl — Part C eval spec.
+//
+// Format: one JSON object per line. Lines starting with // are ignored.
+// Three entries required, one per composition case.
+//
+// Schema:
+//   {
+//     "query": "the user's message",
+//     "case": "retrieve_then_act" | "act_then_retrieve" | "docs_only",
+//     "expected_tool": "create_ticket" | "lookup_status" | null,
+//     "must_use_knowledge": true | false
+//   }
+//
+// Suggested starting queries (you can keep or replace):
+{"query": "I keep getting 500 errors when I POST /login. Please file a ticket.", "case": "retrieve_then_act", "expected_tool": "create_ticket", "must_use_knowledge": true}
+{"query": "Why is ticket 12345 still in_progress?", "case": "act_then_retrieve", "expected_tool": "lookup_status", "must_use_knowledge": true}
+{"query": "How do I generate a new API key?", "case": "docs_only", "expected_tool": null, "must_use_knowledge": true}

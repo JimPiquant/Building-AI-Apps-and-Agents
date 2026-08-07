@@ -1,0 +1,19 @@
+// tools_golden_set.jsonl — Part B eval spec.
+//
+// Format: one JSON object per line. Lines starting with // are ignored by the runner.
+// You'll AUTHOR the six entries below in Part B, Step 5.
+//
+// Requirements:
+//   - 2 rows: user query that should call create_ticket
+//   - 2 rows: user query that should call lookup_status
+//   - 2 rows: user query that should call NO tool (expected_tool = null)
+//
+// Schema (per row):
+//   {
+//     "query": "the user's message",
+//     "expected_tool": "create_ticket" | "lookup_status" | null,
+//     "expected_args": { ... optional subset of expected tool call args ... }
+//   }
+//
+// Example — DELETE this line and add your six entries below.
+// {"query": "My login is failing with a 500", "expected_tool": "create_ticket", "expected_args": {"priority": "high"}}

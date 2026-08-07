@@ -1,0 +1,25 @@
+[project]
+name = "day2-lab"
+version = "0.1.0"
+description = "Day 2 lab — knowledge + tools + evaluation."
+requires-python = ">=3.11"
+dependencies = [
+    "agent-framework",
+    "agent-framework-foundry",
+    "azure-ai-projects",
+    "azure-ai-evaluation",
+    "azure-identity",
+    "pydantic>=2.0",
+    "python-dotenv",
+    "pytest",
+    "pytest-asyncio",
+]
+
+# 2026 baseline pinning happens via uv.lock (committed).
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["../tests"]
