@@ -6,7 +6,7 @@ Estimated time: **~20 minutes**.
 
 ## Prerequisites
 
-- A Foundry resource and Foundry project (create with the [Azure CLI quickstart](https://learn.microsoft.com/en-us/azure/foundry/tutorials/quickstart-create-foundry-resources?tabs=azurecli) — same setup attendees do in Part A pre-work).
+- A Foundry resource and Foundry project (create with the [Azure CLI quickstart](https://learn.microsoft.com/en-us/azure/foundry/tutorials/quickstart-create-foundry-resources?tabs=azurecli) — same setup you did in Part A pre-work).
 - A deployed model (recommended: `gpt-5.4-mini`).
 - The Azure CLI signed in (`az login`) as an identity with **Foundry Owner** or **Owner** at the Foundry resource scope.
 - The Azure Developer CLI signed in (`azd auth login`)
