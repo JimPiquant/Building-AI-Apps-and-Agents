@@ -725,7 +725,7 @@ function buildModule2() {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 1 · Module 2", title: "Common portal gotchas" });
     T.addBullets(slide, [
       "Quota errors on deployment — request a bump in the region before Day 1",
-      "Missing role assignments — attendees need at least Foundry User (previously Azure AI User) at the Foundry resource scope; 401/403 usually means this",
+      "Missing role assignments — you need at least Foundry User (previously Azure AI User) at the Foundry resource scope; 401/403 usually means this",
       "Region mismatch — model deployment region must be reachable by IQ / AI Search",
       "Preview features move — Toolbox and parts of IQ are evolving; trust running code over screenshots",
     ], { y: contentTop });
@@ -749,7 +749,7 @@ function buildModule2() {
       "Show the Toolbox catalog and one entry",
       "Show the Foundry IQ landing page and one pre-provisioned knowledge source",
     ], { y: contentTop });
-    slide.addText("Attendees: do steps 1–4 on your own sub before the module ends.", {
+    slide.addText("Try it yourself: do steps 1–4 on your own sub before the module ends.", {
       x: 0.4, y: 4.6, w: 9.2, h: 0.5,
       fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy,
     });

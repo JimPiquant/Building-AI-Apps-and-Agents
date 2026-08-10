@@ -190,7 +190,7 @@ The `ctx` parameter is hidden from the model. Use for tenancy, session, logging 
 
 ## Return values — what the model sees
 
-Return types matter more than most attendees realize:
+Return types matter more than you might realize:
 
 | Return type | What the model sees | When to use |
 |---|---|---|
@@ -289,7 +289,7 @@ The tool schema (Pydantic) validates arguments before your function body runs �
 
 ## Golden-set testing — the tool level
 
-Attendees learned eval on Day 2 Module 3 for retrieval. Same shape applies to tool use:
+You learned eval on Day 2 Module 3 for retrieval. Same shape applies to tool use:
 
 ```python
 # tools_golden_set.jsonl

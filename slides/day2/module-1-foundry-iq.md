@@ -57,7 +57,7 @@ An agent connects to **one knowledge base**. That knowledge base can span many k
 - Web (Bing) — public
 - Remote SharePoint · Fabric Data Agent · Fabric Ontology · Work IQ · MCP server — all preview
 
-Both flow through the same ranking pipeline. Attendees mix indexed and remote in one knowledge base.
+Both flow through the same ranking pipeline. You can mix indexed and remote sources in one knowledge base.
 
 ---
 
@@ -85,7 +85,7 @@ For each user question, the agentic retrieval engine:
 3. **Ranks** — unified reranker scores results across sources
 4. **Returns** — top results plus source citations
 
-Attendee takeaway: this is more than "vector search + LLM." It's a small pipeline you get for free.
+Takeaway: this is more than "vector search + LLM." It's a small pipeline you get for free.
 
 ---
 
@@ -163,7 +163,7 @@ Same operating norm as Day 1 — resource creation lives in code, not the portal
 - **Python SDK** — `azure-search-documents` client
 - **Portal** — fine for exploration; not the workshop path
 
-Attendees do the SDK path in today's lab.
+You'll do the SDK path in today's lab.
 
 ---
 
@@ -187,7 +187,7 @@ You can mix them — a knowledge base can reference all three. Not required for 
 - **Wrong retrieval effort for the workload** — using `medium` on latency-sensitive UX; using `minimal` on complex multi-hop questions.
 - **No permission model** — building on blob without ACL sync, then discovering per-user filtering is required in production.
 - **Chunking mismatch** — using default chunking on structured docs that need semantic chunking.
-- **Ignoring citations** — attendees skip verifying that the model actually cites the retrieval, and hallucinations sneak back in.
+- **Ignoring citations** — you skip verifying that the model actually cites the retrieval, and hallucinations sneak back in.
 
 ---
 

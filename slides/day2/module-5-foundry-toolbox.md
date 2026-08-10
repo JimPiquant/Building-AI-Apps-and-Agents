@@ -85,7 +85,7 @@ A toolbox is a **project resource** with:
 - **Policies** — optional RAI policy applied at the toolbox level
 - **Versions** — the whole thing is versioned; one version is the default
 
-Attendees see the version story again — it's the same "publish a version, consumers pin" pattern as Prompt agents.
+You'll see the version story again — it's the same "publish a version, consumers pin" pattern as Prompt agents.
 
 ---
 
@@ -178,7 +178,7 @@ Two important points:
 - **Auth flows through the connection** — MCP servers can require keys, OAuth, Entra tokens; the connection handles it
 - **Same MCP protocol** as Day 3 — Toolbox is just one way to wire an MCP server in
 
-Attendees see this pattern again on Day 3 when they wire the Azure DevOps MCP server directly.
+You'll see this pattern again on Day 3 when you wire the Azure DevOps MCP server directly.
 
 ---
 
@@ -250,7 +250,7 @@ This is the platform's answer to "how do we stop developers from wiring random t
 
 ## Versioning workflow
 
-Standard workflow attendees will use:
+Standard workflow you'll use:
 
 1. Create v1 → automatically the default → agents consume via the consumer endpoint
 2. Author v2 (add a tool, tighten a description, swap an MCP connection)

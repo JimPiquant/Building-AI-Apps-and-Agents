@@ -284,7 +284,7 @@ agent = Agent(
       "Python SDK — azure-search-documents client",
       "Portal — fine for exploration; not the workshop path",
     ], { y: 1.85, h: 2.6 });
-    slide.addText("Attendees do the SDK path in today's lab.", {
+    slide.addText("You'll do the SDK path in today's lab.", {
       x: 0.4, y: 4.55, w: 9.2, h: 0.4,
       fontFace: T.FONTS.body, fontSize: 13, italic: true, bold: true, color: T.COLORS.navy,
     });
@@ -324,7 +324,7 @@ agent = Agent(
       "Wrong retrieval effort for the workload — medium on latency-sensitive UX; minimal on multi-hop questions",
       "No permission model — building on blob without ACL sync, discovering per-user filtering is required later",
       "Chunking mismatch — default chunking on structured docs that need semantic chunking",
-      "Ignoring citations — attendees skip verifying the model actually cites the retrieval, hallucinations sneak back in",
+      "Ignoring citations — you skip verifying the model actually cites the retrieval, hallucinations sneak back in",
     ], { y: contentTop, h: 3.3, fontSize: 13 });
     T.notes(slide, [
       "Pause here for questions — these are the traps attendees will hit in the lab and in production",
@@ -747,7 +747,7 @@ function buildModule3() {
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Why evaluate retrieval separately" });
-    T.addProse(slide, "Attendees who skip this step do one of two things:",
+    T.addProse(slide, "If you skip this step you'll do one of two things:",
       { y: contentTop, h: 0.4, fontSize: 14 });
     T.addBullets(slide, [
       "Ship an agent that seems to work — until it doesn't, and they can't tell why",
@@ -779,7 +779,7 @@ function buildModule3() {
     T.addBullets(slide, [
       "Process eval finds the retrieval-side bug",
       "System eval confirms the whole thing works",
-      "Attendees do a small dose of each in today's lab",
+      "You'll do a small dose of each in today's lab",
     ], { y: 3.7, h: 1.3 });
     T.notes(slide, [
       "Two modes = two questions",
@@ -1222,7 +1222,7 @@ function buildModule4() {
       ["Parameter schema", "Types, required/optional, per-param descriptions"],
       ["Return type", "What comes back after the tool runs"],
     ], { y: 1.7, colW: [2.5, 6.7], rowH: 0.55, fontSize: 12 });
-    slide.addText("The description carries more weight than most attendees realize. Modules 3 and 6 both come back to this.", {
+    slide.addText("The description carries more weight than you might realize. Modules 3 and 6 both come back to this.", {
       x: 0.4, y: 4.75, w: 9.2, h: 0.4,
       fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
     });
@@ -1506,7 +1506,7 @@ def send_email(to: str, subject: str, body: str) -> str:
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 4", title: "The tool-vs-knowledge decision" });
     T.addProse(slide,
-      "Attendees will build things where either could work: 'should I make this a tool call to search docs, or attach a knowledge base?'",
+      "You'll build things where either could work: 'should I make this a tool call to search docs, or attach a knowledge base?'",
       { y: contentTop, h: 0.8, fontSize: 12 });
     T.addBullets(slide, [
       "Tool when the retrieval is one option among many (agent decides)",
@@ -1910,7 +1910,7 @@ agent = Agent(
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Versioning workflow" });
-    T.addProse(slide, "Standard workflow attendees will use:", { y: contentTop, h: 0.4, fontSize: 14 });
+    T.addProse(slide, "Standard workflow you'll use:", { y: contentTop, h: 0.4, fontSize: 14 });
     T.addBullets(slide, [
       "Create v1 → automatically the default → agents consume via the consumer endpoint",
       "Author v2 (add a tool, tighten a description, swap an MCP connection)",
@@ -2240,7 +2240,7 @@ await agent.run(
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Return values — what the model sees" });
-    T.addProse(slide, "Return types matter more than most attendees realize:",
+    T.addProse(slide, "Return types matter more than you might realize:",
       { y: contentTop, h: 0.4, fontSize: 13 });
     T.addTable(slide, [
       ["Return type", "What the model sees", "When to use"],
@@ -2363,7 +2363,7 @@ def test_create_ticket_invalid_priority_raises():
 
   {
     const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 6", title: "Golden-set testing — the tool level" });
-    T.addProse(slide, "Attendees learned eval Day 2 Module 3 for retrieval. Same shape for tool use:",
+    T.addProse(slide, "You learned eval Day 2 Module 3 for retrieval. Same shape for tool use:",
       { y: 1.15, h: 0.5, fontSize: 12 });
     T.addCode(slide, `# tools_golden_set.jsonl
 {"query": "My login is failing with a 500", "expected_tool": "create_ticket",

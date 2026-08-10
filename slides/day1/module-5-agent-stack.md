@@ -102,7 +102,7 @@ Nothing appears in the workshop that doesn't fit here. If a topic feels orphaned
 
 ## Why this matters
 
-Attendees who leave with the stack in their head can:
+Anyone who leaves with the stack in their head can:
 - **Diagnose problems by layer.** "The agent isn't grounded" is a *Knowledge* problem, not a *Model* problem.
 - **Estimate cost and risk.** Adding an MCP server is an *Actions* + *Ops* concern, not a model concern.
 - **Communicate cleanly with stakeholders.** Product, ops, and security stakeholders all live at different layers.

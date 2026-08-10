@@ -214,7 +214,7 @@ Rule from Day 1: repos are the source of truth for **working code**; Learn docs 
 - **Skipping the semantic ranker** — "it costs money" is a bad reason at typical volumes. Turn it on.
 - **Wrong chunk size** — 100-token chunks lose context; 4000-token chunks blow past LLM context. 500 is the safe starting point.
 - **Mismatched embedding models** — index with `text-embedding-3-small`, query with `-large`. Vector queries return garbage. Match dimensions.
-- **Not evaluating retrieval separately** — attendees test end-to-end answers and can't tell if a bad answer is a retrieval bug or a generation bug. Module 3 fixes this.
+- **Not evaluating retrieval separately** — if you test end-to-end answers you can't tell whether a bad answer is a retrieval bug or a generation bug. Module 3 fixes this.
 - **No filter-based security** — ships without ACLs, retrofit is painful.
 
 ---

@@ -12,7 +12,7 @@ Day 2 · 25 minutes
 
 ## Why evaluate retrieval separately
 
-Attendees who skip this step do one of two things:
+If you skip this step you'll do one of two things:
 
 - Ship an agent that "seems to work" — until it doesn't, and they can't tell why
 - Tune prompts and instructions forever, when the real problem was chunking or embeddings
@@ -32,7 +32,7 @@ Day 4 anchors evaluation for full workflows. Today's module gets the habit start
 | **Process evaluation** | The retrieval step itself — did we get relevant chunks? | Depends on evaluator |
 | **System evaluation** | The end-to-end response — did the agent answer correctly? | Sometimes |
 
-Both matter. **Process eval** finds the retrieval-side bug. **System eval** confirms the whole thing works. Attendees do a small dose of each in the lab.
+Both matter. **Process eval** finds the retrieval-side bug. **System eval** confirms the whole thing works. You'll do a small dose of each in the lab.
 
 ---
 
@@ -67,7 +67,7 @@ For today's lab and most real-world starting points:
 - **Output:** 1–5 score (pass ≥ 3), plus reasoning
 - **Answers:** "Did the response stay in the context, or did the model fabricate?"
 
-Together, these two isolate retrieval-side vs. generation-side failure. Attendees run both in the lab.
+Together, these two isolate retrieval-side vs. generation-side failure. You'll run both in the lab.
 
 ---
 
@@ -178,7 +178,7 @@ Same shape as Day 1's prompt-engineering loop:
 4. Change **one thing** (chunk size, `top_k`, prompt, model)
 5. Rerun. Compare scores.
 
-Change one thing at a time. When attendees change three things and the score goes up, they've learned nothing about what worked.
+Change one thing at a time. When you change three things and the score goes up, you've learned nothing about what worked.
 
 Same discipline shows up Day 4 for multi-agent workflow eval.
 

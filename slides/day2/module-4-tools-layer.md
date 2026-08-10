@@ -90,7 +90,7 @@ Every function tool exposes four things to the model:
 | **Parameter schema** | Types, required/optional, per-param descriptions |
 | **Return type** | What comes back after the tool runs |
 
-The description carries more weight than most attendees realize. Modules 3 and 6 both come back to this.
+The description carries more weight than you might realize. Modules 3 and 6 both come back to this.
 
 ---
 
@@ -249,7 +249,7 @@ async for event in agent.run("Look up my account status", stream=True):
         print(event.text, end="", flush=True)
 ```
 
-Tool call, tool result, tokens — all in one async stream. Attendees see this fire in Module 6's lab.
+Tool call, tool result, tokens — all in one async stream. You'll see this fire in Module 6's lab.
 
 Day 3 goes deeper on streaming UX and cancellation.
 
@@ -303,7 +303,7 @@ All three go through the same function-calling contract. Same schema shape. Same
 
 ## The tool-vs-knowledge decision
 
-Attendees will build things where they could reasonably use either:
+You'll build things where you could reasonably use either:
 
 - "Should I make this a **tool call** to search my docs, or attach a **knowledge base**?"
 

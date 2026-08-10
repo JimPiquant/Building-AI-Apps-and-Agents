@@ -179,7 +179,7 @@ The portal is a great teacher and a great debugger. For creating resources and s
 ## Common portal gotchas
 
 - **Quota errors** on deployment → request a quota bump in the region before Day 1.
-- **Missing role assignments** → attendees need at least `Foundry User` (previously *Azure AI User*) at the **Foundry resource scope**. If Foundry pages 401 or 403, this is usually it.
+- **Missing role assignments** → you need at least `Foundry User` (previously *Azure AI User*) at the **Foundry resource scope**. If Foundry pages 401 or 403, this is usually it.
 - **Region mismatch** → your model deployment must be in a region Foundry IQ / your AI Search index can reach.
 - **Preview features moving** — Toolbox and parts of Foundry IQ are evolving fast; if a screenshot in these slides doesn't match reality, the code is still what you should trust.
 
@@ -195,7 +195,7 @@ Instructor will demonstrate:
 5. Show the Toolbox catalog and one entry
 6. Show Foundry IQ landing page and one knowledge source (if pre-provisioned)
 
-**Attendees:** do steps 1–4 on your own subscription before the module ends.
+**Try it yourself:** do steps 1–4 on your own subscription before the module ends.
 
 ---
 
