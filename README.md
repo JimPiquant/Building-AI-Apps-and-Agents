@@ -3,7 +3,7 @@
 A 5-day, hands-on workshop for professional developers and solution architects building AI applications on Azure with **Microsoft Foundry** and the **Microsoft Agent Framework (MAF)**.
 
 ## Audience
-Professional developers, senior engineers, and solution architects with working knowledge of Azure. See [`docs/prereqs.md`](docs/prereqs.md) for the self-check.
+Professional developers, senior engineers, and solution architects with working knowledge of Azure. See [`docs/prereqs.md`](docs/prereqs.md) for the self-check and [`docs/pre-workshop-prep.md`](docs/pre-workshop-prep.md) for the full pre-workshop preparation guide (environment setup + pre-reading for Days 1 and 2).
 
 ## Format
 - 5 days total, split **2 + 2 + 1**, with time between blocks to apply the material
