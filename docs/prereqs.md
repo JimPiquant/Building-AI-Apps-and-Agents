@@ -27,12 +27,6 @@ If you can answer **yes** to every item below, you're ready for Day 1. If you ca
 - You've used a chatbot (ChatGPT, Copilot Chat, or similar) enough to know what a system prompt vs. user prompt is.
 - Loose familiarity with the words *token*, *embedding*, *RAG*, *tool call*. Deep understanding not required — that's what the workshop is for.
 
-## Instructor-provided at the start of Day 1
-- An Azure subscription with sufficient quota
-- A Foundry project you have access to
-- A model deployment in that project you can call
-- Any environment values you need (project endpoint, model name) will be shared before Day 1
-
 ## Not required
 - Prior Foundry experience
 - Prior MAF experience
