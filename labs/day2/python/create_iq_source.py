@@ -39,7 +39,7 @@ from azure.search.documents.indexes.models import (
 )
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
-DOCS_DIR = Path(__file__).resolve().parents[1] / "data" / "docs"
+DOCS_DIR = Path(__file__).resolve().parent / "data" / "docs"
 
 
 def main() -> None:

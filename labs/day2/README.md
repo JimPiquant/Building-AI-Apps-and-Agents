@@ -111,25 +111,27 @@ first (or ask a TA for a paired debug).
 
 ```
 labs/day2/
-├── README.md                     # you're here
-├── .env.example                  # copy to .env
-├── data/docs/                    # 10 mock product docs (provided)
-├── python/
-│   ├── pyproject.toml            # uv-managed
-│   ├── agent.py                  # baseline sanity check
-│   ├── create_iq_source.py       # Part A: uploads docs to Foundry IQ
-│   ├── part_a_grounded_agent.py  # Part A: agent with IQ attached
-│   ├── mock_backend.py           # provided in-memory ticket store
-│   ├── tools.py                  # Part B: YOU author create_ticket + lookup_status
-│   ├── part_b_wire_tools.py      # Part B: agent with your tools attached
-│   └── part_c_combined.py        # Part C: combined agent
-├── tests/
-│   ├── test_tools.py             # Part B: isolation tests (mostly provided)
-│   └── test_golden_set.py        # Part B/C: tool-use eval runner
-└── evals/
-    ├── retrieval_eval.py         # Part A: Retrieval + Groundedness scorer
-    ├── tools_golden_set.jsonl    # Part B: YOU author 6 rows
-    └── combined_golden_set.jsonl # Part C: 3 starter rows provided
+├── README.md                       # you're here
+├── .env.example                    # copy to .env at this level
+└── python/
+    ├── pyproject.toml              # uv-managed
+    ├── README.md                   # Python starter guide (also linked below)
+    ├── agent.py                    # baseline sanity check
+    ├── create_iq_source.py         # Part A: creates Search index + IQ objects
+    ├── foundry_iq.py               # Part A/C: authenticated MCP client to IQ
+    ├── part_a_grounded_agent.py    # Part A: agent with IQ attached
+    ├── mock_backend.py             # provided in-memory ticket store
+    ├── tools.py                    # Part B: YOU author create_ticket + lookup_status
+    ├── part_b_wire_tools.py        # Part B: agent with your tools attached
+    ├── part_c_combined.py          # Part C: combined agent
+    ├── data/docs/                  # 10 mock product docs (provided)
+    ├── tests/
+    │   ├── test_tools.py           # Part B: isolation tests (mostly provided)
+    │   └── test_golden_set.py      # Part B/C: tool-use eval runner
+    └── evals/
+        ├── retrieval_eval.py       # Part A: Retrieval + Groundedness scorer
+        ├── tools_golden_set.jsonl  # Part B: YOU author 6 rows
+        └── combined_golden_set.jsonl # Part C: 3 starter rows provided
 ```
 
 ---
@@ -161,9 +163,11 @@ labs/day2/
 
 3. Score the transcript with Foundry evaluators:
    ```bash
-   uv run python ../evals/retrieval_eval.py
+   EVALUATION_MODEL=gpt-5.4-mini uv run python evals/retrieval_eval.py
    ```
-   Results are written to `evals/part_a_baseline.json`.
+   Results are written to `evals/part_a_baseline.json`. See
+   [`python/README.md`](python/README.md#part-a-evaluation-model) for notes on
+   the `EVALUATION_MODEL` setting.
 
 ### Definition of done
 
@@ -190,10 +194,9 @@ description in `part_a_grounded_agent.py` and re-run.
 2. **Test in isolation** — before wiring anything to an agent:
    ```bash
    cd labs/day2/python
-   uv run pytest ../tests/test_tools.py -v
+   uv run pytest tests/test_tools.py -v
    ```
-   The first four tests should pass. The fifth (`invalid_priority`) is marked
-   skip until you add the Pydantic schema — unskip it once you do.
+   All five tests should pass.
 
 3. **Wire the tools to an agent** — nothing to code here, just run:
    ```bash
@@ -210,12 +213,12 @@ description in `part_a_grounded_agent.py` and re-run.
 
 5. **Run the tool-use eval:**
    ```bash
-   uv run pytest ../tests/test_golden_set.py -v
+   uv run pytest tests/test_golden_set.py -v
    ```
 
 ### Definition of done
 
-- Isolation tests: **all pass** (including the un-skipped `invalid_priority`)
+- Isolation tests: **all pass** (all five)
 - Golden-set eval: **6/6** rows pass
 
 If a row fails, don't rewrite the code — **tighten the tool descriptions** in
