@@ -49,34 +49,20 @@ from mock_backend import BACKEND
 
 class CreateTicketInput(BaseModel):
     """Input schema for creating a support ticket."""
-    title: Annotated[str, Field(description="Short ticket title")]
-    body: Annotated[str, Field(description="Full description of the problem")]
-    priority: Annotated[
-        Literal["low", "med", "high"],
-        Field(description="Ticket priority"),
-    ] = "med"
+    # TODO: add title, body, priority fields with Annotated + Field(description=...)
+    ...
 
-@tool(
-    name="create_ticket",
-    description="Create a support ticket for a problem that needs a human engineer. "
-                "Use when the user reports a problem you cannot answer from documentation. "
-                "Do NOT use for general product questions.",
-    schema=CreateTicketInput,
-    approval_mode="never_require",  # switch to always_require to see gating
-)
-def create_ticket(title: str, body: str, priority: Literal["low", "med", "high"] = "med") -> str:
+
+def create_ticket(title: str, body: str, priority: str = "med") -> str:
     """Create a support ticket for a problem that needs a human engineer.
 
-    Call this when the user reports an unresolved technical or account-specific
-    problem that requires investigation or action by a human engineer. Do not
-    call it for general product questions, documentation lookups, or issues that
-    can be resolved directly. Returns a confirmation containing the new ticket ID.
+    TODO — write a proper four-part docstring:
+      - What: one line
+      - When to call
+      - When NOT to call
+      - What comes back
     """
-    if priority not in {"low", "med", "high"}:
-            raise ValueError(f"Invalid priority: {priority!r}")
-
-    ticket_id = BACKEND.create(title=title, body=body, priority=priority)
-    return f"Created ticket {ticket_id}"
+    raise NotImplementedError("Implement create_ticket — see docstring TODO")
 
 
 # ---------------------------------------------------------------------------
@@ -91,8 +77,7 @@ async def lookup_status(ticket_id: str) -> str:
 
     TODO — write a proper four-part docstring.
     """
-    status = BACKEND.get_status(ticket_id=ticket_id)
-    return status
+    raise NotImplementedError("Implement lookup_status — see docstring TODO")
 
 
 # ---------------------------------------------------------------------------
