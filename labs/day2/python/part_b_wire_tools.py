@@ -14,7 +14,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from agent_framework import ChatAgent
+from agent_framework import Agent
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
 
@@ -23,17 +23,17 @@ from tools import create_ticket, lookup_status
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 
-def build_agent_with_tools() -> ChatAgent:
+def build_agent_with_tools() -> Agent:
     endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
     model = os.environ.get("FOUNDRY_MODEL", "gpt-5.4-mini")
 
     client = FoundryChatClient(
-        endpoint=endpoint,
-        deployment_name=model,
+        project_endpoint=endpoint,
+        model=model,
         credential=AzureCliCredential(),
     )
-    return ChatAgent(
-        chat_client=client,
+    return Agent(
+        client=client,
         instructions=(
             "You are a support assistant for the Contoso developer API.\n"
             "Use create_ticket when the user reports a problem needing a human engineer.\n"
