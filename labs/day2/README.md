@@ -196,7 +196,11 @@ description in `part_a_grounded_agent.py` and re-run.
    cd labs/day2/python
    uv run pytest tests/test_tools.py -v
    ```
-   All five tests should pass.
+   Three tests run; two are skipped by default. Enable each skipped test as
+   you reach the step it validates (Pydantic schema for one, error contract
+   for the other) — instructions are inline in the test file. Until you
+   author `tools.py`, the three active tests will fail with
+   `NotImplementedError` — that's expected.
 
 3. **Wire the tools to an agent** — nothing to code here, just run:
    ```bash
@@ -218,7 +222,7 @@ description in `part_a_grounded_agent.py` and re-run.
 
 ### Definition of done
 
-- Isolation tests: **all pass** (all five)
+- Isolation tests: **all five run and pass** (both `@pytest.mark.skip` decorators removed)
 - Golden-set eval: **6/6** rows pass
 
 If a row fails, don't rewrite the code — **tighten the tool descriptions** in

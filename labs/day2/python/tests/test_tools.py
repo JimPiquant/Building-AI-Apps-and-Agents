@@ -3,13 +3,15 @@ Isolation tests for your Part B tools.
 
 Run with:
     cd labs/day2/python
-    uv run pytest ../tests/test_tools.py -v
+    uv run pytest tests/test_tools.py -v
 
 These tests import your functions directly and call them WITHOUT an agent —
 the fastest possible feedback loop for tool authoring.
 
-The first two tests are wired up. The rest are TODOs you fill in as you
-progress through Part B.
+Three tests are wired up (the two create_ticket happy paths and the
+lookup_status success path). The other two are skipped by default —
+enable each one as you progress through Part B (see the comment on
+each skip marker).
 """
 from __future__ import annotations
 
@@ -56,13 +58,13 @@ def test_create_ticket_persists_in_backend():
 
 
 # ---------------------------------------------------------------------------
-# TODO — add these tests as you progress through Part B, Step 3.
 # When you switch create_ticket to use @tool(schema=CreateTicketInput) with
-# priority: Literal["low", "med", "high"], the second test below will pass
-# WITHOUT you writing any validation logic — Pydantic does it for you.
+# priority: Literal["low", "med", "high"], this test will pass WITHOUT you
+# writing any validation logic — Pydantic does it for you. Remove the skip
+# marker to enable it.
 # ---------------------------------------------------------------------------
 
-#@pytest.mark.skip(reason="Enable when you add Pydantic schema in tools.py")
+@pytest.mark.skip(reason="Enable when you add the Pydantic schema in tools.py")
 def test_create_ticket_rejects_invalid_priority():
     with pytest.raises((ValidationError, ValueError)):
         create_ticket(title="X", body="Y", priority="urgent")  # not a valid enum value
@@ -79,18 +81,27 @@ async def test_lookup_status_returns_string_for_seeded_ticket():
     assert "12345" in result or "in_progress" in result
 
 
+@pytest.mark.skip(reason="Enable after you decide your error contract — see docstring")
 @pytest.mark.asyncio
 async def test_lookup_status_handles_missing_ticket():
     """
     Design decision: how does your tool signal 'not found'?
-    Pick ONE of these and assert the shape:
-      - Returns an error string  → assert "not found" in result.lower()
-      - Returns a dict/JSON      → assert '"error"' in result
-      - Raises KeyError          → wrap with pytest.raises(KeyError)
-    Update the assertion below to match your choice.
-    """
 
-    # TODO — decide error contract per Module 6 slide "Error contracts"
-    with pytest.raises(KeyError, match="Ticket 00000 not found"):
-        await lookup_status("00000")
-#    assert "not found" in result.lower() or "error" in result.lower()
+    Pick ONE of these, replace the `pass` below with the matching body, then
+    remove the @pytest.mark.skip decorator above.
+
+      - Returns an error string:
+          result = await lookup_status("00000")
+          assert "not found" in result.lower()
+
+      - Returns a dict/JSON:
+          result = await lookup_status("00000")
+          assert '"error"' in result
+
+      - Raises an exception (KeyError, ValueError, or your own):
+          with pytest.raises(KeyError):
+              await lookup_status("00000")
+
+    Reference: Module 6 slide "Error contracts".
+    """
+    pass  # replace with the assertion for the contract you chose
