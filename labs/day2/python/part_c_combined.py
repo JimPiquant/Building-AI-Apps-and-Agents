@@ -15,10 +15,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from agent_framework import ChatAgent
-from agent_framework.foundry import FoundryChatClient, FoundryKnowledgeSource
+from agent_framework import Agent, MCPStreamableHTTPTool
+from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
 
+from foundry_iq import create_knowledge_base_tool
 from tools import create_ticket, lookup_status
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
@@ -42,28 +43,22 @@ If you don't find an answer in documentation and no tool applies, say
 """
 
 
-def build_combined_agent() -> ChatAgent:
+def build_combined_agent(
+    credential: AzureCliCredential,
+    knowledge_tool: MCPStreamableHTTPTool,
+) -> Agent:
     endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
-    model = os.environ.get("FOUNDRY_MODEL", "gpt-5.4-mini")
-    knowledge_name = os.environ["FOUNDRY_IQ_KNOWLEDGE_NAME"]
+    model = os.environ.get("FOUNDRY_MODEL", "gpt-5.6-luna")
 
     client = FoundryChatClient(
-        endpoint=endpoint,
-        deployment_name=model,
-        credential=AzureCliCredential(),
+        project_endpoint=endpoint,
+        model=model,
+        credential=credential,
     )
-    knowledge = FoundryKnowledgeSource(
-        name=knowledge_name,
-        description=(
-            "General Contoso developer API product documentation. "
-            "Does NOT contain account-specific state (orders, tickets, entitlements)."
-        ),
-    )
-    return ChatAgent(
-        chat_client=client,
+    return Agent(
+        client=client,
         instructions=COMBINED_INSTRUCTIONS,
-        knowledge_sources=[knowledge],
-        tools=[create_ticket, lookup_status],
+        tools=[knowledge_tool, create_ticket, lookup_status],
     )
 
 
@@ -78,12 +73,14 @@ DRIVER_QUERIES = [
 
 
 async def main() -> None:
-    agent = build_combined_agent()
-    print("--- Part C: combined agent ---\n")
-    for q in DRIVER_QUERIES:
-        print(f"Q: {q}")
-        response = await agent.run(q)
-        print(f"A: {response}\n")
+    with AzureCliCredential() as credential:
+        async with create_knowledge_base_tool(credential) as knowledge_tool:
+            agent = build_combined_agent(credential, knowledge_tool)
+            print("--- Part C: combined agent ---\n")
+            for q in DRIVER_QUERIES:
+                print(f"Q: {q}")
+                response = await agent.run(q)
+                print(f"A: {response}\n")
 
     print("Next: inspect traces / run tests/test_golden_set.py against combined_golden_set.jsonl.")
 

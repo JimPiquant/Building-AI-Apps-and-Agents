@@ -1,7 +1,7 @@
 """
 Day 2 Lab — Part A — Grounded docs assistant.
 
-Attach the Foundry IQ knowledge source you created with create_iq_source.py
+Attach the Foundry IQ knowledge base you created with create_iq_source.py
 to the baseline agent, then run a small evaluation of retrieval quality.
 
 Definition of done:
@@ -20,9 +20,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from agent_framework import ChatAgent
-from agent_framework.foundry import FoundryChatClient, FoundryKnowledgeSource
+from agent_framework import Agent, MCPStreamableHTTPTool
+from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
+
+from foundry_iq import create_knowledge_base_tool
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
@@ -37,59 +39,67 @@ EVAL_QUERIES = [
 ]
 
 
-def build_grounded_agent() -> ChatAgent:
+def _grounding_context(response) -> str:
+    tool_results = []
+    for message in response.messages:
+        for content in message.contents:
+            if content.type == "function_result" and content.result:
+                tool_results.append(content.result)
+    return "\n\n".join(tool_results)
+
+
+def build_grounded_agent(
+    credential: AzureCliCredential,
+    knowledge_tool: MCPStreamableHTTPTool,
+) -> Agent:
     endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
     model = os.environ.get("FOUNDRY_MODEL", "gpt-5.4-mini")
-    knowledge_name = os.environ["FOUNDRY_IQ_KNOWLEDGE_NAME"]
 
     client = FoundryChatClient(
-        endpoint=endpoint,
-        deployment_name=model,
-        credential=AzureCliCredential(),
+        project_endpoint=endpoint,
+        model=model,
+        credential=credential,
     )
-    knowledge = FoundryKnowledgeSource(
-        name=knowledge_name,
-        description=(
-            "General Contoso developer API product documentation. "
-            "Does NOT contain account-specific state (orders, tickets, entitlements)."
-        ),
-    )
-    return ChatAgent(
-        chat_client=client,
+    return Agent(
+        client=client,
         instructions=(
             "You are a support assistant for the Contoso developer API.\n"
             "For product questions, use the documentation knowledge source.\n"
             "If the documentation does not contain the answer, say \"I don't have that information.\" "
             "Do not guess."
         ),
-        knowledge_sources=[knowledge],
+        tools=[knowledge_tool],
     )
 
 
 async def main() -> None:
-    agent = build_grounded_agent()
+    with AzureCliCredential() as credential:
+        async with create_knowledge_base_tool(credential) as knowledge_tool:
+            agent = build_grounded_agent(credential, knowledge_tool)
 
-    results = []
-    print("--- Part A: grounded assistant ---\n")
-    for item in EVAL_QUERIES:
-        response = await agent.run(item["query"])
-        answer = str(response)
-        print(f"Q: {item['query']}")
-        print(f"A: {answer}\n")
-        results.append({
-            "query": item["query"],
-            "should_answer": item["should_answer"],
-            "answer": answer,
-        })
+            results = []
+            print("--- Part A: grounded assistant ---\n")
+            for item in EVAL_QUERIES:
+                response = await agent.run(item["query"])
+                answer = str(response)
+                context = _grounding_context(response)
+                print(f"Q: {item['query']}")
+                print(f"A: {answer}\n")
+                results.append({
+                    "query": item["query"],
+                    "should_answer": item["should_answer"],
+                    "answer": answer,
+                    "context": context,
+                })
 
     # Save transcript — evals/retrieval_eval.py reads this file
-    out = Path(__file__).resolve().parents[1] / "evals" / "part_a_transcript.jsonl"
+    out = Path(__file__).resolve().parent / "evals" / "part_a_transcript.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w") as f:
         for r in results:
             f.write(json.dumps(r) + "\n")
     print(f"\nTranscript written to {out}")
-    print("Next: run `uv run python ../evals/retrieval_eval.py` to score retrieval + groundedness.")
+    print("Next: run `uv run python evals/retrieval_eval.py` to score retrieval + groundedness.")
 
 
 if __name__ == "__main__":

@@ -27,7 +27,8 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "python"))
+# Make the project root importable
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from part_b_wire_tools import build_agent_with_tools  # noqa: E402
 
@@ -48,17 +49,18 @@ def _load_golden_set() -> list[dict]:
 
 
 def _tool_calls_from_trace(response) -> list[dict]:
-    """Extract tool calls from the MAF agent response trace.
-
-    Adapt this to whatever shape your MAF version exposes — the shape of
-    response.messages / response.tool_calls may drift.
-    """
+    """Extract function calls from the MAF agent response trace."""
     calls = []
-    for msg in getattr(response, "messages", []) or []:
-        for tc in getattr(msg, "tool_calls", []) or []:
+    for message in getattr(response, "messages", []) or []:
+        for content in getattr(message, "contents", []) or []:
+            if getattr(content, "type", None) != "function_call":
+                continue
+            arguments = getattr(content, "arguments", None) or {}
+            if isinstance(arguments, str):
+                arguments = json.loads(arguments)
             calls.append({
-                "name": getattr(tc, "name", None),
-                "args": getattr(tc, "arguments", None) or getattr(tc, "args", None),
+                "name": getattr(content, "name", None),
+                "args": arguments,
             })
     return calls
 

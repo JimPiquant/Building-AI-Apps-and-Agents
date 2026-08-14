@@ -17,6 +17,82 @@ per the workshop policy.
 - `az login` works against your Azure tenant
 - Same Foundry project and model deployment you used on Day 1 (recommended:
   **`gpt-5.4-mini`**)
+- An Azure AI Search service configured for Foundry IQ (see below)
+
+### Azure AI Search setup
+
+For this workshop, create one reusable Search service in the Azure portal. This
+keeps the billable service lifecycle separate from the lab script. Use Bicep or
+Terraform instead for shared or production environments.
+
+#### Create the Search service in the Azure portal
+
+1. Open the [Azure portal](https://portal.azure.com), select **Create a
+   resource**, search for **Azure AI Search**, and select **Create**.
+2. On **Basics**, select your subscription and resource group, then enter a
+   globally unique service name. The resulting endpoint is
+   `https://<service-name>.search.windows.net`.
+3. Choose a [region that supports agentic retrieval](https://learn.microsoft.com/azure/search/search-region-support).
+   Prefer the same region as the Foundry resource to reduce latency.
+4. Select **Change Pricing Tier** and choose **Basic** or higher. Basic is the
+   smallest tier that supports the managed identity required by this lab.
+5. Select **Review + create**, then **Create**. After deployment completes,
+   select **Go to resource**.
+
+#### Configure identity and access
+
+1. On the Search service, open **Settings > Identity**, turn the system-assigned
+   identity **On**, and select **Save**.
+2. Open **Settings > Keys** and set **API access control** to **Role-based access
+   control** or **Both**.
+3. Open **Access control (IAM) > Add > Add role assignment** and assign these
+   roles on the Search service:
+
+   | Assignee | Scope | Role |
+   |---|---|---|
+   | Your user account | Search service | Search Service Contributor |
+   | Your user account | Search service | Search Index Data Contributor |
+   | Your user account | Search service | Search Index Data Reader |
+
+4. Open the Foundry resource in the Azure portal. Under **Access control (IAM)**,
+   assign **Cognitive Services User** to the Search service's managed identity.
+
+The first two roles let the provisioning script create objects and upload the
+documents. The reader role lets the local agent call the IQ MCP endpoint. The
+Search identity uses the Foundry model for query planning and answer synthesis.
+
+Add the Search service URL and the Foundry resource's Azure OpenAI endpoint to
+`.env`:
+
+```dotenv
+AZURE_SEARCH_ENDPOINT=https://<search-service>.search.windows.net
+AZURE_OPENAI_ENDPOINT=https://<foundry-resource>.openai.azure.com
+```
+
+`AZURE_OPENAI_ENDPOINT` must be the resource root. Do not append `/openai`.
+
+Role assignments can take several minutes to propagate. Foundry IQ agentic
+retrieval and model calls can incur usage charges in addition to the Search
+service tier.
+
+#### Create the index and Foundry IQ objects
+
+Do not use **Import data** to create the index manually. After the service and
+roles are ready, run the lab provisioning script. It creates or updates the
+`contoso-docs-index` schema, uploads the Markdown documents, and creates the
+knowledge source and knowledge base:
+
+```bash
+cd labs/day2/python
+uv run python create_iq_source.py
+```
+
+To verify it in the Azure portal, open the Search service. Under **Search
+management > Indexes**, the `contoso-docs-index` index should contain 10
+documents. Under **Agentic retrieval > Knowledge bases**, you should see
+`contoso-docs`; it isn't automatically added to the knowledge assets of your
+Foundry project. If you changed `FOUNDRY_IQ_KNOWLEDGE_NAME`, these objects use
+that name as their prefix.
 
 Set up your environment:
 
@@ -66,14 +142,15 @@ labs/day2/
 
 ### Steps
 
-1. Create the IQ knowledge source from the provided docs corpus:
+1. Create the IQ index, knowledge source, and knowledge base from the provided
+   docs corpus:
    ```bash
    cd labs/day2/python
    uv run python create_iq_source.py
    ```
-   This uploads the 10 markdown files in `data/docs/` and creates a Foundry IQ
-   knowledge source named `contoso-docs` (or whatever you set in
-   `FOUNDRY_IQ_KNOWLEDGE_NAME`).
+   This uploads the 10 markdown files to Azure AI Search and creates a Foundry IQ
+   knowledge base named `contoso-docs` (or whatever you set in
+   `FOUNDRY_IQ_KNOWLEDGE_NAME`). Re-running the script updates the same objects.
 
 2. Run the grounded agent to produce a transcript:
    ```bash
@@ -180,7 +257,9 @@ If a row fails, don't rewrite the code — **tighten the tool descriptions** in
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `create_iq_source.py` hangs at "uploading" | Slow tenant ingest | Wait — first upload can take 60–90s per file |
+| `create_iq_source.py` returns `403` | Search RBAC is missing or still propagating | Verify the roles in **Azure AI Search setup**, then retry after several minutes |
+| Knowledge-base creation fails during model access | Search identity cannot call the Foundry model | Assign Cognitive Services User to the Search managed identity on the Foundry resource |
+| Agent cannot connect to the IQ MCP endpoint | Local user lacks retrieval access | Assign Search Index Data Reader to your user on the Search service |
 | `azure.identity` DefaultAzureCredential errors | Not logged in | `az login` and retry |
 | `FOUNDRY_IQ_KNOWLEDGE_NAME not set` | Missed step in Part A | Add `FOUNDRY_IQ_KNOWLEDGE_NAME=contoso-docs` to `.env` |
 | `test_tools.py` — `NotImplementedError` | Tools not authored yet | Complete Part B, Step 1 |

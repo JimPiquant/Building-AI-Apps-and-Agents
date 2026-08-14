@@ -16,8 +16,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-# Make labs/day2/python importable
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "python"))
+# Make the project root importable
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import pytest
 from pydantic import ValidationError
@@ -62,7 +62,7 @@ def test_create_ticket_persists_in_backend():
 # WITHOUT you writing any validation logic — Pydantic does it for you.
 # ---------------------------------------------------------------------------
 
-@pytest.mark.skip(reason="Enable when you add Pydantic schema in tools.py")
+#@pytest.mark.skip(reason="Enable when you add Pydantic schema in tools.py")
 def test_create_ticket_rejects_invalid_priority():
     with pytest.raises((ValidationError, ValueError)):
         create_ticket(title="X", body="Y", priority="urgent")  # not a valid enum value
@@ -89,6 +89,8 @@ async def test_lookup_status_handles_missing_ticket():
       - Raises KeyError          → wrap with pytest.raises(KeyError)
     Update the assertion below to match your choice.
     """
+
     # TODO — decide error contract per Module 6 slide "Error contracts"
-    result = await lookup_status("00000")
-    assert "not found" in result.lower() or "error" in result.lower()
+    with pytest.raises(KeyError, match="Ticket 00000 not found"):
+        await lookup_status("00000")
+#    assert "not found" in result.lower() or "error" in result.lower()

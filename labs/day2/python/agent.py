@@ -11,29 +11,28 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from agent_framework import Agent
 from agent_framework.foundry import FoundryChatClient
-from agent_framework import ChatAgent
 from azure.identity import AzureCliCredential
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 
-def build_baseline_agent() -> ChatAgent:
+def build_baseline_agent() -> Agent:
     """Build a Day 2 baseline agent — no knowledge, no tools."""
     endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
     model = os.environ.get("FOUNDRY_MODEL", "gpt-5.4-mini")
 
     client = FoundryChatClient(
-        endpoint=endpoint,
-        deployment_name=model,
+        project_endpoint=endpoint,
+        model=model,
         credential=AzureCliCredential(),
     )
-    return ChatAgent(
-        chat_client=client,
-        instructions=(
+    return Agent(
+        client=client,
+        instructions=
             "You are a support assistant for the Contoso developer API. "
             "Be concise. If you don't know the answer, say so."
-        ),
     )
 
 
