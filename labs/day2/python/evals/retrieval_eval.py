@@ -12,7 +12,7 @@ Setup:
     Set EVALUATION_MODEL to the deployment name of a reasoning model available at
     AZURE_OPENAI_ENDPOINT. For example:
 
-        EVALUATION_MODEL=gpt-5.4-mini uv run python evals/retrieval_eval.py
+        EVALUATION_MODEL=gpt-5.6-luna uv run python evals/retrieval_eval.py
 
 Reference: Module 3 (Evaluating Retrieval) + Learn:
     https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/develop/evaluate-sdk
@@ -39,7 +39,7 @@ EVALUATION_MODEL = os.environ.get("EVALUATION_MODEL")
 if not EVALUATION_MODEL:
     raise SystemExit(
         "Set EVALUATION_MODEL to a deployed reasoning model, "
-        "for example gpt-5.4-mini."
+        "for example gpt-5.6-luna."
     )
 
 MODEL_CONFIG = {

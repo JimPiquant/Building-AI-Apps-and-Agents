@@ -130,7 +130,7 @@ static string GetWeather(
 
 AIAgent agent = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential())
     .AsAIAgent(
-        model: "gpt-5.4-mini",
+        model: "gpt-5.6-luna",
         instructions: "You are a helpful assistant",
         tools: [AIFunctionFactory.Create(GetWeather)]);
 ```

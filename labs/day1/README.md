@@ -10,6 +10,15 @@ Estimated time: **~2 hours async**.
 - `az login` works against your Azure tenant.
 - You have a Foundry project and know its **project endpoint** and **at least one model deployment name** (surfaced in Module 2).
 - You've cloned this repo and are working from `labs/day1/`.
+- **`uv`** (Python package/project manager) is installed. If you don't have it:
+  ```bash
+  # macOS / Linux
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+
+  # Windows (PowerShell)
+  irm https://astral.sh/uv/install.ps1 | iex
+  ```
+  See the [`uv` utility note](../../README.md#a-note-about-the-uv-utility) in the top-level README for what `uv sync` and `uv run` do.
 
 ## Choose your language
 
@@ -17,6 +26,17 @@ Estimated time: **~2 hours async**.
 - **C#**: **Part C** implemented under [`csharp/PartC_ResponsesApi/`](csharp/PartC_ResponsesApi/). Parts A and B are Python-only in the current release; C# reference samples for those paths live in the `microsoft/agent-framework` repo — see [`csharp/README.md`](csharp/README.md).
 
 You can mix — Part C in C# is fine, then switch to Python for Parts A and B.
+
+### Python starter files
+
+| File | Part | What it does |
+|---|---|---|
+| [`python/create_prompt_agent.py`](python/create_prompt_agent.py) | A (run once) | Creates the `docs-assistant` Prompt agent via the Azure AI Projects SDK |
+| [`python/part_a_prompt_agent.py`](python/part_a_prompt_agent.py) | A | Connects to the Prompt agent you just created and runs multi-turn prompts |
+| [`python/part_b_hosted_agent.py`](python/part_b_hosted_agent.py) | B | Connects to your deployed Hosted agent |
+| [`python/part_c_responses_api.py`](python/part_c_responses_api.py) | C | Your own code calling the Foundry Responses API |
+
+All are run with `uv run python <file>` from `labs/day1/python/`, after `uv sync` in that directory.
 
 ## Environment file
 
@@ -50,7 +70,7 @@ Follow the official Learn tutorial (**Azure CLI** tab):
 **[Quickstart: Create Foundry resources with the Azure CLI](https://learn.microsoft.com/en-us/azure/foundry/tutorials/quickstart-create-foundry-resources?tabs=azurecli)**
 
 Key decisions to make as you follow it:
-- **Model deployment name:** recommended **`gpt-5.4-mini`** — good balance of capability and cost for this workshop's scenarios. Any equivalent chat-capable model will also work.
+- **Model deployment name:** recommended **`gpt-5.6-luna`** — good balance of capability and cost for this workshop's scenarios. Any equivalent chat-capable model will also work.
 - **Region:** pick a region where your target model has quota (the tutorial explains how to check).
 - Record the **project endpoint** URL and the **deployment name** — you'll paste them into `.env` next.
 
@@ -58,7 +78,7 @@ When you're done, populate `.env`:
 
 ```bash
 FOUNDRY_PROJECT_ENDPOINT=https://<foundry-resource>.services.ai.azure.com/api/projects/<your-project>
-FOUNDRY_MODEL=gpt-5.4-mini           # or your chosen deployment name
+FOUNDRY_MODEL=gpt-5.6-luna           # or your chosen deployment name
 FOUNDRY_PROMPT_AGENT_NAME=docs-assistant
 ```
 
@@ -66,9 +86,9 @@ FOUNDRY_PROMPT_AGENT_NAME=docs-assistant
 
 1. `cd labs/day1/python && uv sync`
 2. `uv run python create_prompt_agent.py`
-   - This calls `client.agents.create_version(...)` with a `PromptAgentDefinition` (instructions + model + temperature) and prints the resulting agent name and version.
-3. Copy the printed version into `.env` as `FOUNDRY_PROMPT_AGENT_VERSION` (typically `1.0` on first run).
-4. **See your new agent in the portal.** Open [https://ai.azure.com](https://ai.azure.com) → your project → **Agents**. You should see `docs-assistant` v1.0 in the list. Open it — the instructions, model, and version you set in code are all visible in the portal.
+   - This calls `client.agents.create_version(...)` with a `PromptAgentDefinition` (instructions + model) and prints the resulting agent name and version.
+3. Copy the printed version into `.env` as `FOUNDRY_PROMPT_AGENT_VERSION` (typically `1` on first run).
+4. **See your new agent in the portal.** Open [https://ai.azure.com](https://ai.azure.com) → your project → **Agents**. You should see `docs-assistant` v1 in the list. Open it — the instructions, model, and version you set in code are all visible in the portal.
 
 ### Connect to it and run
 
@@ -80,16 +100,16 @@ FOUNDRY_PROMPT_AGENT_NAME=docs-assistant
 Instead of the SDK step:
 1. Foundry portal → your project → **Agents** → **New agent** (top-right) → **Build an agent**.
 2. Name it `docs-assistant`. Use the docs-assistant system prompt from `create_prompt_agent.py` as the instructions.
-3. Attach your model deployment and publish version `1.0`.
+3. Attach your model deployment and publish version `1`.
 4. Skip step 2 above; run `uv run python part_a_prompt_agent.py` directly.
 
-> **Portal vocabulary note:** the portal's *"Build an agent"* creates a **Prompt agent** (configuration-only, no code) — that's what you want here. *"Code an agent"* is used for **Hosted agents** (Part B setup, done by the instructor). *"Link external agent"* is a separate scenario not used in this workshop.
+> **Portal vocabulary note:** the portal's *"Build an agent"* creates a **Prompt agent** (configuration-only, no code) — that's what you want here. *"Code an agent"* is used for **Hosted agents**. *"Link external agent"* is a separate scenario not used in this workshop.
 
 ### Definition of done for Part A
 - Your Foundry resource + project exist and have a deployed model.
 - Your Prompt agent shows up in the Foundry portal under **Agents** (regardless of which path you used to create it).
 - Your MAF app connects to it and gets responses.
-- You can articulate what "versioned Prompt agent" means in practice: what changes to publish `1.1`, and what happens to consumers pinned to `1.0`?
+- You can articulate what "versioned Prompt agent" means in practice: what changes to publish `2`, and what happens to consumers pinned to `1`?
 - (If you used the SDK path) you understand why IaC-first teams prefer code creation: the `create_prompt_agent.py` script is repeatable, reviewable, and CI-friendly. The portal isn't.
 
 ---
@@ -170,7 +190,7 @@ Commit that file and push to your fork. Reflection > code.
 | `az login` fine but MAF 401 | Missing `Azure AI User` role on the project | Ask a instructor to assign it |
 | `FOUNDRY_PROJECT_ENDPOINT` not found | `.env` missing or wrong path | Copy from `.env.example`; run from `labs/day1/` |
 | `Model not found` | Deployment name mismatch | Copy the exact deployment name from Portal → Deployments |
-| Prompt agent connection fails on version | You didn't publish version 1.0 in the portal | Publish, then retry |
+| Prompt agent connection fails on version | You didn't publish version 1 in the portal | Publish, then retry |
 | Hosted agent 404 | `FOUNDRY_HOSTED_AGENT_NAME` doesn't match your deployed agent | Check the exact name in the portal, and confirm `azd deploy` succeeded |
 | Python — package missing | `uv sync` from `labs/day1/python/` | Install uv first if needed |
 

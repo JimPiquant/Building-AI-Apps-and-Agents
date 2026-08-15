@@ -1277,7 +1277,7 @@ static string GetWeather(
 
 AIAgent agent = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential())
     .AsAIAgent(
-        model: "gpt-5.4-mini",
+        model: "gpt-5.6-luna",
         instructions: "You are a helpful assistant",
         tools: [AIFunctionFactory.Create(GetWeather)]);`, { y: 1.55, h: 2.7, fontSize: 11 });
     slide.addText("Attribute-based description; AIFunctionFactory.Create wraps the method. Same primitives, same model-facing contract.", {
@@ -2940,7 +2940,7 @@ function buildModule8() {
       "Day 1 lab complete and working",
       "uv installed (from Day 1)",
       "FOUNDRY_PROJECT_ENDPOINT in .env (from Day 1)",
-      "Recommended model: gpt-5.4-mini (from Day 1)",
+      "Recommended model: gpt-5.6-luna (from Day 1)",
       "Fresh MSDN subscription with Foundry project — same as Day 1",
     ], { y: 1.55, h: 2.2, fontSize: 12 });
     T.addProse(slide, "Setup: uv sync in labs/day2/python/ then cp .env.example .env.",

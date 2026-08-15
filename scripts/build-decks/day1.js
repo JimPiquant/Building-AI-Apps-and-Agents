@@ -554,7 +554,7 @@ function buildModule2() {
     ], { y: contentTop, fontSize: 14 });
     T.notes(slide, [
       "The #1 confusion in the Day 1 lab: deployment name ≠ model name",
-      "Model name: 'gpt-5.4-mini'",
+      "Model name: 'gpt-5.6-luna'",
       "Deployment name: whatever *you* named the deployment in the portal",
       "In MAF, you pass the DEPLOYMENT name as model= — not the model name",
       "In the .env file, FOUNDRY_MODEL = the deployment name",
@@ -1067,7 +1067,7 @@ using Azure.Identity;
 using Microsoft.Agents.AI;
 
 var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")!;
-var model = Environment.GetEnvironmentVariable("FOUNDRY_MODEL") ?? "gpt-5.4-mini";
+var model = Environment.GetEnvironmentVariable("FOUNDRY_MODEL") ?? "gpt-5.6-luna";
 
 AIAgent agent = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential())
     .AsAIAgent(model: model,
@@ -1842,7 +1842,7 @@ dotnet --version         # 10.0+ (optional, if doing C#)
 uv --version             # required for Python labs`, { y: 1.2, h: 2.2 });
     T.addBullets(slide, [
       "FOUNDRY_PROJECT_ENDPOINT (from the portal tour)",
-      "A model deployment name in that project (recommended: gpt-5.4-mini)",
+      "A model deployment name in that project (recommended: gpt-5.6-luna)",
     ], { y: 3.4, h: 1.5 });
     slide.addText("If anything fails, flag it now — get unblocked before the async portion.",
       { x: 0.4, y: 4.9, w: 9.2, h: 0.4, fontFace: T.FONTS.body, fontSize: 14, italic: true, bold: true, color: T.COLORS.navy });

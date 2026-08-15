@@ -16,7 +16,7 @@ per the workshop policy.
 - `uv` installed (from Day 1)
 - `az login` works against your Azure tenant
 - Same Foundry project and model deployment you used on Day 1 (recommended:
-  **`gpt-5.4-mini`**)
+  **`gpt-5.6-luna`**)
 - An Azure AI Search service configured for Foundry IQ (see below)
 
 ### Azure AI Search setup
@@ -163,7 +163,7 @@ labs/day2/
 
 3. Score the transcript with Foundry evaluators:
    ```bash
-   EVALUATION_MODEL=gpt-5.4-mini uv run python evals/retrieval_eval.py
+   EVALUATION_MODEL=gpt-5.6-luna uv run python evals/retrieval_eval.py
    ```
    Results are written to `evals/part_a_baseline.json`. See
    [`python/README.md`](python/README.md#part-a-evaluation-model) for notes on

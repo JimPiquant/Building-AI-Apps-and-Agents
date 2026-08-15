@@ -36,7 +36,7 @@ Each lab's `.csproj` pins the versions. Core references:
 
 ## Foundry
 - Foundry project in a region that supports the target model deployment.
-- At least one model deployment (default: `gpt-5.4-mini` or `gpt-4o` — verify at kickoff).
+- At least one model deployment (default: `gpt-5.6-luna` or `gpt-4o` — verify at kickoff).
 
 ## Notes
 - Preview packages are called out in each lab's README as we introduce them.

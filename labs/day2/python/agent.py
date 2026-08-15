@@ -21,7 +21,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 def build_baseline_agent() -> Agent:
     """Build a Day 2 baseline agent — no knowledge, no tools."""
     endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
-    model = os.environ.get("FOUNDRY_MODEL", "gpt-5.4-mini")
+    model = os.environ.get("FOUNDRY_MODEL", "gpt-5.6-luna")
 
     client = FoundryChatClient(
         project_endpoint=endpoint,

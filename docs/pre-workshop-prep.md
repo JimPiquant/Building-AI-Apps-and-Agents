@@ -37,7 +37,7 @@ use. Use those, not your personal ones, unless you're told otherwise.
   Azure CLI. Nothing to do here in advance except confirm your subscription
   is enabled for Foundry (`az provider show --namespace Microsoft.CognitiveServices`
   should return `Registered`).
-- **Quota check** — recommended model for the workshop is **`gpt-5.4-mini`**.
+- **Quota check** — recommended model for the workshop is **`gpt-5.6-luna`**.
   Verify quota is available in a region you can deploy to. Your coordinator
   will share the region list before Day 1.
 
@@ -140,7 +140,7 @@ there if you want deeper context or if a specific area is new to you.
   on Day 1.
 - **[Overview of Microsoft Foundry Models](https://learn.microsoft.com/azure/foundry/concepts/foundry-models-overview)**
   *(~10 min)* — The model catalog and how deployments work. You don't need to
-  compare every model — knowing why we picked `gpt-5.4-mini` for the workshop
+  compare every model — knowing why we picked `gpt-5.6-luna` for the workshop
   is enough.
 
 #### Microsoft Agent Framework (MAF) — the SDK you'll use all week

@@ -45,7 +45,7 @@ DOCS_DIR = Path(__file__).resolve().parent / "data" / "docs"
 def main() -> None:
     search_endpoint = os.environ["AZURE_SEARCH_ENDPOINT"].rstrip("/")
     openai_endpoint = os.environ["AZURE_OPENAI_ENDPOINT"].rstrip("/").removesuffix("/openai")
-    model_deployment = os.environ.get("FOUNDRY_MODEL", "gpt-5.4-mini")
+    model_deployment = os.environ.get("FOUNDRY_MODEL", "gpt-5.6-luna")
     model_name = os.environ.get("FOUNDRY_IQ_MODEL_NAME", model_deployment)
     knowledge_base_name = os.environ.get("FOUNDRY_IQ_KNOWLEDGE_NAME", "contoso-docs")
     index_name = f"{knowledge_base_name}-index"

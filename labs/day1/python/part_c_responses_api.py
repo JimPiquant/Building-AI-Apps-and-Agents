@@ -72,10 +72,13 @@ async def main() -> None:
     print("\n")
 
     # --- 3. Multi-turn ---
+    session = agent.create_session()
     print("--- Multi-turn ---")
-    r1 = await agent.run("I am building a small internal docs assistant. Suggest 3 features.")
+    r1 = await agent.run("I am building a small internal docs assistant. Suggest 3 features.",
+        session=session)
     print(f"Agent (turn 1): {r1}\n")
-    r2 = await agent.run("Of those, which should I build first and why?")
+    r2 = await agent.run("Of those, which should I build first and why?",
+        session=session)
     print(f"Agent (turn 2): {r2}\n")
 
 

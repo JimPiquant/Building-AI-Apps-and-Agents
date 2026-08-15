@@ -38,7 +38,7 @@ are separate choices. This teaching sample expects the judge to be a reasoning
 model. Set `EVALUATION_MODEL` to its deployment name at `AZURE_OPENAI_ENDPOINT`:
 
 ```bash
-EVALUATION_MODEL=gpt-5.4-mini uv run python evals/retrieval_eval.py
+EVALUATION_MODEL=gpt-5.6-luna uv run python evals/retrieval_eval.py
 ```
 
 Use your deployment name, which can differ from the underlying model name. The

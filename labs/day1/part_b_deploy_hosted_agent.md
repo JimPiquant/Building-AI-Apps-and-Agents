@@ -7,7 +7,7 @@ Estimated time: **~20 minutes**.
 ## Prerequisites
 
 - A Foundry resource and Foundry project (create with the [Azure CLI quickstart](https://learn.microsoft.com/en-us/azure/foundry/tutorials/quickstart-create-foundry-resources?tabs=azurecli) — same setup you did in Part A pre-work).
-- A deployed model (recommended: `gpt-5.4-mini`).
+- A deployed model (recommended: `gpt-5.6-luna`).
 - The Azure CLI signed in (`az login`) as an identity with **Foundry Owner** or **Owner** at the Foundry resource scope.
 - The Azure Developer CLI signed in (`azd auth login`)
 - Docker not required — Foundry builds the container from a zip.
@@ -23,8 +23,23 @@ The Hosted agent's source is essentially the **same MAF code as `labs/day1/pytho
 From the labs/day1 root:
 
 ```bash
-mkdir -p docs-assistant-hosted
+mkdir -p docs-assistant-hosted && cd docs-assistant-hosted
+uv init
 uv add agent-framework agent-framework-foundry azure-ai-projects azure-identity python-dotenv
+```
+'uv init' will scaffold a simple python project, including a pyproject.toml configuration file and a hello world main.py.
+'uv add' adds dependencies to your pyproject.toml file.
+
+Note: Ensure agent-framework is at version 1.12.1.  Here is a tested pyproject.toml dependencies configuration:
+
+```bash
+dependencies = [
+    "agent-framework>=1.12.1",
+    "agent-framework-foundry>=1.10.3",
+    "azure-ai-projects>=2.3.0",
+    "azure-identity>=1.25.3",
+    "python-dotenv>=1.2.2",
+]
 ```
 
 Edit `docs-assistant-hosted/main.py` to expose the agent as a callable entry point that Agent Service can invoke:
@@ -97,7 +112,7 @@ Azd will prompt for your hosted agent configuration:
 - Select subscription: `your subscription`
 - Select a Foundry project: `\<foundry account\> / \<foundry project\> (region)`
 - How would you like to configure model(s) for your agent?: `Use an existing model deployment`
-- Select a model deployment: `gpt-5.4-mini (gpt-5.4-mini v2026-03-17, GlobalStandard)`
+- Select a model deployment: `gpt-5.6-luna`
 
 
 ### 2. Deploy the agent to the Foundry portal
@@ -110,14 +125,21 @@ After about a minute azd should report that your agent is deployed and respondin
 
 ### 3. Test the deployment
 
-Before Day 1, verify from your own laptop:
+Verify the deployment:
 
 ```bash
+azd ai agent show docs-assistant-hosted
 azd ai agent invoke docs-assistant-hosted 'what are you able to do?'
 ```
 
 You should see the agent respond.
 
+## Troubleshooting note
+404 not found errors may be due to a stale session resulting from incomplete deprovisioning.  Run this to force a new session:
+
+```bash
+azd ai agent invoke docs-assistant-hosted --new-session --new-conversation 'what are you able to do?'
+```
 
 ## Cleanup
 

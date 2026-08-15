@@ -37,7 +37,7 @@ uv --version             # required for Python labs
 
 You should also have:
 - `FOUNDRY_PROJECT_ENDPOINT` (from Module 2 — the portal tour)
-- A model deployment name in that project (recommended: `gpt-5.4-mini`)
+- A model deployment name in that project (recommended: `gpt-5.6-luna`)
 
 If any of the above fails, flag it now — we'll get you unstuck before the async portion.
 

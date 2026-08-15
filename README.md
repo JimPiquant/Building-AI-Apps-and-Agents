@@ -29,14 +29,23 @@ slides/        Markdown slides, one folder per day
 labs/          Lab instructions and starter templates (labs/dayN/{python,csharp})
 ```
 
+### A note about the uv utility
+The workshop uses uv, the modern replacement for environment and package management for python applications.  uv replaces other tools like pip, poetry and conda. https://docs.astral.sh/uv/ 
+
+Installing https://docs.astral.sh/uv/#installation
+
+uv can manage your local python installations https://docs.astral.sh/uv/guides/install-python/ 
+
+uv sync https://docs.astral.sh/uv/reference/cli/#uv-sync Syncing ensures that all project dependencies (defined in pyproject.toml) are installed and up-to-date with the lockfile (uv.lock). If a virtual environment does not exist it will create one.  If the lockfile does not exist it will create it.  Re-running uv sync will correct any drift from the lockfile.
+
+uv run https://docs.astral.sh/uv/reference/cli/#uv-run Ensures that the command runs in a Python environment. When used with a file ending in .py the file will be treated as a script and run with a Python interpreter, i.e., uv run file.py is equivalent to uv run python file.py.
+
 ## Sources of truth
 Content in this repo aligns with:
 - **Azure AI Foundry docs:** https://learn.microsoft.com/en-us/azure/foundry/
 - **Foundry samples:** https://github.com/microsoft-foundry/foundry-samples
 - **MAF docs:** https://learn.microsoft.com/en-us/agent-framework/
 - **MAF SDK samples (Python + C#):** https://github.com/microsoft/agent-framework
-
-When docs and code disagree, we run the code, follow the working sample, and file an upstream issue if warranted.
 
 ## Out of scope
 This workshop does **not** cover Copilot Studio, Semantic Kernel, or AutoGen. See the curriculum overview for the full out-of-scope list and the rationale.

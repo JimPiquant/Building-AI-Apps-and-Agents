@@ -25,7 +25,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 def build_agent_with_tools() -> Agent:
     endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
-    model = os.environ.get("FOUNDRY_MODEL", "gpt-5.4-mini")
+    model = os.environ.get("FOUNDRY_MODEL", "gpt-5.6-luna")
 
     client = FoundryChatClient(
         project_endpoint=endpoint,

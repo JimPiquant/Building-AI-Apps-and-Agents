@@ -114,7 +114,7 @@ Before starting:
 - Day 1 lab complete and working
 - `uv` installed (from Day 1)
 - `FOUNDRY_PROJECT_ENDPOINT` in `.env` (from Day 1)
-- Recommended model: **gpt-5.4-mini** (from Day 1)
+- Recommended model: **gpt-5.6-luna** (from Day 1)
 - Fresh MSDN subscription with Foundry project — same as Day 1
 
 Setup: `uv sync` in `labs/day2/python/` then `cp .env.example .env`.
