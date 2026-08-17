@@ -29,3 +29,6 @@ build/
 
 # Node
 node_modules/
+
+# Demo recordings — large binary files, do not commit
+demos/**/recordings/
