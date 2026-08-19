@@ -14,7 +14,7 @@ version you publish is what your consumers pin to.
 Environment variables (set in labs/day1/.env):
     FOUNDRY_PROJECT_ENDPOINT
     FOUNDRY_PROMPT_AGENT_NAME=docs-assistant
-    FOUNDRY_PROMPT_AGENT_VERSION=1.0
+    FOUNDRY_PROMPT_AGENT_VERSION=1
 """
 
 import asyncio
