@@ -25,9 +25,10 @@ from azure.identity import AzureCliCredential
         [provider path] 1-2s
         Same answer text as tool_path.py, but no tool call in the trace
 
-    Note: verify ChatContextProvider / before_invoke against the current
-    Learn 'adding-context-providers' guide the week of delivery — API
-    surface was preview at authoring time.
+    Note: the ContextProvider surface is documented at
+    https://learn.microsoft.com/agent-framework/journey/adding-context-providers
+    — re-check the week of delivery in case the shipped signature has
+    drifted since dry-run.
 """
 
 ORDERS_PATH = Path(__file__).with_name("orders.json")

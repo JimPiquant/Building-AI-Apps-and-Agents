@@ -91,26 +91,29 @@ asyncio.run(main())
 ### Reference `provider_path.py`
 
 ```python
-import asyncio, json, time
+import asyncio, time
 from pathlib import Path
-from agent_framework import Agent, ChatContextProvider
+from agent_framework import Agent, ContextProvider
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
 
 ORDERS_PATH = Path(__file__).with_name("orders.json")
 
-class UserOrdersProvider(ChatContextProvider):
-    async def before_invoke(self, context):
+class UserOrdersProvider(ContextProvider):
+    async def before_run(self, *, agent, session, context, state):
         # Inject the user's orders into the prompt on every turn
         orders = ORDERS_PATH.read_text()
-        context.add_system_message(f"The current user's recent orders (JSON): {orders}")
+        context.extend_instructions(
+            self.source_id,
+            f"The current user's recent orders (JSON): {orders}",
+        )
 
 async def main():
     agent = Agent(
         client=FoundryChatClient(credential=AzureCliCredential()),
         name="OrdersAgent",
         instructions="You are a helpful support agent. Be brief.",
-        context_providers=[UserOrdersProvider()],
+        context_providers=[UserOrdersProvider("user-orders")],
     )
     session = agent.create_session()
 
@@ -122,13 +125,12 @@ async def main():
 asyncio.run(main())
 ```
 
-> **Note on API surface:** the exact `ChatContextProvider` /
-> `before_invoke` API name may drift as MAF's context-provider
-> integration stabilizes. Verify against the current
+> **Note on API surface:** verified against MAF as shipped at dry-run
+> (August 2026): `ContextProvider` with a `before_run(self, *, agent,
+> session, context, state)` hook, and `context.extend_instructions(
+> source_id, "...")` to inject text. Re-check
 > [`adding-context-providers`](https://learn.microsoft.com/agent-framework/journey/adding-context-providers)
-> guide the week of delivery. If the API has changed, adjust the
-> provider path to match; the demo's teaching point is the same
-> regardless of exact syntax.
+> the week of delivery in case the signature drifts.
 
 ## Narration + steps
 
