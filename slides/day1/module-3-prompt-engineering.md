@@ -3,8 +3,8 @@ marp: true
 paginate: true
 ---
 
-# Module 3 — Prompt Engineering Fundamentals
-### The parts that still matter when you're building agents
+# Module 3 — Prompts & Context Engineering
+### Everything that goes into the model on every turn
 
 Day 1 · 25 minutes
 
@@ -53,6 +53,95 @@ Use short, labeled sections. Models attend better to `## Role` / `## Rules` / `#
 
 ### 2. Explicit output contracts
 Tell the model *exactly* what shape you want. Better yet, use **structured outputs** (typed models — Day 3) so the shape is enforced, not requested.
+
+---
+
+## What's actually in the context window?
+
+Prompts are one input. On every turn the model actually sees:
+
+- **System instructions** — the agent's persona, rules, output format
+- **The user message** — what the human just typed
+- **Session history** — prior turns, the multi-turn memory
+- **Tool outputs** — results from any tool the model called
+- **Retrieved documents** — chunks pulled from RAG / Foundry IQ
+- **Injected context** — anything a context provider added (user profile, time, memory)
+
+The system prompt is what you write once. **Everything else is what you have to design.** That's context engineering.
+
+*Grounded in [Learn — Adding Context Providers](https://learn.microsoft.com/agent-framework/journey/adding-context-providers).*
+
+---
+
+## Two ways to get information into the model
+
+Not everything belongs in the prompt. MAF gives you two distinct mechanisms:
+
+| Aspect | Tools | Context providers |
+|---|---|---|
+| **Trigger** | Reactive — model decides when to call | Proactive — runs on every invocation |
+| **Control** | Model-driven (which tool, when, args) | Developer-driven (always available) |
+| **Visibility** | Model must know a tool exists and judge it relevant | Injected transparently as part of the prompt |
+| **Use case** | On-demand actions and lookups | Always-present context |
+| **Token cost** | Only when the tool is called | Every invocation |
+
+**Rule of thumb:** if the agent should have this information *every single time* it runs, use a **context provider**. If only *when relevant*, use a **tool**.
+
+*Grounded in [Learn — Adding Context Providers](https://learn.microsoft.com/agent-framework/journey/adding-context-providers) — "Why not just use tools?"*
+
+---
+
+## The context lifecycle
+
+Every `agent.run(...)` call has three phases. Context providers hook into the first and third.
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  Caller: agent.run("What's the return policy?")              │
+└──────────────────────────┬───────────────────────────────────┘
+                           ▼
+┌──────────────────────────────────────────────────────────────┐
+│  BEFORE RUN — each provider injects context                  │
+│    • History provider loads past messages                    │
+│    • Memory provider retrieves relevant facts                │
+│    • RAG provider searches knowledge base                    │
+│    • Custom provider injects user profile, time, location    │
+└──────────────────────────┬───────────────────────────────────┘
+                           ▼
+┌──────────────────────────────────────────────────────────────┐
+│  AGENT CORE — model sees input + all injected context        │
+│  and generates a response                                    │
+└──────────────────────────┬───────────────────────────────────┘
+                           ▼
+┌──────────────────────────────────────────────────────────────┐
+│  AFTER RUN — each provider processes the response            │
+│    • History provider saves new messages                     │
+│    • Memory provider extracts facts to remember              │
+│    • Custom provider updates session state                   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+You register providers once when creating the agent. They participate in every invocation without extra code.
+
+*Diagram adapted from [Learn — Adding Context Providers](https://learn.microsoft.com/agent-framework/journey/adding-context-providers).*
+
+---
+
+## The tradeoffs
+
+More context isn't automatically better. Five things to design for:
+
+| Consideration | What can go wrong |
+|---|---|
+| **Token budget** | Injected context consumes tokens on every turn. Unbounded history + RAG + profiles → context truncated silently, important info lost. |
+| **Retrieval latency** | Providers that hit databases, search indexes, APIs add latency to every invocation. Cache, pool connections, go async. |
+| **Relevance** | Irrelevant context doesn't just waste tokens — it degrades responses by diluting the signal. |
+| **Staleness** | Cached or preloaded context can become outdated. Design refresh cadence deliberately. |
+| **Composability** | Multiple providers writing into the same context window interact in unexpected ways. Test them together, not just individually. |
+
+**Compaction** (summarizing older history) is the escape valve when context grows. Day 3 memory module covers it.
+
+*Grounded in [Learn — Adding Context Providers](https://learn.microsoft.com/agent-framework/journey/adding-context-providers) — "Considerations" table.*
 
 ---
 
@@ -123,4 +212,4 @@ Bad docstrings = the model calls the wrong tool at the wrong time.
 - Iterate against an eval set, not against your intuition.
 - Every instruction, tool docstring, and output schema is a prompt.
 
-**Next:** MAF 101 — the core primitives you'll use every day this week.
+**Next:** MAF 101 — the core primitives you'll use through the rest of the workshop.

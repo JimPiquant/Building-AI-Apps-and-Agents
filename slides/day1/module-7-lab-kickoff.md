@@ -12,7 +12,7 @@ Day 1 · 25 minutes
 
 ## What you'll build
 
-Same underlying docs-assistant behavior — three ways to run an agent with Foundry:
+Same underlying docs-assistant behavior — mapping to the **two hosting families** covered in Module 6:
 
 - **Part A** — Prompt agent (created in the portal, no code to maintain)
 - **Part B** — Hosted agent (deploy your own with `azd`; explore what Foundry manages)
@@ -31,7 +31,6 @@ az login
 az account show --query name -o tsv
 azd version              # Azure Developer CLI (used from Day 3 onward)
 python --version         # 3.11+
-dotnet --version         # 10.0+  (optional, if doing C#)
 uv --version             # required for Python labs
 ```
 
@@ -39,7 +38,7 @@ You should also have:
 - `FOUNDRY_PROJECT_ENDPOINT` (from Module 2 — the portal tour)
 - A model deployment name in that project (recommended: `gpt-5.6-luna`)
 
-If any of the above fails, flag it now — we'll get you unstuck before the async portion.
+If any of the above fails, flag it now — we'll get you unstuck before the lab.
 
 ---
 
@@ -57,12 +56,10 @@ Day 1 lab lives under `labs/day1/`:
 ```
 labs/day1/
 ├── README.md                    ← the lab instructions
-├── python/                      ← Python starter templates (uv-managed)
-│   ├── part_a_prompt_agent.py
-│   ├── part_b_hosted_agent.py
-│   └── part_c_responses_api.py
-└── csharp/                      ← C# starter (Part C — Responses API from your own code)
-    └── PartC_ResponsesApi/
+└── python/                      ← Python starter templates (uv-managed)
+    ├── part_a_prompt_agent.py
+    ├── part_b_hosted_agent.py
+    └── part_c_responses_api.py
 ```
 
 ---
@@ -87,16 +84,16 @@ At the end of the lab you should have:
 - **Environment / RBAC / quota?** Flag in chat — those are usually 5-minute fixes.
 - **Code stuck?** Pair up. The lab is designed to be doable, not solo-only.
 
-The instructor is on for questions during the async portion; response times vary.
+The instructor is on for questions during the lab.
 
 ---
 
 ## Common early gotchas (skim before you start)
 
-- **`az login` succeeded but MAF still 401s** → you may not have `Azure AI User` on the project. Ask a instructor.
+- **`az login` succeeded but MAF still 401s** → you may not have the **Foundry User** role on the **Foundry resource** (not the project). Ask an instructor — this is a 2-minute fix in the Azure portal's Access Control (IAM) blade on the Foundry resource.
 - **`FOUNDRY_PROJECT_ENDPOINT` not set** → copy from `.env.example` to `.env` and paste the value from Module 2.
 - **Model deployment name mismatch** → the deployment name is not the same as the model name; check the portal.
-- **Python — package missing** → run `pip install -r labs/day1/python/requirements.txt` from the repo root.
+- **Python — package missing** → run `uv sync` from the `labs/day1/python/` directory. All Day 1 Python labs use uv — do not use `pip install` directly.
 
 ---
 
@@ -107,7 +104,7 @@ The instructor is on for questions during the async portion; response times vary
 - Part C → about **45 min** (most of the code writing lives here; stretch deploy adds ~30 min)
 - Reflection commit → about **10 min**
 
-Total: about **2 hours** of async work. If you're going long, ping a instructor — we'll help you scope down.
+Total: about **2 hours** of lab work. If you're going long, ping an instructor — we'll help you scope down.
 
 ---
 

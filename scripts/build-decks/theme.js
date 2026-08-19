@@ -257,6 +257,56 @@ function notes(slide, text) {
   }
 }
 
+// Demo marker slide — visually distinct interstitial to cue the presenter that
+// a live demo happens here. Ice fill, big "DEMO" eyebrow, title, short blurb.
+function demoSlide(pres, opts) {
+  const slide = pres.addSlide();
+  slide.background = { color: COLORS.ice };
+  // navy left bar (matches bodySlide motif but thicker)
+  slide.addShape(pres.shapes.RECTANGLE, {
+    x: 0, y: 0, w: 0.16, h: 5.625, fill: { color: COLORS.navy }, line: { type: "none" },
+  });
+  if (opts.tag) {
+    slide.addText(opts.tag, {
+      x: 6.2, y: 0.3, w: 3.6, h: 0.3,
+      fontFace: FONTS.body, fontSize: SIZES.tag, color: COLORS.muted, align: "right", margin: 0,
+    });
+  }
+  // Big "DEMO" eyebrow
+  slide.addText("DEMO", {
+    x: 0.6, y: 1.15, w: 6.0, h: 0.55,
+    fontFace: FONTS.title, fontSize: 32, bold: true, color: COLORS.navy, margin: 0, charSpacing: 8,
+  });
+  // Title
+  slide.addText(opts.title, {
+    x: 0.6, y: 1.85, w: 8.8, h: 1.0,
+    fontFace: FONTS.title, fontSize: 30, bold: true, color: COLORS.navy, margin: 0,
+  });
+  // Optional time budget on the right
+  if (opts.time) {
+    slide.addText(opts.time, {
+      x: 7.2, y: 1.15, w: 2.4, h: 0.55,
+      fontFace: FONTS.body, fontSize: 18, italic: true, color: COLORS.muted, align: "right", margin: 0,
+    });
+  }
+  // Prose description
+  if (opts.description) {
+    slide.addText(opts.description, {
+      x: 0.6, y: 3.05, w: 8.8, h: 1.5,
+      fontFace: FONTS.body, fontSize: 16, color: COLORS.ink, margin: 0, paraSpaceAfter: 6,
+    });
+  }
+  // Footer callout — where to find the demo runbook
+  if (opts.reference) {
+    slide.addText(opts.reference, {
+      x: 0.6, y: 4.85, w: 8.8, h: 0.35,
+      fontFace: FONTS.body, fontSize: 11, italic: true, color: COLORS.muted, margin: 0,
+    });
+  }
+  return slide;
+}
+
+
 module.exports = {
   COLORS,
   FONTS,
@@ -265,6 +315,7 @@ module.exports = {
   titleSlide,
   sectionSlide,
   bodySlide,
+  demoSlide,
   addBullets,
   addTwoColumn,
   addCode,

@@ -3,28 +3,47 @@ marp: true
 paginate: true
 ---
 
-# Module 6 — Three ways to run an agent with Foundry
-### Prompt agents, Hosted agents, and calling the Responses API from your own code
+# Module 6 — Hosting Agent Framework agents
+### Foundry-hosted and self-hosted — pick what your app needs to own
 
 Day 1 · 35 minutes
 
 ---
 
-## Foundry Agent Service — you pick how much of the platform to use
+## Where the agent process lives
 
-The **Responses API** is a single model + tools entry point behind every path. What changes is **where your agent code runs** and **how much of the runtime Foundry manages for you**.
+**First choose who operates the infrastructure.** This is an operational choice between Microsoft-managed **Foundry Hosted Agents** and **self-hosting**. It's separate from the protocol that clients use to reach your agent.
 
-| Path | Where the code runs | Who manages the runtime |
-|------|--------------------|-------------------------|
-| **A · Prompt agent** | Foundry Agent Service | Foundry (no code, no compute) |
-| **B · Hosted agent** | Foundry Agent Service | Foundry (managed endpoint, autoscale, identity, observability) |
-| **C · Your own code, calling the Responses API** | Your process (laptop, Container Apps, App Service, AKS, Functions) | You |
+- **Foundry-hosted** — Microsoft runs the container, scaling, session lifecycle, and platform integration. GA.
+- **Self-hosted** — your app owns the runtime; Agent Framework provides hosting helpers for common patterns. Python packages are prerelease.
 
-Path B and Path C use the **same MAF code**. The difference is where that code executes.
+Two families. Under Foundry-hosted there are two flavors — **Prompt agents** (configuration-only) and **Hosted agents** (your MAF code, containerized).
+
+*Grounded in [Learn — Hosting Agent Framework applications](https://learn.microsoft.com/agent-framework/hosting/).*
 
 ---
 
-## Path A — Prompt agent
+## Foundry-hosted family
+
+Microsoft-managed hosting. **GA today.**
+
+**What Foundry runs:** the container, autoscale, session persistence, platform integration.
+**What you own:** your agent code (Hosted flavor) or configuration (Prompt flavor), plus Foundry settings.
+
+**Two flavors of Foundry-hosted:**
+
+| Flavor | What's inside | Best for |
+|---|---|---|
+| **Prompt agent** | Configuration only — instructions, model, tools. Versioned. | Fast start, internal tools, agents without custom orchestration |
+| **Hosted agent** | Your MAF code, packaged as a container (or zip, Foundry builds the image) | Agents with custom code, orchestration, or logic — with managed hosting |
+
+**Choose Foundry-hosted when:** you want Microsoft-managed hosting and don't need application-level control over the runtime.
+
+*Grounded in [Learn — Foundry Hosted Agents](https://learn.microsoft.com/agent-framework/hosting/foundry-hosted-agent).*
+
+---
+
+## Foundry-hosted · Prompt agent
 
 A **Prompt agent** is authored entirely as configuration — instructions, model, tools. Author via the **SDK / REST** (the IaC-first norm, CI/CD-friendly), via a **declarative YAML** definition, or **in the Foundry portal** (fine for exploration). Either way, **Foundry runs it**. No application code to maintain, no compute to pay for, no containers to patch.
 
@@ -47,7 +66,7 @@ result = await agent.run("What is Foundry IQ?")
 
 ---
 
-## Path B — Hosted agent
+## Foundry-hosted · Hosted agent
 
 Take an agent you wrote with MAF (or LangGraph, or the OpenAI / Anthropic Agents SDK, or your own code). Package it as a container image, or as a zip of source (Foundry builds the image for you). Deploy to Foundry Agent Service. **Foundry runs the container** with:
 
@@ -69,13 +88,15 @@ agent = FoundryAgent(
 )
 ```
 
+Package used at author time: **`agent-framework-foundry-hosting`** (prerelease). Exposes your agent via the Foundry **Responses** or **Invocations** protocol.
+
 **Best for:** agents that call into your own custom code, custom orchestration, multi-agent systems, and any scenario where you want full control over agent logic while letting Foundry handle hosting, scaling, and identity.
 
 ---
 
-## What Foundry manages *for* a Hosted agent
+## What Foundry manages for you
 
-Beyond running the container, Agent Service brings a bundle of managed capabilities every Hosted agent inherits:
+Beyond running the container, Agent Service brings a bundle of managed capabilities every Foundry-hosted agent inherits:
 
 - **Managed endpoint** — you call one URL; Foundry routes and scales
 - **Managed conversations / memory** — session state without you standing up a store (BYO memory store also supported)
@@ -89,9 +110,26 @@ This is the answer to "why not just run my own container somewhere?" — **Found
 
 ---
 
-## Path C — Your own code, calling the Responses API
+## Self-hosted family
 
-Write your agent as an MAF app in your own repo. Run it wherever you already run apps — on your laptop, in Azure Container Apps, App Service, AKS, or Functions. Your process calls Foundry's Responses API for models and platform tools; **you** manage the runtime.
+**You run the agent process** in your own web app, container, service, or runtime. Your application owns routing, identity, authorization, request policy, storage, deployment, scaling, and native client libraries.
+
+**Agent Framework provides hosting helpers, not a server:**
+
+- **Python** — `agent-framework-hosting` (session state) plus protocol packages (`-hosting-responses`, `-hosting-a2a`, `-hosting-mcp`, `-hosting-telegram`). Prerelease.
+- **C#** — `Microsoft.Agents.AI.Hosting` (session store, DI integration) plus protocol packages. Prerelease.
+
+**What MAF gives you:** `AgentState` / `SessionStore` (Python) or `AddAIAgent` / `AgentSessionStore` (C#), plus protocol integrations. Your app plugs these into its own framework (FastAPI, ASP.NET Core, Django, Azure Functions, …).
+
+**Choose self-hosted when:** you need application-level control or must integrate with existing infrastructure.
+
+*Grounded in [Learn — Self-host Agent Framework applications](https://learn.microsoft.com/agent-framework/hosting/self-hosting/?pivots=programming-language-python).*
+
+---
+
+## Self-hosted · Python — Agent + Responses API
+
+The simplest self-hosted form: your app calls `agent.run(...)` directly. Your process. Your runtime. No protocol endpoint yet.
 
 ```python
 from agent_framework import Agent
@@ -107,13 +145,15 @@ agent = Agent(
 result = await agent.run("What is Foundry IQ?")
 ```
 
+Deploy this to Container Apps, App Service, AKS, Functions, or run it locally. Foundry serves the model + platform tools via the Responses API; **you** manage the runtime.
+
 **Best for:** embedded assistants, prototyping, agents inside existing apps you already run somewhere, and any time you want full control over the runtime.
 
-**Important:** this is **additive** to Path B — the same MAF code can be repackaged as a Hosted agent later without a rewrite.
+**Important:** this is **additive** to Foundry-hosted — the same MAF code can be repackaged as a Foundry-hosted Hosted agent later without a rewrite.
 
 ---
 
-## Path C — C# equivalent
+## Self-hosted · C# equivalent
 
 ```csharp
 using Azure.AI.Projects;
@@ -134,10 +174,25 @@ Same shape. Same primitives. Same "your process calls Foundry's Responses API" p
 
 ---
 
+## Self-hosting: pick a protocol
+
+If you want clients to reach your self-hosted agent over the network, add a **protocol integration package**. Same agent target, different clients.
+
+| Protocol | Python package | C# package | Use for |
+|---|---|---|---|
+| **OpenAI Responses / Chat Completions** | `agent-framework-hosting-responses` | `Microsoft.Agents.AI.Hosting.OpenAI` | Any OpenAI-compatible client |
+| **Agent-to-Agent (A2A)** | `agent-framework-hosting-a2a` | (protocol integration) | Agent discovery + messaging between agents |
+| **Model Context Protocol (MCP)** | `agent-framework-hosting-mcp` | (protocol integration) | Expose your agent as a callable MCP tool |
+| **Telegram Bot API** | `agent-framework-hosting-telegram` | — | Native Telegram bot |
+
+**Rule of thumb:** hosting model = *who runs it*. Protocol = *how clients reach it*. Pick them separately. One self-hosted app can expose several protocols against the same agent.
+
+---
+
 ## Compare at a glance
 
-| Concern | Path A · Prompt agent | Path B · Hosted agent | Path C · Your code + Responses API |
-|---------|:---------------------:|:---------------------:|:---------------------------------:|
+| Concern | Foundry-hosted · Prompt | Foundry-hosted · Hosted | Self-hosted |
+|---------|:-----------------------:|:-----------------------:|:-----------:|
 | Runtime code to maintain | None | Yours | Yours |
 | Compute to manage | None (Foundry) | Container compute (Foundry-managed) | Yours |
 | Managed endpoint | Yes | Yes | You provide |
@@ -151,11 +206,12 @@ Same shape. Same primitives. Same "your process calls Foundry's Responses API" p
 
 ## Decision guide (rough cuts)
 
-- **Getting started or building a scoped internal tool with no custom logic?** → **Path A · Prompt agent**
-- **Shipping a production agent that calls your own code and you want managed hosting + Entra identity + observability?** → **Path B · Hosted agent**
-- **Regulated agent, needs managed content safety, single stable endpoint, and dedicated identity?** → **Path A** or **Path B**
-- **Embedding an agent inside an existing app you already run somewhere?** → **Path C · Your code + Responses API**
-- **Prototyping quickly on your laptop before you decide on hosting?** → **Path C**
+- **Getting started or building a scoped internal tool with no custom logic?** → **Foundry-hosted · Prompt agent**
+- **Shipping a production agent that calls your own code and you want managed hosting + Entra identity + observability?** → **Foundry-hosted · Hosted agent**
+- **Regulated agent, needs managed content safety, single stable endpoint, and dedicated identity?** → either Foundry-hosted flavor
+- **Embedding an agent inside an existing app you already run somewhere?** → **Self-hosted**
+- **Prototyping quickly on your laptop before you decide on hosting?** → **Self-hosted**
+- **Need to integrate with existing infrastructure — auth, tenancy, storage — that you already control?** → **Self-hosted**
 
 You can and will mix these in a real system.
 
@@ -164,39 +220,41 @@ You can and will mix these in a real system.
 ## Common gotchas
 
 - **"Prompt agent = client-side"** — wrong. A Prompt agent is Foundry-managed; there's no client-side runtime for it at all. What sounds lightweight isn't the *runtime* — it's the *authoring*.
-- **"Hosted agent = my code running anywhere in Azure"** — wrong. Hosted agent specifically means your code as a container run by Foundry Agent Service. Your code running in your own App Service that calls the Responses API is Path C, not Path B.
-- **Assuming portability off Foundry** — Path A is Foundry-only by construction; Path B keeps Foundry-managed features (Toolbox, IQ, portal connections) behind the managed endpoint. Path C is the most portable.
-- **Mixing up authentication** — all three use Azure identity, but the credential authenticates to different things: your project endpoint (Path C), a specific Prompt-agent resource (Path A), or a Hosted-agent endpoint (Path B).
+- **"Hosted agent = my code running anywhere in Azure"** — wrong. Hosted agent specifically means your code as a container run by **Foundry Agent Service**. Your code running in your own App Service that calls the Responses API is **self-hosted**, not Foundry-hosted.
+- **"Self-hosted means no MAF hosting packages"** — wrong. Self-hosting is where the `agent-framework-hosting-*` packages live. They're helpers for the common protocol patterns; your app owns everything else.
+- **Assuming portability off Foundry** — Prompt is Foundry-only by construction; Hosted keeps Foundry-managed features (Toolbox, IQ, portal connections) behind the managed endpoint. Self-hosted is the most portable.
+- **Mixing hosting model with protocol** — hosting model = *who runs it*. Protocol = *how clients reach it*. Both Foundry-hosted and self-hosted expose Responses; the protocol choice doesn't determine the hosting model.
 
 ---
 
 ## Same MAF code, different destinations
 
-The MAF code you write for Path C — the `Agent + FoundryChatClient` app running in your own process — can be **repackaged as a Hosted agent (Path B) later** without a rewrite. That's the platform's design.
+The MAF code you write self-hosted — the `Agent + FoundryChatClient` app running in your own process — can be **repackaged as a Foundry-hosted Hosted agent later** without a rewrite. That's the platform's design.
 
 - **Local dev on your laptop** → `uv run` from a terminal, F5 in VS Code. Same code.
-- **Deploy to Container Apps / AKS / Functions** → Path C in production. Same code.
-- **Ship as a Hosted agent inside Foundry** → zip the code, upload via the Foundry portal (Foundry builds the container), Foundry runs it. Same code.
+- **Deploy to Container Apps / AKS / Functions** → Self-hosted in production. Same code.
+- **Ship as a Foundry Hosted agent** → zip the code, upload via the Foundry portal (Foundry builds the container), Foundry runs it. Same code.
 
-Prototype locally. Decide the hosting later. Foundry-specific features (Toolbox skills, IQ connections, agent identity) become available when you promote to Path A or Path B.
+Prototype locally. Decide the hosting later. Foundry-specific features (Toolbox skills, IQ connections, agent identity) become available when you promote to Foundry-hosted.
 
 ---
 
 ## What you'll do in the lab
 
-- **Part A — Prompt agent.** Create a Prompt agent in the Foundry portal. Connect to it from your MAF app.
-- **Part B — Hosted agent.** Deploy your own Hosted agent to Foundry Agent Service with `azd`. Connect to it and explore what Foundry manages: endpoint, tracing, dedicated agent identity, content safety.
-- **Part C — Your own code + Responses API.** Build an MAF app in Python (or C#) that calls the Responses API from your process. **Stretch:** extend your Part C code with a custom function tool or a Foundry IQ knowledge source (both deep-dive on Days 2–3).
+- **Part A — Foundry-hosted Prompt agent.** Create a Prompt agent in your Foundry project. Connect to it from your MAF app.
+- **Part B — Foundry-hosted Hosted agent.** Deploy your own Hosted agent to Foundry Agent Service with `azd`. Connect to it and explore what Foundry manages: endpoint, tracing, dedicated agent identity, content safety.
+- **Part C — Self-hosted.** Build an MAF app in Python that calls the Responses API from your process. **Stretch:** extend your Part C code with a custom function tool or a Foundry IQ knowledge source (both deep-dive on Days 2–3).
 
-Same underlying docs-assistant behavior three ways. You'll feel the trade-offs.
+Same underlying docs-assistant behavior, both hosting families. You'll feel the trade-offs.
 
 ---
 
 ## Takeaways
 
-- Foundry gives you **three hosting options**, with the **Responses API** as the shared entry point.
-- **Prompt agent** = configuration only. **Hosted agent** = your code, Foundry-run. **Path C** = your code, you run it.
-- Foundry Agent Service manages *more than models* — endpoint, identity, observability, Toolbox tools, memory, content safety.
-- Path C code is portable — you can promote to a Hosted agent later without a rewrite.
+- Two hosting families: **Foundry-hosted** (Microsoft-managed, GA) and **self-hosted** (your app owns the runtime).
+- Under Foundry-hosted: **Prompt agents** (configuration only) and **Hosted agents** (your MAF code, containerized).
+- **Same MAF code** can move between self-hosted and Foundry-hosted without a rewrite.
+- Hosting model and protocol are **separate choices** — Responses / A2A / MCP / Telegram can layer on top of either family.
+- Foundry Agent Service manages *more than models* — endpoint, identity, observability, Toolbox tools, memory, content safety — for both Foundry-hosted flavors.
 
 **Next:** the lab walkthrough and environment check.

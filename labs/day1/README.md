@@ -2,7 +2,7 @@
 
 Build the same small docs assistant three ways: as a **Prompt agent** (Part A), as a **Hosted agent** (Part B), and as **your own code calling the Responses API** (Part C). Compare where the runtime lives, what Foundry manages for you, and how you'd choose between them.
 
-Estimated time: **~2 hours async**.
+Estimated time: **~2 hours of lab work**.
 
 ## Prerequisites
 
@@ -18,14 +18,22 @@ Estimated time: **~2 hours async**.
   # Windows (PowerShell)
   irm https://astral.sh/uv/install.ps1 | iex
   ```
+
+  **Bonus — let `uv` manage Python too.** You don't need to install Python separately;
+  `uv` can install and upgrade Python versions for you:
+  ```bash
+  uv python install 3.14     # install the latest 3.14
+  uv python list             # see what's installed and available
+  uv python upgrade 3.14     # upgrade to the current 3.14 patch release
+  ```
+  A `pyproject.toml` with `requires-python = ">=3.11"` will pick up whatever
+  matching interpreter `uv` has. See the [uv Python guide](https://docs.astral.sh/uv/guides/install-python/).
+
   See the [`uv` utility note](../../README.md#a-note-about-the-uv-utility) in the top-level README for what `uv sync` and `uv run` do.
 
-## Choose your language
+## Language
 
-- **Python**: all three parts implemented under [`python/`](python/).
-- **C#**: **Part C** implemented under [`csharp/PartC_ResponsesApi/`](csharp/PartC_ResponsesApi/). Parts A and B are Python-only in the current release; C# reference samples for those paths live in the `microsoft/agent-framework` repo — see [`csharp/README.md`](csharp/README.md).
-
-You can mix — Part C in C# is fine, then switch to Python for Parts A and B.
+All Day 1 labs are **Python**. Reference C# samples for every path live in the [`microsoft/agent-framework`](https://github.com/microsoft/agent-framework) repo under `dotnet/samples/` — the workshop slides show both Python and C# code side-by-side, but the hands-on lab work in this repo is Python-only.
 
 ### Python starter files
 
@@ -72,6 +80,7 @@ Follow the official Learn tutorial (**Azure CLI** tab):
 Key decisions to make as you follow it:
 - **Model deployment name:** recommended **`gpt-5.6-luna`** — good balance of capability and cost for this workshop's scenarios. Any equivalent chat-capable model will also work.
 - **Region:** pick a region where your target model has quota (the tutorial explains how to check).
+- **Application Insights:** connect one to your Foundry project so tracing works from Day 1. **If you use the portal quickstart**, there's a checkbox that offers to create an Application Insights resource for you during Foundry project creation — leave it enabled. If you use the CLI path, follow the [tracing setup guide](https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/trace-agent-setup) after your project is created (Agents → Traces → Connect, or Manage → Resource details → Connected resources → Add connection → Application Insights).
 - Record the **project endpoint** URL and the **deployment name** — you'll paste them into `.env` next.
 
 When you're done, populate `.env`:
@@ -156,9 +165,8 @@ Estimated time for the deploy portion: ~20 min (mostly waiting on the container 
 
 **Steps**
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL` are set in `.env`.
-2. Python: `cd labs/day1/python && uv sync && uv run python part_c_responses_api.py`
-3. C#: `cd labs/day1/csharp/PartC_ResponsesApi && dotnet run`
-4. Complete the multi-turn prompts in the starter file. Save the transcript.
+2. `cd labs/day1/python && uv sync && uv run python part_c_responses_api.py`
+3. Complete the multi-turn prompts in the starter file. Save the transcript.
 
 **Definition of done for Part C**
 - The agent responds to at least three multi-turn prompts.

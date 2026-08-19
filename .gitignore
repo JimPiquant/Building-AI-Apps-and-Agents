@@ -22,6 +22,9 @@ obj/
 .idea/
 .DS_Store
 
+# Office lock files (created when a doc is open in Word/PowerPoint/Excel)
+~$*
+
 # Build artifacts
 dist/
 build/

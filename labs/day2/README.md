@@ -7,7 +7,7 @@ Extend the Day 1 docs assistant into a **support triage** agent that:
 3. Looks up the status of an existing ticket (Module 6)
 4. Is measured with a **retrieval eval** and a **tool-use eval** (Module 3)
 
-Estimated time: **~2 hours async**. Python only — C# for Day 2 is out of scope
+Estimated time: **~2 hours of lab work**. Python only — C# for Day 2 is out of scope
 per the workshop policy.
 
 ## Prerequisites

@@ -4,7 +4,7 @@ paginate: true
 ---
 
 # Module 5 — The Agent Stack
-### The mental model we use every day this week
+### The mental model we use
 
 Day 1 · 35 minutes
 
@@ -41,11 +41,11 @@ We'll come back to model routing on Day 5 (small first, escalate on low confiden
 
 Where the agent code and state run. Three options with Foundry:
 
-- **Prompt agent** — portal- or SDK-authored, *no code*, Foundry runs it. Zero infrastructure to manage.
-- **Hosted agent** — *your code* (MAF or other frameworks), packaged as a container or zip; Foundry runs the container with a managed endpoint, autoscale, dedicated Entra identity, and observability.
-- **Your own code, calling the Responses API** — your MAF app runs in your process (laptop, Container Apps, App Service, AKS, Functions) and calls Foundry's Responses API for models and platform tools.
+- **Foundry-hosted · Prompt agent** — portal- or SDK-authored, *no code*, Foundry runs it. Zero infrastructure to manage.
+- **Foundry-hosted · Hosted agent** — *your code* (MAF or other frameworks), packaged as a container or zip; Foundry runs the container with a managed endpoint, autoscale, dedicated Entra identity, and observability.
+- **Self-hosted** — your MAF app runs in your process (laptop, Container Apps, App Service, AKS, Functions) and calls Foundry's Responses API for models and platform tools.
 
-Module 6 walks the three paths in detail. All three are legitimate; each has a sweet spot.
+Module 6 walks both families in detail. Each has a sweet spot.
 
 ---
 
@@ -56,8 +56,9 @@ How the agent affects the world:
 - **Function tools** — Python or C# functions you write, decorated for MAF
 - **Foundry Toolbox** — curated tools exposed via an MCP endpoint (Bing, Fabric, SharePoint, code interpreter, …)
 - **MCP servers** — the open protocol; MAF can consume any MCP server and you can author your own
+- **Skills** — portable packages of instructions + reference material + optional scripts, with progressive disclosure
 
-**Day 2** covers function tools and Toolbox. **Day 3** covers MCP end-to-end.
+**Day 2** covers function tools and Toolbox. **Day 3** covers MCP end-to-end. **Skills** are awareness-only in this workshop — see the dedicated slide below.
 
 ---
 
@@ -83,6 +84,24 @@ The unglamorous layer that makes agents production-worthy:
 - **Deployment** — Container Apps vs. Functions vs. AKS
 
 **Day 5** owns most of this — but **evaluation is threaded through every day**.
+
+---
+
+## Skills — packaging expertise for reuse
+
+A **skill** is a portable package that bundles instructions, reference material, and optional scripts into a single unit that any agent can discover and load on demand.
+
+|  | Tool | Skill |
+|---|---|---|
+| **What it provides** | A single callable action | Instructions + reference material + optional scripts |
+| **How the agent uses it** | Calls it when it needs to act | Loads it when task matches; reads instructions; may call scripts |
+| **Context cost** | Tool schema always in the prompt | Only name + description (~100 tokens) upfront; full content on demand |
+| **Portability** | Tied to the agent that registers it | Self-contained package any compatible agent can discover |
+| **Best for** | Individual actions (query a DB, send an email) | Domain expertise (expense policies, code review guidelines) |
+
+**Rule of thumb:** tools are *verbs* (search, book, validate). Skills are *expertise* (travel booking knowledge, expense policy knowledge). Agents use tools **to act** and skills **to know how to act**.
+
+*Grounded in [Learn — Adding Skills](https://learn.microsoft.com/agent-framework/journey/adding-skills).*
 
 ---
 

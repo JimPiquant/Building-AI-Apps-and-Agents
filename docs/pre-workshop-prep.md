@@ -36,7 +36,11 @@ use. Use those, not your personal ones, unless you're told otherwise.
 - **Foundry project** — you'll create your own project on Day 1 using the
   Azure CLI. Nothing to do here in advance except confirm your subscription
   is enabled for Foundry (`az provider show --namespace Microsoft.CognitiveServices`
-  should return `Registered`).
+  should return `Registered`). When you create the project on Day 1, connect
+  an **Application Insights** resource so tracing works from day 1. If you
+  use the portal quickstart, there's a checkbox during Foundry project
+  creation that offers to create an App Insights resource for you — leave
+  it enabled.
 - **Quota check** — recommended model for the workshop is **`gpt-5.6-luna`**.
   Verify quota is available in a region you can deploy to. Your coordinator
   will share the region list before Day 1.
@@ -50,26 +54,33 @@ versions.
 |---|---|---|
 | **Azure CLI** (`az`) | latest | `az --version` |
 | **Azure Developer CLI** (`azd`) | latest | `azd version` |
-| **Python** | 3.11 or newer | `python3 --version` |
-| **uv** (Python package manager) | latest | `uv --version` |
+| **uv** (Python package/project manager) | latest | `uv --version` |
+| **Python** | 3.11 or newer | `python3 --version` — or let `uv` install it (see below) |
 | **Git** | any recent | `git --version` |
 | **VS Code** with the Python extension | latest | Open VS Code, check extensions |
-| **.NET 10 SDK** (optional — Day 1 Part C only) | 10.x | `dotnet --version` |
 
 **Install links:**
 - Azure CLI — https://learn.microsoft.com/cli/azure/install-azure-cli
 - Azure Developer CLI — https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd
 - uv — https://docs.astral.sh/uv/
-- .NET 10 SDK — https://dotnet.microsoft.com/download (only if you want the
-  C# Part C on Day 1; Days 2+ labs are Python-only)
+
+**Bonus — let `uv` manage Python too.** You don't need to install Python separately;
+once you have `uv`, it can install and upgrade Python versions for you:
+
+```bash
+uv python install 3.14     # install the latest 3.14
+uv python list             # see what's installed and available
+uv python upgrade 3.14     # upgrade to the current 3.14 patch release
+```
+
+A `pyproject.toml` with `requires-python = ">=3.11"` (which is what the lab
+projects declare) will pick up whatever matching interpreter `uv` has. See
+the [uv Python guide](https://docs.astral.sh/uv/guides/install-python/).
 
 ### Corporate network
 
-- Confirm you can install packages from `pypi.org` and (if using C#) `nuget.org`.
-  If your corporate proxy blocks either, work with IT to allow-list them
-  **before Day 1**.
-- Confirm you can reach `learn.microsoft.com`, `github.com`, and
-  `ai.azure.com`.
+- Confirm you can install packages from `pypi.org`. If your corporate proxy blocks it, work with IT to allow-list it **before Day 1**.
+- Confirm you can reach `learn.microsoft.com`, `github.com`, and `ai.azure.com`.
 
 ### Sanity check script (do this the day before the workshop)
 

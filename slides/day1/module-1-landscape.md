@@ -18,6 +18,59 @@ Today's decisions have outsized impact on cost, control, and portability.
 
 ---
 
+## What is an agent?
+
+A raw LLM call is **stateless**. Every request starts from scratch — no memory of prior turns, no tools wired up, no persistent identity, no guardrails.
+
+That's fine for a single question. For anything real, you'd be reinventing the same plumbing for every application:
+
+| Raw LLM call | Agent |
+|---|---|
+| Full control over every API parameter | Opinionated abstractions that handle common patterns |
+| No memory, no tools, no identity | Persistent identity + tools + session + middleware |
+| You wire up state, tool dispatch, retry logic | Framework handles the loop |
+| Tightly coupled to one provider | Swap providers without changing application code |
+
+An **agent** wraps an LLM with the structure needed to build real applications: a persistent identity, system instructions, tools, memory, and a runtime loop that orchestrates it all.
+
+*Grounded in [Learn — From LLMs to Agents](https://learn.microsoft.com/en-us/agent-framework/journey/from-llms-to-agents).*
+
+---
+
+## What an agent adds
+
+```
+┌────────────────────────────────────────────────────┐
+│  Agent                                             │
+│                                                    │
+│  ┌──────────────┐  ┌────────┐  ┌─────────────┐     │
+│  │ Instructions │  │ Tools  │  │   Session   │     │
+│  └──────────────┘  └────────┘  └─────────────┘     │
+│                                                    │
+│  ┌────────────────────────────────────────────┐    │
+│  │            Middleware Pipeline             │    │
+│  └────────────────────────────────────────────┘    │
+│                                                    │
+│  ┌────────────────────────────────────────────┐    │
+│  │         LLM Provider (swappable)           │    │
+│  └────────────────────────────────────────────┘    │
+└────────────────────────────────────────────────────┘
+```
+
+| Layer | What it does |
+|---|---|
+| **Instructions** | The agent's persona, constraints, output format. Set once, applied to every call. |
+| **Tools** | The ability to act — call APIs, query databases, run code. Framework handles the tool-call loop automatically. |
+| **Session** | Conversation history and multi-turn state, so the agent remembers what happened before. |
+| **Middleware** | Intercept requests and responses for logging, guardrails, caching, behavioral overrides. |
+| **LLM Provider** | Swappable backend — Foundry, OpenAI, Anthropic, others — without rewriting your agent code. |
+
+The rest of the workshop works with one or more of these layers directly.
+
+*Diagram and table adapted from [Learn — From LLMs to Agents](https://learn.microsoft.com/en-us/agent-framework/journey/from-llms-to-agents).*
+
+---
+
 ## Three surfaces you can build on
 
 | Surface | Audience | Sweet spot |
@@ -83,7 +136,7 @@ Rule of thumb: **reach for the leftmost pattern that actually solves the problem
 ## What MAF gives you
 
 - One SDK for authoring agents — Python and C#
-- One vocabulary for **agents**, **threads**, **tools**, **runs**
+- One vocabulary for **agents**, **sessions**, **tools**, **runs**
 - First-class support for streaming, memory, structured outputs
 - Multi-agent orchestration primitives
 - Consumes Foundry Toolbox and MCP servers

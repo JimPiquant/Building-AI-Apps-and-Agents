@@ -34,7 +34,15 @@ The workshop uses uv, the modern replacement for environment and package managem
 
 Installing https://docs.astral.sh/uv/#installation
 
-uv can manage your local python installations https://docs.astral.sh/uv/guides/install-python/ 
+uv can manage your local python installations https://docs.astral.sh/uv/guides/install-python/ — for example:
+
+```bash
+uv python install 3.14     # install the latest 3.14
+uv python list             # see what's installed and available
+uv python upgrade 3.14     # upgrade to the current 3.14 patch release
+```
+
+A `pyproject.toml` with `requires-python = ">=3.11"` will pick up whatever matching interpreter uv has, so you don't need to install Python separately if you're using uv.
 
 uv sync https://docs.astral.sh/uv/reference/cli/#uv-sync Syncing ensures that all project dependencies (defined in pyproject.toml) are installed and up-to-date with the lockfile (uv.lock). If a virtual environment does not exist it will create one.  If the lockfile does not exist it will create it.  Re-running uv sync will correct any drift from the lockfile.
 

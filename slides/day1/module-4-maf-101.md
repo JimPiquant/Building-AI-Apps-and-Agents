@@ -14,7 +14,7 @@ Day 1 · 40 minutes
 
 The **Microsoft Agent Framework** is Microsoft's SDK for building agents. It gives you:
 
-- One vocabulary — `Agent`, chat client, tool, thread, run
+- One vocabulary — `Agent`, chat client, tool, session, run
 - Python (`agent_framework`) and C# (`Microsoft.Agents.AI`) with matching concepts
 - First-class Foundry integration (`agent_framework.foundry` / `Microsoft.Agents.AI.Foundry`)
 - Streaming, memory, structured outputs, tools, MCP, multi-agent, eval — all in one place
@@ -29,12 +29,12 @@ The **Microsoft Agent Framework** is Microsoft's SDK for building agents. It giv
 |-----------|------------|
 | **Chat client** | A typed client that talks to a specific model service (e.g. `FoundryChatClient`) |
 | **Agent** | Wraps a chat client with instructions and tools |
-| **Thread** | The conversation state one agent operates on |
+| **Session** | Carries conversation history and state across multiple `agent.run()` calls. Create with `agent.create_session()`; pass as `session=` to every turn. |
 | **Run** | One turn (user message → agent response), non-streaming or streaming |
 | **Tool** | A callable capability the model can invoke |
-| **Message** | Individual user / assistant / tool messages that make up a thread |
+| **Message** | Individual user / assistant / tool messages that make up a session |
 
-You'll use all six every day this week.
+You'll use all six through the rest of the workshop.
 
 ---
 
@@ -116,15 +116,17 @@ Streaming matters for UX; we come back to it Day 3.
 
 ## Multi-turn conversations
 
-Threads carry conversation state across runs. A single `agent` can be invoked repeatedly and remember prior turns:
+`AgentSession` carries conversation state across runs. Create one with `agent.create_session()` and pass it to every `agent.run(...)` call:
 
 ```python
-# Same agent, multiple runs on the same thread
-r1 = await agent.run("My name is Alex.")
-r2 = await agent.run("What's my name?")   # answer: Alex
+# Create a session to carry conversation state across turns
+session = agent.create_session()
+
+r1 = await agent.run("My name is Alex.", session=session)
+r2 = await agent.run("What's my name?", session=session)   # answer: Alex
 ```
 
-Under the hood MAF is managing the thread for you. You can create explicit threads when you need to (Day 3 memory module).
+You create a session once and pass it to each run. MAF maintains the conversation history in that session object for you. **Without `session=`, each call is stateless** — you'll see this if you drop the `session=session` argument. Day 3 memory module covers explicit session management (persistence, compaction, replay).
 
 ---
 
@@ -157,17 +159,17 @@ Full pinned versions live in [`manifests/versions.md`](../../manifests/versions.
 
 You've now seen the MAF primitives that let your process call the Foundry **Responses API** — `Agent` + `FoundryChatClient` in Python, or `AIProjectClient.AsAIAgent(...)` in C#.
 
-That's one of **three ways to run an agent with Foundry**. The other two — **Prompt agents** (portal-authored, no code) and **Hosted agents** (your code, containerized, run by Foundry) — live inside Foundry Agent Service and are connected via `FoundryAgent`.
+That's the **self-hosted** path — one of **two hosting families** for Agent Framework agents. The other family — **Foundry-hosted** — has two flavors: **Prompt agents** (configuration only) and **Hosted agents** (your code, containerized, run by Foundry). All are connected via `FoundryAgent`.
 
-**Module 5** gives us the mental model that ties everything together. **Module 6** walks the three paths in detail.
+**Module 5** gives us the mental model that ties everything together. **Module 6** walks the two families in detail.
 
 ---
 
 ## Takeaways
 
-- MAF's primitives are small and stable: chat client, agent, thread, run, tool, message.
+- MAF's primitives are small and stable: chat client, agent, session, run, tool, message.
 - Python and C# APIs mirror each other closely.
 - Auth is Azure identity end-to-end. No keys.
-- The pattern you just saw — your code calling the Responses API — is one of three ways to run an agent with Foundry. Module 6 covers all three.
+- The pattern you just saw — your code calling the Responses API — is the **self-hosted** family. Module 6 covers both families in detail.
 
-**Next:** the five-layer agent stack we'll refer to every day this week.
+**Next:** the five-layer agent stack we'll refer to through the rest of the workshop.
