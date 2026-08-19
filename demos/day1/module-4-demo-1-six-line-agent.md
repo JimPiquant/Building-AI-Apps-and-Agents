@@ -26,8 +26,8 @@ Do this **before the module starts**:
 - **A clean shell** in your presenter home, no scratch dir yet
 - **`uv` on `PATH`** (verify `uv --version`)
 - **Reference files** for a fallback:
-  - `demos/day1/module-4-demo-1-scratch/main.py`
-  - `demos/day1/module-4-demo-1-scratch/pyproject.toml`
+  - `demos/day1/module-4-demo-1-six-line-agent/main.py`
+  - `demos/day1/module-4-demo-1-six-line-agent/pyproject.toml`
 
 Have both files open in a second editor tab so you can paste if
 live-typing gets slow.
@@ -162,5 +162,5 @@ adds tools, knowledge, hosting — but this is the atom."*
 
 ## Reference files
 
-- [`module-4-demo-1-scratch/main.py`](module-4-demo-1-scratch/main.py) — the exact code you'll paste in the demo, with the setup steps in the docstring for reference
-- [`module-4-demo-1-scratch/pyproject.toml`](module-4-demo-1-scratch/pyproject.toml) — the exact pyproject you'll paste, including the Microsoft package feed
+- [`module-4-demo-1-six-line-agent/main.py`](module-4-demo-1-six-line-agent/main.py) — the exact code you'll paste in the demo, with the setup steps in the docstring for reference
+- [`module-4-demo-1-six-line-agent/pyproject.toml`](module-4-demo-1-six-line-agent/pyproject.toml) — the exact pyproject you'll paste, including the Microsoft package feed

@@ -1437,7 +1437,7 @@ asyncio.run(main())`, { y: 1.2, h: 3.9 });
     title: "The 6-line agent",
     time: "~3 min",
     description: "Live-type an empty scratch directory into a running MAF agent. Six lines from the previous slide — plus uv init, uv sync, and two env vars — get you a real answer from your Foundry-deployed model. Proves there's no ceremony.",
-    reference: "Runbook: demos/day1/module-4-demo-1-six-line-agent.md · Scratch files: demos/day1/module-4-demo-1-scratch/",
+    reference: "Runbook: demos/day1/module-4-demo-1-six-line-agent.md · Scratch files: demos/day1/module-4-demo-1-six-line-agent/",
   }), [
     "DEMO 4.1 · ~3 min",
     "Open a clean terminal, cd to a fresh scratch dir",

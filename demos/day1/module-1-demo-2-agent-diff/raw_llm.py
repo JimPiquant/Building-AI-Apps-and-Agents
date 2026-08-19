@@ -11,7 +11,7 @@ from azure.identity import AzureCliCredential
 
     Steps to run:
 
-        cd module-1-demo-2-scratch
+        cd module-1-demo-2-agent-diff
         uv sync
         export FOUNDRY_PROJECT_ENDPOINT=https://jimwelch-test-foundry.services.ai.azure.com/api/projects/proj-default
         export FOUNDRY_MODEL=gpt-5.6-luna
