@@ -1,0 +1,53 @@
+# From the Learn quickstart — same object model, different tool
+location=centralus
+group=rg-docsassistant-demo1
+name=docsassistant-foundry1
+
+az group create --name $group --location $location
+
+# Create the Foundry resource with project management enabled
+az cognitiveservices account create \
+    --name $name \
+    --resource-group $group \
+    --kind AIServices \
+    --sku S0 \
+    --location $location \
+    --custom-domain jimwelch-foundry-resource-demo \
+    --assign-identity \
+    --allow-project-management
+
+# Create a project sub-resource
+az cognitiveservices account project create \
+    --name $name \
+    --resource-group $group \
+    --project-name my-foundry-project \
+    --location $location
+
+# Check the provisioning state of the Foundry resource 
+az cognitiveservices account show \
+    --name $name \
+    --resource-group $group \
+    --query properties.provisioningState --output tsv
+
+# Deploy a model to the Foundry resource
+az cognitiveservices account deployment create \
+    --name $name \
+    --resource-group $group \
+    --deployment-name gpt-5.6-luna \
+    --model-name gpt-5.6-luna \
+    --model-version "2026-07-09" \
+    --model-format OpenAI \
+    --sku-capacity 10 \
+    --sku-name "GlobalStandard"
+
+# Verify the deployment
+az cognitiveservices account deployment show \
+    --name $name \
+    --resource-group $group \
+    --deployment-name gpt-5.6-luna
+
+# cleanup
+az group delete --name $group --yes --no-wait
+# Then create the project sub-resource (see quickstart for full body)
+# Then connect Application Insights
+# Then deploy the model

@@ -1,0 +1,5 @@
+[
+  {"id": "ord-1001", "date": "2026-08-14", "total": "$42.10", "status": "delivered"},
+  {"id": "ord-1002", "date": "2026-08-18", "total": "$127.50", "status": "in_transit"},
+  {"id": "ord-1003", "date": "2026-08-19", "total": "$8.99", "status": "processing"}
+]

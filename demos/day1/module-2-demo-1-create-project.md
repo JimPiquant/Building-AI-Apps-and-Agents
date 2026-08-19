@@ -141,9 +141,5 @@ At the end of the day (or after the workshop), delete the demo project
 so it doesn't accrue idle model-deployment charges:
 
 ```bash
-az cognitiveservices account delete \
-    --name docsassistant-foundry \
-    --resource-group docsassistant-demo-rg
-
 az group delete --name docsassistant-demo-rg --yes --no-wait
 ```

@@ -1,7 +1,10 @@
 import asyncio
 
 from agent_framework.foundry import FoundryChatClient
+from agent_framework import Message
 from azure.identity import AzureCliCredential
+from dotenv import load_dotenv
+load_dotenv()
 
 """
     Left pane of the "What an agent adds" live diff demo.
@@ -28,16 +31,16 @@ async def main():
 
     r1 = await client.get_response(
         messages=[
-            {"role": "system", "content": "You are a friendly assistant. Keep answers brief."},
-            {"role": "user", "content": "What time is it right now, and remember I asked you this."},
+            Message("system", ["You are a friendly assistant. Keep answers brief."]),
+            Message("user", ["What time is it right now?"]),
         ],
     )
     print("Turn 1:", r1.text, "\n")
 
     r2 = await client.get_response(
         messages=[
-            {"role": "system", "content": "You are a friendly assistant. Keep answers brief."},
-            {"role": "user", "content": "What did I just ask you?"},
+            Message("system", ["You are a friendly assistant. Keep answers brief."]),
+            Message("user", ["What did I just ask you?"]),
         ],
     )
     print("Turn 2:", r2.text)
