@@ -168,6 +168,8 @@ Estimated time for the deploy portion: ~20 min (mostly waiting on the container 
 2. `cd labs/day1/python && uv sync && uv run python part_c_responses_api.py`
 3. Complete the multi-turn prompts in the starter file. Save the transcript.
 
+> **How the session shows up here.** Turn 2's prompt — *"Of those, which should I build first and why?"* — only makes sense if the agent still has turn 1's list of three features in view. That's what the `session=session` argument on both `agent.run()` calls does: MAF replays the prior turn's messages into the context on turn 2, so the model can reason about *"those"* without you re-sending the list. The `session` object **is** the mechanism populating that context. Drop the `session=session` argument on turn 2 and re-run — the answer degrades to a generic "here's what to build first" that has nothing to do with your turn 1 list. That's the difference the reflection prompt about *"where thread state is stored"* is pointing at.
+
 **Definition of done for Part C**
 - The agent responds to at least three multi-turn prompts.
 - You see streaming output work (tokens print incrementally).
