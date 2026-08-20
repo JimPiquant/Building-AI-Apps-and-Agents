@@ -147,6 +147,14 @@ You should see the agent respond.
 azd ai agent invoke docs-assistant-hosted --new-session --new-conversation 'what are you able to do?'
 ```
 
+Dependency-related errors during `azd deploy` (missing packages, resolution conflicts, or mismatched versions between local and remote) usually mean the `uv.lock` file is out of sync with the current `pyproject.toml`. Delete the lock file, resolve fresh, and redeploy:
+
+```bash
+rm uv.lock
+uv sync
+azd deploy
+```
+
 ## Cleanup
 
 After the workshop, delete the Hosted agent from **Agents** in the portal, or use:
