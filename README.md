@@ -7,7 +7,7 @@ Professional developers, senior engineers, and solution architects with working 
 
 ## Format
 - 5 days total, split **2 + 2 + 1**, with time between blocks to apply the material
-- Each day: ~4 hours live + ~2 hours async lab
+- Each day: ~4 hours live + ~2 hours lab
 - Content and reference implementations are **Python-primary**; C# is provided where the MAF .NET surface is stable
 
 ## Weekly arc
