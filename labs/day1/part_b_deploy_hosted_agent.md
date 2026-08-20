@@ -140,6 +140,10 @@ azd ai agent invoke docs-assistant-hosted 'what are you able to do?'
 
 You should see the agent respond.
 
+### 4. Confirm the agent type in the portal
+
+Open the Foundry portal, navigate to your project, and open the **Agents** blade. You should see `docs-assistant-hosted` in the list — click it and confirm the **Type** column (or the details pane) shows **Hosted**. That's the visible proof that Agent Service is running the container image `azd` just built for you, rather than serving a Prompt agent definition.
+
 ## Troubleshooting note
 404 not found errors may be due to a stale session resulting from incomplete deprovisioning.  Run this to force a new session:
 
@@ -157,7 +161,11 @@ azd deploy
 
 ## Cleanup
 
-After the workshop, delete the Hosted agent from **Agents** in the portal, or use:
+After the workshop, delete the Hosted agent. Two ways to do it:
+
+**Portal (fastest):** open your project in the Foundry portal, go to the **Agents** blade, select `docs-assistant-hosted`, and click **Delete**.
+
+**CLI:**
 
 ```bash
 az rest --method delete \
