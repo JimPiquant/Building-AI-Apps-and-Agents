@@ -42,6 +42,12 @@ dependencies = [
 ]
 ```
 
+After editing `pyproject.toml`, re-run `uv sync` so the new pinned versions get installed into the project's virtual environment:
+
+```bash
+uv sync
+```
+
 Edit `docs-assistant-hosted/main.py` to expose the agent as a callable entry point that Agent Service can invoke:
 
 ```python
