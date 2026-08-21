@@ -59,7 +59,7 @@ async def main() -> None:
         response = await agent.run(q)
         print(f"A: {response}\n")
 
-    print("Next: run tests/ to validate golden set. `uv run pytest ../tests/`")
+    print("Next: run tests/ to validate golden set. `uv run pytest ./tests/`")
 
 
 if __name__ == "__main__":

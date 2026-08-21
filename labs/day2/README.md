@@ -235,7 +235,7 @@ If a row fails, don't rewrite the code — **tighten the tool descriptions** in
 
 ## Part C — Combine knowledge + tools
 
-**Goal:** the agent picks the right composition order.
+**Goal:** the agent picks the right tooling.
 
 **Time:** ~30 min.
 
@@ -254,13 +254,10 @@ If a row fails, don't rewrite the code — **tighten the tool descriptions** in
    - `act_then_retrieve` — lookup_status first, then docs explain state
    - `docs_only` — no tool call, docs answer directly
 
-3. **Iterate** on `COMBINED_INSTRUCTIONS` until each query hits the expected
-   composition order. Tighten tool + knowledge-source descriptions first;
-   revise instructions second.
 
 ### Definition of done
 
-- All three combined-golden-set queries produce the **expected trace order**
+- All three combined-golden-set queries produce reasonable answers
 
 ---
 

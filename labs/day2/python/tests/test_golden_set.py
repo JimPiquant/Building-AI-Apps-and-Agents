@@ -11,7 +11,7 @@ For each row, runs the agent, inspects the trace, and checks:
 
 Run with:
     cd labs/day2/python
-    uv run pytest ../tests/test_golden_set.py -v
+    uv run pytest tests/test_golden_set.py -v
 
 You'll iterate this loop several times during Part B. Each time an entry
 fails, tighten either:

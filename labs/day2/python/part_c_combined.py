@@ -2,12 +2,9 @@
 Day 2 Lab — Part C — Combined agent (knowledge + tools).
 
 Attach BOTH the Foundry IQ knowledge source (Part A) AND your function tools
-(Part B) to a single agent, then iterate on the instruction template below to
-steer the composition order.
+(Part B) to a single agent, then iterate on the instruction template below if needed.
 
-Definition of done for Part C:
-  - All three queries in evals/combined_golden_set.jsonl produce the expected
-    trace order (retrieve-then-act, act-then-retrieve, docs-only-no-tool).
+run with: uv run python part_c_combined.py
 """
 import asyncio
 import os
@@ -43,7 +40,6 @@ then call create_ticket.
 If you don't find an answer in documentation and no tool applies, say
 "I don't have that information."
 """
-
 
 def build_combined_agent(
     credential: AzureCliCredential,
