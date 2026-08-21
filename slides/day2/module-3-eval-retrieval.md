@@ -47,7 +47,7 @@ Six evaluators, from lightest to heaviest ground-truth requirement:
 | **Groundedness Pro** *(preview)* | System | No — Content Safety service, boolean |
 | **Relevance** | System | No — LLM judges if response addresses query |
 | **Response Completeness** *(preview)* | System | Yes — needs expected answer |
-| **Document Retrieval** | Process | Yes — needs query-relevance labels (qrels) |
+| **Document Retrieval** | Process | Yes — computes metrics from qrels labels (no LLM judge) |
 
 Start with the top four. Add ground truth when you're ready to invest in labels.
 
@@ -58,12 +58,12 @@ Start with the top four. Add ground truth when you're ready to invest in labels.
 Two zero-setup RAG evaluators — one process, one system. Neither needs ground truth. Start here on day 1; add **Document Retrieval** and **Response Completeness** later once you have labels.
 
 ### Retrieval (process)
-- **Input:** query, retrieved context
+- **Input:** query, context (query optional; both improve scoring)
 - **Output:** 1–5 score (pass ≥ 3), plus reasoning
 - **Answers:** "Are the chunks we pulled actually relevant to the question?"
 
 ### Groundedness (system)
-- **Input:** query, response, retrieved context
+- **Input:** response required; context recommended; query optional
 - **Output:** 1–5 score (pass ≥ 3), plus reasoning
 - **Answers:** "Did the response stay in the context, or did the model fabricate?"
 
@@ -92,7 +92,7 @@ When retrieval quality is the bottleneck, this is your **parameter-sweep** evalu
 - **Output:** NDCG, XDCG, Fidelity, Max Relevance, Holes at various k
 
 Use it to answer questions like:
-- Should I use vector, keyword, or hybrid?
+- Should I use vector, semantic, or hybrid?
 - What's the right top_k?
 - Is 500-token chunking better than 1000?
 

@@ -839,7 +839,7 @@ function buildModule3() {
       ["Groundedness Pro (preview)", "System", "No — Content Safety service, boolean"],
       ["Relevance", "System", "No — LLM judges if response addresses query"],
       ["Response Completeness (preview)", "System", "Yes — needs expected answer"],
-      ["Document Retrieval", "Process", "Yes — needs query-relevance labels (qrels)"],
+      ["Document Retrieval", "Process", "Yes — computes metrics from qrels labels (no LLM judge)"],
     ], { colW: [3.0, 1.5, 4.7], rowH: 0.45, fontSize: 11 });
     slide.addText("Start with the top four. Add ground truth when you're ready to invest in labels.",
       { x: 0.4, y: 4.9, w: 9.2, h: 0.4,
@@ -861,12 +861,12 @@ function buildModule3() {
     // Two columns for the two evaluators
     T.addTwoColumn(slide,
       [
-        "Input: query, retrieved context",
+        "Input: query, context (query optional; both improve scoring)",
         "Output: 1–5 score (pass ≥ 3), plus reasoning",
         "Answers: 'Are the chunks we pulled actually relevant to the question?'",
       ],
       [
-        "Input: query, response, retrieved context",
+        "Input: response required; context recommended; query optional",
         "Output: 1–5 score (pass ≥ 3), plus reasoning",
         "Answers: 'Did the response stay in the context, or did the model fabricate?'",
       ],
@@ -938,7 +938,7 @@ function buildModule3() {
       "Input: query-relevance labels (qrels) and the ranked retrieval output",
       "Output: NDCG, XDCG, Fidelity, Max Relevance, Holes at various k",
       { text: "Use it to answer:", indent: 0 },
-      { text: "Should I use vector, keyword, or hybrid?", indent: 1 },
+      { text: "Should I use vector, semantic, or hybrid?", indent: 1 },
       { text: "What's the right top_k?", indent: 1 },
       { text: "Is 500-token chunking better than 1000?", indent: 1 },
     ], { y: 1.75, h: 2.8, fontSize: 12 });
@@ -951,7 +951,7 @@ function buildModule3() {
       "Attendees will use it when they're serious about retrieval quality",
       "Requires labeled data — someone graded 'this doc is a 4/5 for this query'",
       "NDCG is the classic search-quality metric",
-      "Parameter sweep = run with vector/keyword/hybrid, top_k=5/10/20, chunk 500/1000, compare NDCG",
+      "Parameter sweep = run with vector/semantic/hybrid, top_k=5/10/20, chunk 500/1000, compare NDCG",
       "Introduce the concept, don't require it in the lab",
     ]);
   }
