@@ -1980,27 +1980,6 @@ agent = Agent(
   }
 
   {
-    const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Versioning workflow" });
-    T.addProse(slide, "Standard workflow you'll use:", { y: contentTop, h: 0.4, fontSize: 14 });
-    T.addBullets(slide, [
-      "Create v1 → automatically the default → agents consume via the consumer endpoint",
-      "Author v2 (add a tool, tighten a description, swap an MCP connection)",
-      "Test against the developer endpoint (/versions/2/mcp) before promotion",
-      "Promote v2 to default when validated → agents pick it up on their next call, no code change",
-    ], { y: 1.55, h: 2.6, fontSize: 12 });
-    slide.addText("The promote step is the 'ship' moment. Same discipline as Prompt agent versioning from Day 1.", {
-      x: 0.4, y: 4.45, w: 9.2, h: 0.5,
-      fontFace: T.FONTS.body, fontSize: 12, italic: true, color: T.COLORS.muted,
-    });
-    T.notes(slide, [
-      "Four-step workflow — attendees will run this in production",
-      "Test at developer endpoint, promote to default",
-      "No agent redeploy — the consumer endpoint always serves default",
-      "Same publish discipline as Prompt agents (Day 1 Module 6)",
-    ]);
-  }
-
-  {
     const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "When to build a function tool instead" });
     T.addTwoColumn(slide,
       [

@@ -248,19 +248,6 @@ This is the platform's answer to "how do we stop developers from wiring random t
 
 ---
 
-## Versioning workflow
-
-Standard workflow you'll use:
-
-1. Create v1 → automatically the default → agents consume via the consumer endpoint
-2. Author v2 (add a tool, tighten a description, swap an MCP connection)
-3. Test against the **developer endpoint** (`/versions/2/mcp`) before promotion
-4. Promote v2 to default when validated → agents pick it up on their next call, no code change
-
-The promote step is the "ship" moment. Same discipline as Prompt agent versioning from Day 1.
-
----
-
 ## When to build a function tool instead
 
 Toolbox is powerful. It's not the answer to everything.
