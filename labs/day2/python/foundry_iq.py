@@ -19,7 +19,6 @@ from urllib.parse import quote
 
 from agent_framework import MCPStreamableHTTPTool
 from azure.identity import AzureCliCredential, get_bearer_token_provider
-from httpx import AsyncClient
 
 
 def create_knowledge_base_tool(credential: AzureCliCredential) -> MCPStreamableHTTPTool:
@@ -32,8 +31,6 @@ def create_knowledge_base_tool(credential: AzureCliCredential) -> MCPStreamableH
 
     def provide_headers(_: Mapping[str, Any]) -> dict[str, str]:
         return {"Authorization": f"Bearer {token_provider()}"}
-
-    http_client = AsyncClient(headers=provide_headers({}))
 
     return MCPStreamableHTTPTool(
         name="contoso-documentation",
@@ -48,6 +45,6 @@ def create_knowledge_base_tool(credential: AzureCliCredential) -> MCPStreamableH
         allowed_tools=["knowledge_base_retrieve"],
         include_detailed_errors=True,
         approval_mode="never_require",
-        http_client=http_client,
+        request_timeout=60,
         header_provider=provide_headers,
     )

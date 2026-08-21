@@ -30,7 +30,7 @@ from azure.identity import AzureCliCredential
 
 from foundry_iq import create_knowledge_base_tool
 
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+load_dotenv()
 
 EVAL_QUERIES = [
     # Three questions the docs CAN answer (Retrieval + Groundedness should score high)
@@ -41,7 +41,6 @@ EVAL_QUERIES = [
     {"query": "What's my current month's usage?", "should_answer": False},
     {"query": "Can you cancel my order 12345?", "should_answer": False},
 ]
-
 
 def _grounding_context(response) -> str:
     tool_results = []
@@ -78,13 +77,19 @@ def build_grounded_agent(
 
 async def main() -> None:
     with AzureCliCredential() as credential:
-        async with create_knowledge_base_tool(credential) as knowledge_tool:
-            agent = build_grounded_agent(credential, knowledge_tool)
+        knowledge_tool = create_knowledge_base_tool(credential)
+        async with build_grounded_agent(credential, knowledge_tool) as agent:
 
             results = []
-            print("--- Part A: grounded assistant ---\n")
             for item in EVAL_QUERIES:
-                response = await agent.run(item["query"])
+                print(f"Q----->: {item['query']}")
+                try:
+                    async with asyncio.timeout(30):
+                        response = await agent.run(item["query"])
+                except TimeoutError as exc:
+                    raise RuntimeError(
+                        f"Agent timed out while evaluating: {item['query']}"
+                    ) from exc
                 answer = str(response)
                 context = _grounding_context(response)
                 print(f"Q: {item['query']}")
