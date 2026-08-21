@@ -91,6 +91,24 @@ function buildModule1() {
     ]);
   }
 
+  T.notes(T.demoSlide(pres, {
+    tag: "Day 2 · Module 1 · Demo",
+    title: "Attach an IQ knowledge source, portal-first",
+    time: "~4 min",
+    description: "Foundry portal walkthrough: create a Foundry IQ knowledge base backed by a pre-uploaded blob container, then attach it to a docs-assistant agent. Same three objects the slide just described — knowledge source, knowledge base, agent that consumes them — but click-through instead of code. Sets attendees up for the portal setup they'll do themselves in the lab.",
+    reference: "Runbook: demos/day2/module-1-demo-1-iq-attach-portal.md",
+  }), [
+    "DEMO 1.1 · ~4 min",
+    "Storage account + contoso-docs blob container + 10 docs already uploaded before the module",
+    "Foundry portal at the project, Build → Knowledge already open",
+    "Step 1 (~60s): Knowledge → +Create a knowledge base → name it contoso-docs → paste the KB description → Add sources → +Azure Blob Storage → point at the container → System-assigned MI → text-embedding-3-small → Create",
+    "Speaker note: 'That description matters — the model uses it later to decide when to reach for this source.'",
+    "Step 2 (~90s, portal spinner): while ingestion runs, talk through what just happened — chunking + embeddings + index all delegated to Foundry, replacing what used to be an AI Search Index pipeline you'd wire up by hand",
+    "Step 3 (~45s): attach the KB to your Day 1 docs-assistant agent; open Playground; ask 'how do I generate an API key?'; point at the grounded answer + citation",
+    "Fallback: dry-run screenshots of every portal step + a successful grounded answer",
+    "Payoff line: 'IQ is three objects — source, base, agent. In the lab you'll do the same three things, but from the portal following the setup guide, not from code.'",
+  ]);
+
   {
     const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 1", title: "Supported knowledge sources" });
     T.addTwoColumn(slide,
@@ -202,6 +220,25 @@ function buildModule1() {
       "Source-per-KB limit is now 10 on all tiers in the current preview API (earlier preview versions capped Low at 3 and Medium at 5)",
     ]);
   }
+
+  T.notes(T.demoSlide(pres, {
+    tag: "Day 2 · Module 1 · Demo",
+    title: "Query planning in slow motion",
+    time: "~5 min",
+    description: "Pivot between two portals to see the same retrieval two ways. Foundry Playground: ask a multi-hop question, open the trace — one MCP tool_call is all you see. Azure AI Search chat playground for the same KB: same question, hit the debug icon on the response, and the activity log JSON shows modelQueryPlanning, three azureBlob sub-queries (with their planner-generated search strings), agenticReasoning, and modelAnswerSynthesis. Foundry gives you the summary; AI Search gives you the mechanism.",
+    reference: "Runbook: demos/day2/module-1-demo-2-query-planning-trace.md",
+  }), [
+    "DEMO 1.2 · ~5 min",
+    "PREREQ: contoso-docs-kb has an LLM attached and reasoning effort ≥ Low (not the workshop default of Minimal — temporarily crank it up for the demo)",
+    "Two tabs open: (1) Foundry Playground with docs-assistant, (2) Azure AI Search portal → your Search service → Agentic retrieval → your KB → chat box",
+    "Warm both pipelines with a throw-away query at least an hour before",
+    "Step 1 (~45s, Tab 1): ask the multi-hop question about payment_review + billing impact + pro plan rate limits; agent answers with citations",
+    "Step 2 (~30s, Tab 1): open the trace — point at the single MCP tool_call for the knowledge_base; 'from the agent's view IQ is opaque'",
+    "Step 3 (~2 min, Tab 2): paste the same question; click the debug icon on the response; walk the activity log entry-by-entry — read each azureBlobArguments.search aloud (three planned sub-queries)",
+    "Step 4 (~30s): single-hop contrast question in the same box — one azureBlob entry; planner adapted",
+    "Fallback: dry-run screenshots of both activity logs (multi-hop 3-subquery + single-hop 1-subquery)",
+    "Payoff line: 'Foundry summary vs. AI Search mechanism — same call, two levels of detail.'",
+  ]);
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 1", title: "Permission-aware retrieval" });
@@ -848,6 +885,25 @@ function buildModule3() {
       "1–5 scale, default pass threshold 3",
     ]);
   }
+
+  T.notes(T.demoSlide(pres, {
+    tag: "Day 2 · Module 3 · Demo",
+    title: "Score two agents live",
+    time: "~4 min",
+    description: "Two static transcripts — grounded (docs-assistant WITH IQ attached) and baseline (no knowledge source) — scored side-by-side with retrieval_eval.py. Grounded run clears the Retrieval ≥ 3.5 and Groundedness ≥ 4.0 thresholds. Baseline run refuses to score at all — the eval script hard-fails on empty context. That refusal is a real production signal.",
+    reference: "Runbook: demos/day2/module-3-demo-1-score-two-agents.md · Files: demos/day2/module-3-demo-1-score-two-agents/",
+  }), [
+    "DEMO 3.1 · ~4 min",
+    "Two transcripts pre-staged in the demo folder: part_a_grounded_transcript.jsonl + part_a_baseline_transcript.jsonl",
+    ".env at demo folder: AZURE_OPENAI_ENDPOINT + EVALUATION_MODEL",
+    "Split terminal, both panes in the demo folder",
+    "Step 1 (~30s): head + jq the first row of each transcript; point at context_length ~27000 vs 0",
+    "Step 2 (~45s, left pane): 'uv run python retrieval_eval.py part_a_grounded_transcript.jsonl' → read scores aloud, slot into a Grounded / Baseline matrix",
+    "Step 3 (~30s, right pane): 'uv run python retrieval_eval.py part_a_baseline_transcript.jsonl' → refusal message appears instantly, non-zero exit; pause for the beat",
+    "Step 4 (~60s): reframe — eval isn't 'your agent is bad,' it's 'you have no retrieved context to evaluate.' Grounded numbers ARE real, baseline REFUSED to score",
+    "Fallback: dry-run screenshots (both terminal outputs, saved result.json)",
+    "Payoff line: 'Eval is a signal about your architecture, not just a scoring tool.'",
+  ]);
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 3", title: "Groundedness vs. Response Completeness" });
@@ -1674,6 +1730,24 @@ function buildModule5() {
       "Attendees will need both in real systems — not either/or",
     ]);
   }
+
+  T.notes(T.demoSlide(pres, {
+    tag: "Day 2 · Module 5 · Demo",
+    title: "Consume a hosted toolbox from your agent",
+    time: "~5 min",
+    description: "Client-side MAF agent hitting a pre-published Foundry toolbox over MCP. Show the toolbox exists (portal or CLI), walk the ~15-line consumer pattern — DefaultAzureCredential + get_bearer_token_provider fed into MCPStreamableHTTPTool(header_provider=…), then tools=[toolbox_tool] on the agent. Run once with a question that exercises a tool. Point at the trace: MAF calls the tool exactly like a local function tool.",
+    reference: "Runbook: demos/day2/module-5-demo-1-attach-toolbox.md · Sample: demos/day2/module-5-demo-1-attach-toolbox/",
+  }), [
+    "DEMO 5.1 · ~5 min",
+    "Toolbox already published in your project — do NOT create live",
+    ".env at demo folder: FOUNDRY_PROJECT_ENDPOINT, FOUNDRY_MODEL, FOUNDRY_TOOLBOX_ENDPOINT",
+    "Step 1 (~30s): show it exists — 'azd ai toolbox show <name>' OR portal → Toolboxes; point at the MCP endpoint URL",
+    "Step 2 (~90s): open main.py; walk the three blocks — auth (get_bearer_token_provider on ai.azure.com/.default), MCP tool (MCPStreamableHTTPTool with header_provider), agent (tools=[toolbox_tool])",
+    "Step 3 (~2 min): 'uv run python main.py <question>'; watch it call the tool; read the answer aloud",
+    "Optional (~30s): show tool_call span in the trace if App Insights is connected",
+    "Fallback: dry-run screenshots (endpoint, code pattern, successful answer, trace)",
+    "Payoff line: 'Toolbox is auth + one MCPStreamableHTTPTool + the same tools=[] list — value is in what you DIDN'T write.'",
+  ]);
 
   {
     const { slide, contentTop } = T.bodySlide(pres, { tag: "Day 2 · Module 5", title: "Toolbox anatomy" });
