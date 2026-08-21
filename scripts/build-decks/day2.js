@@ -553,7 +553,7 @@ function buildModule2() {
   }
 
   {
-    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Semantic ranker — the quiet weapon" });
+    const { slide } = T.bodySlide(pres, { tag: "Day 2 · Module 2", title: "Semantic ranker" });
     T.addProse(slide,
       "Turns query understanding from 'keyword lookup' into 'did this passage actually answer the question?'",
       { y: 1.15, h: 0.7, fontSize: 14, italic: true });
@@ -687,7 +687,7 @@ agent = Agent(client=..., instructions="Cite sources from search_docs.", tools=[
         "Existing orchestration or heavily-tuned index to preserve",
         "Fine-grained control over pipeline, ranking, filtering",
         "Very tight latency budget",
-        "Source IQ doesn't yet connect to",
+        "Source IQ doesn't yet connect",
       ],
       [
         "Source is a supported IQ connector",

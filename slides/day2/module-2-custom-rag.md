@@ -98,7 +98,7 @@ You didn't need an LLM to plan queries. The pipeline was 200 lines of infra you 
 
 ---
 
-## Semantic ranker — the quiet weapon
+## Semantic ranker
 
 Turns query understanding from "keyword lookup" into "did this passage actually answer the question?"
 
@@ -186,7 +186,7 @@ Trade-off vs. IQ: you build the ACL sync pipeline yourself. IQ syncs from ShareP
 - You have **existing orchestration** or a heavily-tuned index you want to preserve
 - You need **fine-grained control** over query pipeline, ranking, filtering
 - Latency budget is very tight — classic RAG returns in milliseconds vs. IQ's LLM-planned multi-query pipeline
-- Your knowledge lives in a source **IQ doesn't yet connect to**
+- Your knowledge lives in a source **IQ doesn't yet connect**
 
 **Prefer Foundry IQ when:**
 - Your source is a supported IQ connector
