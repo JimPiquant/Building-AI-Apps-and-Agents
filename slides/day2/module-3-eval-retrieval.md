@@ -53,9 +53,9 @@ Start with the top four. Add ground truth when you're ready to invest in labels.
 
 ---
 
-## The two must-know evaluators
+## Where to start — Retrieval and Groundedness
 
-For today's lab and most real-world starting points:
+Two zero-setup RAG evaluators — one process, one system. Neither needs ground truth. Start here on day 1; add **Document Retrieval** and **Response Completeness** later once you have labels.
 
 ### Retrieval (process)
 - **Input:** query, retrieved context
@@ -222,7 +222,7 @@ The habit that starts today runs through the whole week.
 ## Takeaways
 
 - **Evaluate retrieval separately** or you can't tell retrieval bugs from generation bugs
-- **Foundry evaluators**: Retrieval + Groundedness are the two must-know starting points
+- **Foundry evaluators**: start with Retrieval (process) + Groundedness (system) — both zero-setup
 - **Groundedness (precision) + Response Completeness (recall)** — track both when you have ground truth
 - **Small test sets beat big untested claims** — 10–15 hand-labeled items is the floor
 - **Change one thing, then rerun** — same iteration loop as prompt engineering

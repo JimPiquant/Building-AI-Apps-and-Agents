@@ -2,8 +2,8 @@
 Day 2 Lab — Part C — Combined agent (knowledge + tools).
 
 Attach BOTH the Foundry IQ knowledge source (Part A) AND your function tools
-(Part B) to a single agent, then use the Module 7 four-line instruction
-template to steer the composition order.
+(Part B) to a single agent, then iterate on the instruction template below to
+steer the composition order.
 
 Definition of done for Part C:
   - All three queries in evals/combined_golden_set.jsonl produce the expected
@@ -25,8 +25,10 @@ from tools import create_ticket, lookup_status
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 
-# The Module 7 four-line instruction template. Iterate on this to pass all three
-# combined-golden-set queries.
+# Instruction template. Iterate on this to pass all three combined-golden-set
+# queries. The four-part pattern: (1) default source, (2) state-first rule for
+# account-specific questions, (3) retrieve-before-act for actions that need
+# classification, (4) refusal fallback.
 COMBINED_INSTRUCTIONS = """\
 You are a support assistant for the Contoso developer API.
 

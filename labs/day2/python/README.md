@@ -8,8 +8,7 @@ This directory holds the Python code for the Day 2 lab. Start here after you
 | File | Part | What it does |
 |---|---|---|
 | [`agent.py`](agent.py) | prereq | Baseline sanity check — plain MAF agent, no knowledge or tools |
-| [`create_iq_source.py`](create_iq_source.py) | A | Creates the Search index, Foundry IQ knowledge source, and knowledge base |
-| [`foundry_iq.py`](foundry_iq.py) | A/C | Connects local agents to the IQ knowledge base over authenticated MCP |
+| [`foundry_iq.py`](foundry_iq.py) | A/C | Connects local agents to the IQ knowledge base you created in the portal, over authenticated MCP |
 | [`part_a_grounded_agent.py`](part_a_grounded_agent.py) | A | Agent with IQ attached; produces the eval transcript |
 | [`tools.py`](tools.py) | **B** | **You author** `create_ticket` and `lookup_status` here |
 | [`mock_backend.py`](mock_backend.py) | B | Provided — in-memory ticket store; do NOT modify |
@@ -18,10 +17,11 @@ This directory holds the Python code for the Day 2 lab. Start here after you
 
 ## Setup
 
-First create and configure the Azure AI Search service by following
-[Azure AI Search setup](../README.md#azure-ai-search-setup). The portal creates
-the Search service; `create_iq_source.py` then creates the index, uploads the lab
-documents, and creates the Foundry IQ knowledge source and knowledge base.
+Follow the portal setup steps in the main [lab README](../README.md#prerequisites-portal-setup-one-time-15-min):
+create the storage account + blob container, upload the docs corpus, create
+the Foundry IQ knowledge base in the Foundry portal, and grant the two RBAC
+assignments (Storage Blob Data Reader → Search MI; Search Index Data Reader
+→ Foundry project MI). The lab code here only *consumes* the knowledge base.
 
 ```bash
 uv sync
@@ -53,5 +53,3 @@ required for valid retrieval and groundedness scores.
 - Module 4 slides — the tools layer
 - Module 6 slides — authoring patterns (this is your primary reference for
   filling in `tools.py`)
-- Module 7 slides — combining knowledge and tools (the iteration guide for
-  `part_c_combined.py`)

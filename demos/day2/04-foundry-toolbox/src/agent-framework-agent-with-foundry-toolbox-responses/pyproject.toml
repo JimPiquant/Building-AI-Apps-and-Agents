@@ -1,0 +1,16 @@
+[project]
+name = "agent-framework-agent-with-foundry-toolbox-responses"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "agent-framework",
+    "agent-framework-hosting",
+    "azure-identity", 
+    "httpx",
+    "agent-framework-foundry",
+    "debugpy>=1.8.21",
+]
+
+[[tool.uv.index]]
+name = "internal"
+url = "https://packagefeedproxy.microsoft.io/pypi/simple/"

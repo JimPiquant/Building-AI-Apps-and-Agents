@@ -12,100 +12,109 @@ per the workshop policy.
 
 ## Prerequisites
 
+Before you start, you need:
+
 - Day 1 lab complete and working
 - `uv` installed (from Day 1)
 - `az login` works against your Azure tenant
-- Same Foundry project and model deployment you used on Day 1 (recommended:
-  **`gpt-5.6-luna`**)
-- An Azure AI Search service configured for Foundry IQ (see below)
+- Same Foundry project and model deployment you used on Day 1 (recommended: **`gpt-5.6-luna`**)
+- The one-time portal setup below
 
-### Azure AI Search setup
+### Portal setup — one-time, ~15 min
 
-For this workshop, create one reusable Search service in the Azure portal. This
-keeps the billable service lifecycle separate from the lab script. Use Bicep or
-Terraform instead for shared or production environments.
+Part A of this lab uses a Foundry IQ knowledge base backed by an Azure Blob
+Storage container. Everything is created **in the Azure and Foundry portals**
+— the lab code just consumes the knowledge base's MCP endpoint. Reference:
+[Create a blob knowledge source](https://learn.microsoft.com/azure/search/agentic-knowledge-source-how-to-blob).
 
-#### Create the Search service in the Azure portal
+#### 1. Create the Azure Storage account and blob container
 
-1. Open the [Azure portal](https://portal.azure.com), select **Create a
-   resource**, search for **Azure AI Search**, and select **Create**.
-2. On **Basics**, select your subscription and resource group, then enter a
-   globally unique service name. The resulting endpoint is
-   `https://<service-name>.search.windows.net`.
-3. Choose a [region that supports agentic retrieval](https://learn.microsoft.com/azure/search/search-region-support).
-   Prefer the same region as the Foundry resource to reduce latency.
-4. Select **Change Pricing Tier** and choose **Basic** or higher. Basic is the
-   smallest tier that supports the managed identity required by this lab.
-5. Select **Review + create**, then **Create**. After deployment completes,
-   select **Go to resource**.
+1. In the [Azure portal](https://portal.azure.com), **Create a resource** →
+   **Storage account**. Standard tier, LRS is fine for the workshop.
+2. After deployment, open the storage account → **Data storage → Containers**
+   → **+ Container**. Name it `contoso-docs`.
+3. Open the `contoso-docs` container and use **Upload** to add every file
+   from `labs/day2/python/data/docs/` (10 markdown files).
 
-#### Configure identity and access
+#### 2. Create the Foundry IQ knowledge base (Foundry portal)
 
-1. On the Search service, open **Settings > Identity**, turn the system-assigned
-   identity **On**, and select **Save**.
-2. Open **Settings > Keys** and set **API access control** to **Role-based access
-   control** or **Both**.
-3. Open **Access control (IAM) > Add > Add role assignment** and assign these
-   roles on the Search service:
+1. Open the [Foundry portal](https://ai.azure.com) → your project → Build → 
+   **Knowledge**.
+2. Click the **Create new resource** link to create an AI Search resource. 
+   Give it a unique name, like `contoso-kb-yourname`.
+3. Select **+ Create a knowledge base**. Name it `contoso-docs`. In the
+   **Description** field, paste:
+   > *"General Contoso developer API product documentation. Does NOT contain
+   > account-specific state (orders, tickets, entitlements)."*
+4. Choose and deploy a chat completion model.
+5. **Add sources → + Azure Blob Storage**. Point at the storage account and
+   `contoso-docs` container from step 1. Authentication: **System-assigned
+   managed identity**. Embedding model: **text-embedding-3-small** (or any
+   embedding model already deployed in your project).
+6. **Chat completion model:** leave blank (we run at **Minimal** reasoning
+   effort — the agent's own LLM does the reasoning; see Module 1 slide 8).
+7. **Retrieval reasoning effort: Minimal.** Output mode: **Extractive data.**
+8. Create the knowledge base.
 
-   | Assignee | Scope | Role |
-   |---|---|---|
-   | Your user account | Search service | Search Service Contributor |
-   | Your user account | Search service | Search Index Data Contributor |
-   | Your user account | Search service | Search Index Data Reader |
+#### 3. Grant RBAC (Azure portal — IAM)
 
-4. Open the Foundry resource in the Azure portal. Under **Access control (IAM)**,
-   assign **Cognitive Services User** to the Search service's managed identity.
+Three role assignments, in two places:
 
-The first two roles let the provisioning script create objects and upload the
-documents. The reader role lets the local agent call the IQ MCP endpoint. The
-Search identity uses the Foundry model for query planning and answer synthesis.
+| Role | Assigned to (member) | Scope |
+|---|---|---|
+| **Storage Blob Data Reader** | the **Search service's** system-assigned managed identity | the **storage account** you created in step 1 |
+| **Search Index Data Reader** | the **Foundry project's** system-assigned managed identity | the **Search service** connected to your project |
+| **Cognitive Services OpenAI User** | the **Search service's** system-assigned managed identity | the **Foundry project** connected to your project |
 
-Add the Search service URL and the Foundry resource's Azure OpenAI endpoint to
-`.env`:
+To assign each role:
+1. Open the target resource (storage account for row 1; Search service for row 2).
+2. **Access control (IAM) → + Add → Add role assignment**.
+3. Select the role → **Next**.
+4. **Members** tab → **Assign access to: Managed identity → + Select members**
+   → filter by the correct managed identity (the Search service MI, or the
+   Foundry project MI). Select it and confirm.
+5. **Review + assign**.
 
-```dotenv
-AZURE_SEARCH_ENDPOINT=https://<search-service>.search.windows.net
-AZURE_OPENAI_ENDPOINT=https://<foundry-resource>.openai.azure.com
-```
+Role propagation can take a few minutes. If retrieval returns 403 in Part A,
+wait a bit and retry.
 
-`AZURE_OPENAI_ENDPOINT` must be the resource root. Do not append `/openai`.
+#### 4. Verify in the Foundry portal
 
-Role assignments can take several minutes to propagate. Foundry IQ agentic
-retrieval and model calls can incur usage charges in addition to the Search
-service tier.
+1. Foundry portal → your project → **Knowledge → contoso-docs**. Confirm
+   ingestion completed (green status on the source). If it's still running,
+   give it a minute for a 10-file corpus.
+2. Open the Foundry **Playground** with any agent from Day 1, attach
+   `contoso-docs` as a knowledge source, and ask *"How do I generate an API
+   key?"* You should see a grounded answer with a citation to
+   `getting-started.md` or similar.
 
-#### Create the index and Foundry IQ objects
+If verify fails, don't proceed. Fix the RBAC or ingestion state first (or
+ask for help).
 
-Do not use **Import data** to create the index manually. After the service and
-roles are ready, run the lab provisioning script. It creates or updates the
-`contoso-docs-index` schema, uploads the Markdown documents, and creates the
-knowledge source and knowledge base:
-
-```bash
-cd labs/day2/python
-uv run python create_iq_source.py
-```
-
-To verify it in the Azure portal, open the Search service. Under **Search
-management > Indexes**, the `contoso-docs-index` index should contain 10
-documents. Under **Agentic retrieval > Knowledge bases**, you should see
-`contoso-docs`; it isn't automatically added to the knowledge assets of your
-Foundry project. If you changed `FOUNDRY_IQ_KNOWLEDGE_NAME`, these objects use
-that name as their prefix.
-
-Set up your environment:
+#### 5. Fill in `.env`
 
 ```bash
 cp labs/day2/.env.example labs/day2/.env
-# edit labs/day2/.env — carry over your Day 1 endpoint and model
+# edit labs/day2/.env with values for FOUNDRY_PROJECT_ENDPOINT,
+# FOUNDRY_MODEL, AZURE_SEARCH_ENDPOINT, FOUNDRY_IQ_KNOWLEDGE_NAME, and
+# EVALUATION_MODEL.
+```
+
+- `AZURE_SEARCH_ENDPOINT` is the Search service URL from its Overview page —
+  `https://<search-service>.search.windows.net`. No trailing slash.
+- `FOUNDRY_IQ_KNOWLEDGE_NAME` matches the knowledge base name from step 2
+  (`contoso-docs` if you kept the default).
+
+#### 6. Sync the Python project
+
+```bash
 cd labs/day2/python
 uv sync
 uv run python agent.py   # sanity check — prints a greeting
 ```
 
 If the sanity check fails, do NOT proceed. Fix your `.env` or Foundry access
-first (or ask a TA for a paired debug).
+first (or ask help).
 
 ## Repo layout
 
@@ -117,14 +126,13 @@ labs/day2/
     ├── pyproject.toml              # uv-managed
     ├── README.md                   # Python starter guide (also linked below)
     ├── agent.py                    # baseline sanity check
-    ├── create_iq_source.py         # Part A: creates Search index + IQ objects
-    ├── foundry_iq.py               # Part A/C: authenticated MCP client to IQ
+    ├── foundry_iq.py               # Part A/C: authenticated MCP client to your IQ knowledge base
     ├── part_a_grounded_agent.py    # Part A: agent with IQ attached
     ├── mock_backend.py             # provided in-memory ticket store
     ├── tools.py                    # Part B: YOU author create_ticket + lookup_status
     ├── part_b_wire_tools.py        # Part B: agent with your tools attached
     ├── part_c_combined.py          # Part C: combined agent
-    ├── data/docs/                  # 10 mock product docs (provided)
+    ├── data/docs/                  # 10 mock product docs (uploaded to blob during portal setup)
     ├── tests/
     │   ├── test_tools.py           # Part B: isolation tests (mostly provided)
     │   └── test_golden_set.py      # Part B/C: tool-use eval runner
@@ -140,28 +148,18 @@ labs/day2/
 
 **Goal:** move the assistant from prompt-only to grounded in docs.
 
-**Time:** ~40 min.
+**Time:** ~40 min (portal setup is a prerequisite, done above).
 
 ### Steps
 
-1. Create the IQ index, knowledge source, and knowledge base from the provided
-   docs corpus:
-   ```bash
-   cd labs/day2/python
-   uv run python create_iq_source.py
-   ```
-   This uploads the 10 markdown files to Azure AI Search and creates a Foundry IQ
-   knowledge base named `contoso-docs` (or whatever you set in
-   `FOUNDRY_IQ_KNOWLEDGE_NAME`). Re-running the script updates the same objects.
-
-2. Run the grounded agent to produce a transcript:
+1. Run the grounded agent to produce a transcript:
    ```bash
    uv run python part_a_grounded_agent.py
    ```
    The five queries (3 answerable + 2 not) are written to
    `evals/part_a_transcript.jsonl`.
 
-3. Score the transcript with Foundry evaluators:
+2. Score the transcript with Foundry evaluators:
    ```bash
    EVALUATION_MODEL=gpt-5.6-luna uv run python evals/retrieval_eval.py
    ```
@@ -226,7 +224,7 @@ description in `part_a_grounded_agent.py` and re-run.
 - Golden-set eval: **6/6** rows pass
 
 If a row fails, don't rewrite the code — **tighten the tool descriptions** in
-`tools.py`. That's the Module 7 failure-mode-2 fix.
+`tools.py`.
 
 ---
 
@@ -239,7 +237,7 @@ If a row fails, don't rewrite the code — **tighten the tool descriptions** in
 ### Steps
 
 1. **Read** `python/part_c_combined.py` — the `COMBINED_INSTRUCTIONS` string is
-   the Module 7 four-line template. This is where you'll iterate.
+   the instruction template you'll iterate on.
 
 2. **Run** it and inspect the answers:
    ```bash
@@ -252,7 +250,8 @@ If a row fails, don't rewrite the code — **tighten the tool descriptions** in
    - `docs_only` — no tool call, docs answer directly
 
 3. **Iterate** on `COMBINED_INSTRUCTIONS` until each query hits the expected
-   composition order. Reference: Module 7 failure modes 1–3.
+   composition order. Tighten tool + knowledge-source descriptions first;
+   revise instructions second.
 
 ### Definition of done
 
@@ -264,13 +263,12 @@ If a row fails, don't rewrite the code — **tighten the tool descriptions** in
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `create_iq_source.py` returns `403` | Search RBAC is missing or still propagating | Verify the roles in **Azure AI Search setup**, then retry after several minutes |
-| Knowledge-base creation fails during model access | Search identity cannot call the Foundry model | Assign Cognitive Services User to the Search managed identity on the Foundry resource |
-| Agent cannot connect to the IQ MCP endpoint | Local user lacks retrieval access | Assign Search Index Data Reader to your user on the Search service |
+| Agent gets 403 from IQ MCP endpoint | RBAC not propagated yet, or Foundry project MI missing Search Index Data Reader | Verify **Search Index Data Reader** on the Search service is assigned to the Foundry project's managed identity; wait a few minutes for propagation |
+| Blob ingestion never completes / stays in `queued` | Search MI missing storage read access | Verify **Storage Blob Data Reader** on the storage account is assigned to the Search service's managed identity |
+| Knowledge base returns 0 results | Ingestion incomplete, empty container, or wrong `FOUNDRY_IQ_KNOWLEDGE_NAME` | Foundry portal → Knowledge → your KB — confirm ingestion is green; confirm the name in `.env` matches |
 | `azure.identity` DefaultAzureCredential errors | Not logged in | `az login` and retry |
-| `FOUNDRY_IQ_KNOWLEDGE_NAME not set` | Missed step in Part A | Add `FOUNDRY_IQ_KNOWLEDGE_NAME=contoso-docs` to `.env` |
 | `test_tools.py` — `NotImplementedError` | Tools not authored yet | Complete Part B, Step 1 |
-| `test_golden_set.py` — every row fails | Tool descriptions too vague | Tighten descriptions per Module 7 failure mode 2 |
+| `test_golden_set.py` — every row fails | Tool descriptions too vague | Tighten the tool descriptions in `tools.py` |
 | Model calls `create_ticket` for every query | Description too broad | Add explicit "Do NOT use for general product questions" clause |
 | Model never calls `lookup_status` | Instructions default to docs too strongly | Add explicit trigger in tool description |
 | `.env` values not picked up | Loading wrong file | Check `python-dotenv` is loading `labs/day2/.env` (not `labs/day1/.env`) |

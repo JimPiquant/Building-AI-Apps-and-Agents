@@ -1,4 +1,16 @@
-"""Shared Foundry IQ MCP integration for the Day 2 agents."""
+"""Shared Foundry IQ MCP integration for the Day 2 agents.
+
+Consumes a Foundry IQ knowledge base you already created in the Foundry
+portal. See labs/day2/README.md#prerequisites-portal-setup-one-time-15-min
+for how the knowledge base gets provisioned (portal-first: create a storage
+account + blob container, upload the docs, create the knowledge base in the
+Foundry portal, grant Storage Blob Data Reader to the Search MI and
+Search Index Data Reader to the Foundry project MI).
+
+The MCP URL shape below is stable across authoring paths — SDK-provisioned,
+portal-provisioned, or IaC-provisioned knowledge bases all expose the same
+retrieve endpoint.
+"""
 
 import os
 from collections.abc import Mapping

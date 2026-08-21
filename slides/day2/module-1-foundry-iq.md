@@ -80,7 +80,7 @@ Rule of thumb: index anything you query hundreds of times per day; go remote for
 
 For each user question, the agentic retrieval engine:
 
-1. **Plans** — an LLM (optional) decomposes the question into sub-queries and picks which sources to hit
+1. **Plans** — at **Low** or **Medium** effort, an LLM decomposes the question into sub-queries and picks which sources to hit. At **Minimal**, this step is skipped and the raw query goes straight to every source.
 2. **Executes** — sub-queries run in parallel (keyword, vector, or hybrid per source)
 3. **Ranks** — unified reranker scores results across sources
 4. **Returns** — top results plus source citations
@@ -89,17 +89,19 @@ Takeaway: this is more than "vector search + LLM." It's a small pipeline you get
 
 ---
 
-## Retrieval reasoning effort
+## Retrieval reasoning effort — pick the level per question
 
-You control how much LLM planning happens per query.
+| Level | LLM planning | Answer synthesis | When to pick |
+|---|---|---|---|
+| `minimal` | ❌ Single-shot search, all sources | ❌ Extractive only | Predictable, low latency, low cost. **Often the right answer for agent-consumed IQ** — your agent's own model does the reasoning |
+| `low` (default) | ✅ One planning pass | ✅ Optional (5K tokens) | Balance of latency and depth. Good starting point for most labs |
+| `medium` | ✅ Planning + one iterative retry | ✅ Optional (10K tokens) | Deep multi-hop questions where retrieval recall matters. Select regions only |
 
-- **`minimal`** — no LLM planning. Fast, cheap. One direct query. GA.
-- **`low`** — LLM plans the sub-queries and picks sources. Preview.
-- **`medium`** — LLM plans + iterates for deeper results. Preview.
+Up to 10 knowledge sources per KB on all tiers (2026-05-01-preview).
 
-Higher effort = better answers on complex questions, higher latency and cost. Choose per query, not per agent.
+Currently **preview** in the Foundry and Azure portals; parts of agentic retrieval are GA on the 2026-04-01 REST API.
 
-*Preview status: verify in [Set the retrieval reasoning effort](https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-how-to-set-retrieval-reasoning-effort) before wiring into production paths.*
+*Source: [Set the retrieval reasoning effort](https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-how-to-set-retrieval-reasoning-effort)*
 
 ---
 
@@ -154,16 +156,16 @@ For Prompt agents / Hosted agents, the knowledge base is attached in the agent c
 
 ---
 
-## IaC-first: create knowledge sources from code
+## Portal for learning, IaC for production
 
-Same operating norm as Day 1 — resource creation lives in code, not the portal.
+Same operating norm as Day 1 — production resource creation lives in code, not the portal.
 
 - **Azure CLI** — `az search knowledge-source create ...` (verify current command surface)
 - **REST** — `PUT https://<search>.search.windows.net/knowledgeSources/<name>?api-version=2026-04-01`
 - **Python SDK** — `azure-search-documents` client
-- **Portal** — fine for exploration; not the workshop path
+- **Portal** — fine for exploration; use it for today's lab so we don't spend the workshop on IaC
 
-You'll do the SDK path in today's lab.
+Today's lab uses the portal for the KB setup so you can focus on retrieval quality and agent behavior. Real production paths belong in IaC — that's the norm we set on Day 1.
 
 ---
 

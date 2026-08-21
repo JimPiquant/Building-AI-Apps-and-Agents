@@ -1,6 +1,6 @@
 # Module 1 · Demo 1 — Attach an IQ knowledge source, portal-first
 
-**Placement:** After the *"three building blocks (knowledge base · knowledge source · agent)"* slide (Module 1 · slide 4).
+**Placement:** After **slide 4 — "Three building blocks"** (Module 1).
 
 **Time:** ~4 min total (30s setup narration + 3 min click-through + 30s payoff)
 
@@ -39,12 +39,14 @@ SDK is just a shorter way to click the same buttons."
 
 **Step 1 — Create the knowledge source (~60s)**
 
-1. In the portal: **Knowledge** → **+ New knowledge source** → **Files**.
+1. In the portal: **Knowledge** → **+ Create a knowledge base**.
 2. Name it `contoso-docs`.
 3. In the **Description** field, paste:
    > *"General Contoso developer API product documentation. Does NOT contain account-specific state (orders, tickets, entitlements)."*
-4. Drop the 10 markdown files from `labs/day2/python/data/docs/`.
-5. Click **Create**.
+4. **Add sources** → **+ Azure Blob Storage**.
+5. Name **contoso-kb-docs-blob**  → **jimwelchdemokb**  → **contoso-docs** → **system assigned identity** → **text-embedding-3-small**
+6. Leave Chat completions model blank (use to extact images, content) 
+7. Click **Create**.
 
 **Say:** *"Notice the description. This is a real field, and it matters —
 the model uses it later to decide when to reach for this knowledge source
@@ -56,9 +58,9 @@ metadata."*
 The portal shows a progress indicator. While it processes:
 
 *"This step is doing three things: chunking each file, embedding the chunks,
-and writing them to a hosted vector store. Two years ago each of those was a
-separate service you wired up. Today the knowledge source object owns all
-three, and that's what makes IQ 'hosted' — you're delegating the wiring."*
+and writing them to the vector store. Two years ago that was a AI Search Index pipeline
+you wired up. Today the knowledge source object owns all
+three, and that's what makes IQ 'hosted' — you're delegating the pipeline creation."*
 
 **Step 3 — Create the knowledge base and attach the source (~45s)**
 

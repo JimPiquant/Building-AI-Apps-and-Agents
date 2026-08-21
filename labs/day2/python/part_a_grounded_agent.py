@@ -1,8 +1,9 @@
 """
 Day 2 Lab — Part A — Grounded docs assistant.
 
-Attach the Foundry IQ knowledge base you created with create_iq_source.py
-to the baseline agent, then run a small evaluation of retrieval quality.
+Attach the Foundry IQ knowledge base you created in the Foundry portal
+(see labs/day2/README.md — Prerequisites) to the baseline agent, then run
+a small evaluation of retrieval quality.
 
 Definition of done:
   - Retrieval score >= 0.7 on the answerable set
@@ -10,8 +11,11 @@ Definition of done:
 
 Prereqs:
   1. `uv run python agent.py` prints a greeting (baseline works)
-  2. `uv run python create_iq_source.py` completed successfully
-  3. FOUNDRY_IQ_KNOWLEDGE_NAME is set in .env
+  2. Portal setup complete: storage account + blob container created,
+     docs uploaded, IQ knowledge base created in the Foundry portal, and
+     RBAC assigned (Storage Blob Data Reader on the Search MI + Search
+     Index Data Reader on the Foundry project MI).
+  3. AZURE_SEARCH_ENDPOINT and FOUNDRY_IQ_KNOWLEDGE_NAME are set in .env
 """
 import asyncio
 import json

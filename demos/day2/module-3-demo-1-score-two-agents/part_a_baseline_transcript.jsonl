@@ -1,0 +1,5 @@
+{"query": "How do I generate an API key?", "should_answer": true, "answer": "I don't have that information.", "context": ""}
+{"query": "What does a 429 response mean and how should I handle it?", "should_answer": true, "answer": "I don't have that information.", "context": ""}
+{"query": "What happens when an account enters payment_review?", "should_answer": true, "answer": "I don't have that information.", "context": ""}
+{"query": "What's my current month's usage?", "should_answer": false, "answer": "I don't have that information.", "context": ""}
+{"query": "Can you cancel my order 12345?", "should_answer": false, "answer": "I can\u2019t directly access or cancel orders. Please use your order-management portal or contact Contoso support to request cancellation of order **12345**.", "context": ""}

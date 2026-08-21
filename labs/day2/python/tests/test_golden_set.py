@@ -15,9 +15,9 @@ Run with:
 
 You'll iterate this loop several times during Part B. Each time an entry
 fails, tighten either:
-  - The tool description (Module 7 failure mode 2)
-  - The knowledge source description (Module 7 failure mode 2)
-  - The agent instructions (Module 7 failure mode 1, 3)
+  - The tool description
+  - The knowledge source description
+  - The agent instructions
 """
 from __future__ import annotations
 

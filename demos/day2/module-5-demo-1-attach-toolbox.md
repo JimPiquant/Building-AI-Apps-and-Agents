@@ -1,123 +1,227 @@
-# Module 5 · Demo 1 — Attach a hosted toolbox in 30 seconds
+# Module 5 · Demo 1 — Consume a hosted toolbox from your agent
 
-**Placement:** After the *"why hosted tools"* slide (Module 5 · slide 4).
+**Placement:** After **slide 5 — "Why toolbox, and not just tools=[...] on the agent"** (Module 5).
 
-**Time:** ~3 min total (30s setup narration + 90s attach + 60s payoff)
+**Time:** ~5 min total (30s framing + 90s show + 2 min run + 60s payoff)
 
-**Language:** Foundry portal + one CLI command. No new Python code.
+**Language:** Python (MAF SDK). No portal path — a toolbox is created via
+SDK/`azd`/Foundry Toolkit and consumed by writing a small MCP-client
+snippet in your agent. This demo is the "consumer side."
 
 ## What it shows
 
-Module 5 has just argued that a hosted Foundry Toolbox eliminates the "author,
-package, deploy, secure, patch" ceremony that comes with function tools. This
-demo makes the argument concrete: pick a pre-published toolbox, attach it,
-and use it — start to finish in under a minute of clicks.
+Module 5 has just argued: *"Why toolbox, and not just `tools=[...]` on the
+agent?"* The answer on the slide is that Toolbox eliminates the "author,
+package, deploy, secure, patch" ceremony a function tool would need.
+This demo makes that concrete on the consumer side — a pre-created
+toolbox, and a small `MCPStreamableHTTPTool` snippet that hooks the
+toolbox into an MAF agent. The audience sees that consuming a hosted
+toolbox is a code-level attach, not a click-through picker in the
+portal. The toolbox author did the heavy lifting; the consumer writes
+~15 lines.
 
-The audience sees the **"managed" claim** cash out. It's not a slide anymore.
+**What this demo is NOT:** it does not walk creating or publishing a
+toolbox (Module 5 slides 6–8 cover authoring; the Learn doc has a
+YAML/SDK step-by-step). It picks up at *"a toolbox already exists —
+here's how the agent code hooks into it."*
 
 ## Setup checklist
 
 Do this **before the module starts**:
 
-- A **pre-published Foundry Toolbox** exists in your project or a shared
-  gallery. Options:
-  - The [`FoundryToolboxSamples`](https://github.com/microsoft-foundry/foundry-samples/tree/main/foundry_toolbox) `web_search` or `time` toolbox — both are safe, deterministic, and read-only.
-  - A previously-authored internal toolbox from your Foundry project.
-  Pick one you've verified works today.
-- The **`docs-assistant` agent** (or a copy of it) is ready — you'll attach
-  the toolbox to this agent.
-- The portal is open at **Agents → docs-assistant → Tools** in one tab.
-- A terminal is open at your Foundry project, with `az login` completed and
-  the right subscription selected.
-- Playground is bookmarked in a second tab so you can test right after.
+- **A pre-created, published toolbox** in your Foundry project. Pick a
+  safe, deterministic tool for the demo — options confirmed by the
+  Learn doc:
+  - `web_search` (MCP tool via Bing)
+  - `azure_ai_search` (against a small pre-indexed corpus)
+  - A `time`-style utility (custom MCP server the presenter runs)
 
-Pre-baked screenshot: a completed attach-and-test screenshot from your dry
-run, in case the portal is sluggish.
+  If you don't already have one from prior workshop prep, follow the
+  [Learn Toolbox quickstart](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/toolbox?pivots=python)
+  to publish a version. Publish this **once** before Day 2 — not live
+  in the module.
+
+- **The toolbox's MCP consumer endpoint URL** in hand. Format from
+  Learn:
+  ```
+  https://<account>.services.ai.azure.com/api/projects/<project>/toolboxes/<toolbox-name>/versions/<version>/mcp?api-version=v1
+  ```
+  Retrieve via `azd ai toolbox show <toolbox-name> --output json`
+  (the `endpoint` field) or from the **Foundry Toolkit for VS Code**
+  sidebar (**My Resources → project → Tools → Toolboxes**).
+
+- **RBAC set correctly.** From the Learn Prerequisites: your identity
+  needs the **Foundry User** role on the project. If your dry-run
+  errors with 401/403, this is usually why.
+
+- **The [maintained MAF Foundry Toolbox sample](https://aka.ms/foundry-toolbox-maf)
+  cloned** into the presenter environment. The sample provides the
+  `_ToolboxAuth` httpx-auth helper that wraps `DefaultAzureCredential`
+  as a bearer-token provider for the MCP endpoint. Learn shows the
+  pattern but does not inline this helper — you use the sample.
+
+- **`.env`** populated at the sample directory:
+  ```
+  FOUNDRY_PROJECT_ENDPOINT=https://<account>.services.ai.azure.com/api/projects/<project>
+  TOOLBOX_ENDPOINT=<full MCP endpoint from step above>
+  AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-5.6-luna
+  ```
+
+- **`uv sync`** in the sample directory — installs `agent-framework`,
+  `agent-framework-foundry`, `azure-identity`, `httpx`.
+
+- **Dry-run once**, end-to-end, on the presenter machine. Note the
+  cold-start latency for the first tool call — can be 5–10s.
+
+- **Screenshot fallbacks** captured during your dry run:
+  - `azd ai toolbox show` output showing your toolbox and endpoint
+  - The ~15-line consumer snippet you'll walk
+  - A successful agent response citing a toolbox tool call
+  - A trace showing the tool-call span
 
 ## Narration + steps
 
 **Opening (30s):**
-"The prior slide argued that a hosted toolbox is a shortcut. I want to
-prove it. I'll attach a toolbox to my `docs-assistant` and use it — in
-this module — with a stopwatch running."
+"The prior slide argued: 'why toolbox, and not just `tools=[...]` on
+the agent?' The answer was that Toolbox eliminates the ceremony a real
+production function tool would need. That claim lives or dies on the
+consumer side. Let me show you what it takes to consume one from an
+MAF agent — with a toolbox that someone else has already published."
 
-**Optional prop:** actually start a stopwatch. Some presenters like this;
-others find it corny. Use your judgment.
-
-**Step 1 — Attach the toolbox (~30s)**
-
-In the portal (Agents → docs-assistant → Tools):
-1. Click **+ Add tool**.
-2. Choose **Toolbox** in the type picker.
-3. Pick `web_search` (or your chosen toolbox) from the dropdown.
-4. Click **Add**, then **Save**.
-
-**Say:** *"That's it. I picked a toolbox from the gallery, clicked add,
-saved. My agent now has the toolbox attached."*
-
-**Step 2 — Test it in the playground (~45s)**
-
-1. Click **Test in playground**.
-2. Ask a question the toolbox will handle. For `web_search`:
-   > *"What's the latest release version of the Microsoft Agent Framework?"*
-   For `time`:
-   > *"What time is it in Tokyo right now?"*
-
-Wait for the response. Both toolboxes surface their calls in the response
-as tool-use blocks.
-
-**Say:** *"Under the hood, three things just happened — none of which I
-wrote. The model saw the tool schema and decided to call it. Foundry
-executed the tool in a managed process I don't own. And the result flowed
-back to the model as a tool-result message. Same function-calling loop
-you saw in Module 4, but I didn't author, package, host, or authenticate
-anything."*
-
-**Step 3 — Show that "attach" wasn't just a portal illusion (~30s)**
+**Step 1 — Show the toolbox exists (~30s)**
 
 In the terminal:
 
 ```bash
-az cognitiveservices account agent tool list \
-    --resource-group $YOUR_RG \
-    --account-name $YOUR_FOUNDRY \
-    --agent-name docs-assistant
+azd ai toolbox show <your-toolbox-name> --output json
 ```
 
-You should see the attached toolbox in the list.
+Point at the `endpoint` field. It's an MCP URL — same protocol as
+Day 3.
 
-**Say:** *"Same object, from the CLI. This isn't portal magic — it's a
-real reference in your project. IaC-friendly. You could commit this
-attach step to Bicep or Terraform."*
+**Say:** *"This toolbox was published before today. Whoever published
+it dealt with auth, hosting, versioning, governance. I don't. All I
+need is this endpoint."*
+
+**Step 2 — Walk the ~15 lines that attach it to an agent (~90s)**
+
+Open `main.py` in the [maintained MAF sample](https://aka.ms/foundry-toolbox-maf).
+Highlight the key three-block pattern from Learn:
+
+```python
+# 1. Auth — wrap DefaultAzureCredential as an httpx bearer-token provider
+credential = DefaultAzureCredential()
+token_provider = get_bearer_token_provider(credential, "https://ai.azure.com/.default")
+http_client = httpx.AsyncClient(auth=_ToolboxAuth(token_provider), timeout=120.0)
+
+# 2. Wire the toolbox MCP endpoint as an MAF tool
+mcp_tool = MCPStreamableHTTPTool(
+    name="toolbox",
+    url=os.environ["TOOLBOX_ENDPOINT"],
+    http_client=http_client,
+    load_prompts=False,
+)
+
+# 3. Give it to the agent — same shape as any other MAF tool
+agent = chat_client.as_agent(
+    name="toolbox-demo-agent",
+    instructions="You are a helpful assistant with access to Foundry toolbox tools.",
+    tools=[mcp_tool],
+)
+```
+
+**Say (block by block):**
+- *"Block 1: auth. `DefaultAzureCredential` gets a token, and we wrap
+  it in an httpx auth helper. That `_ToolboxAuth` class lives in the
+  maintained sample — Learn shows the pattern, the sample ships the
+  glue.*
+- *"Block 2: one line that turns the toolbox endpoint into an MAF
+  tool object. That's it. Under the hood, `MCPStreamableHTTPTool` will
+  hit the endpoint, list the available tools via MCP `tools/list`,
+  and expose each one to the agent.*
+- *"Block 3: pass it in the `tools=[]` list. From here down, the
+  agent doesn't know or care that these are hosted — it looks like a
+  local function tool to the model."*
+
+**Step 3 — Run it (~90s)**
+
+```bash
+uv run python main.py
+```
+
+The sample's `main.py` will prompt-loop or run a fixed query
+depending on how it's set up. Either way, ask a question that will
+exercise a toolbox tool. If the toolbox includes `web_search`:
+
+> *"What's the current latest release version of Microsoft Agent
+> Framework?"*
+
+Watch the response. First run has cold-start latency (~5–10s for the
+first tool call), subsequent runs are faster. When the response
+appears, point at the tool-call attribution.
+
+**Say:** *"Look at that. The agent picked the toolbox tool, made
+the call, incorporated the result. Same shape as a function tool.
+Different origin — I wrote zero tool code today."*
+
+**Step 4 — Show the tool call in the trace (~30s, optional)**
+
+If Application Insights tracing is connected to your project (see
+demos 1.2 / 7.1 setup notes), open the trace for the last run and
+point at the toolbox tool-call span.
+
+**Say:** *"Tool call, tool result, model synthesis. Standard function-
+calling loop. Toolbox is one hop away — MCP over HTTPS to a hosted
+endpoint — but from the agent's point of view it's just another
+tool."*
 
 ## Expected result
 
-- Toolbox appears in the agent's Tools list, both in the portal and via CLI
-- Playground question that would normally need external info gets a
-  correct answer with a tool-use citation
-- Total elapsed clock: under 90 seconds for the attach + test
+- `azd ai toolbox show` returns the toolbox with an `endpoint` field
+- The MAF consumer script (~15 lines of substance) runs cleanly
+- The agent responds with a tool-use answer citing a toolbox tool
+- Trace shows the toolbox tool-call span
 
 ## Fallback story if it breaks live
 
 **Most likely failures:**
-- The gallery toolbox isn't available in your region.
-- The `web_search` toolbox rate-limits during a dry run right before class.
-- The playground response takes 15+ seconds and drags the demo pace.
+- **401/403 on first MCP call** — RBAC not propagated yet, or your
+  identity missing Foundry User. Cannot be fixed live.
+- **Cold-start latency spikes** (>30s on first call) — infrastructure,
+  not code
+- **Tool discovery empty** (`tools/list` returns `[]`) — toolbox
+  version not the default, or promoted version doesn't include the
+  tool
+- **`_ToolboxAuth` import error** — sample not synced or wrong
+  branch checked out
 
 Have these ready:
-1. A **screenshot** of the toolbox appearing in the agent's tools panel.
-2. A **screenshot** of a completed playground answer showing the tool call.
-3. A **saved az CLI output** showing the toolbox in the list.
+1. **Screenshot of `azd ai toolbox show`** with the endpoint visible
+2. **Screenshot of `main.py`** with the three-block pattern
+3. **Screenshot of a successful agent response** from your dry run,
+   with the toolbox tool-call cited
+4. **Screenshot of the trace** showing the tool-call span
 
-Story: *"The gallery mix rotates by region and preview state. Here's what
-it looks like in a working setup — same three clicks, same one-line CLI.
-This is the shape of the win."*
+Story: *"Consuming an MCP endpoint hits network + auth on the first
+call, so first-call latency can spike. This is what a successful run
+looks like from my dry run last night — same three-block consumer,
+same tool-call shape. You'll see this pattern again on Day 3 when we
+consume a real Azure DevOps MCP server, so the muscle memory carries."*
 
 Then advance the slide.
 
 ## Teaching payoff
 
-*"'Managed' isn't a slide-deck claim. It's three clicks and one CLI
-verify. When you finish Day 2 and go home to write a real agent, this is
-your first stop before writing a function tool from scratch — check the
-toolbox catalog. Author your own only when nothing in the catalog fits."*
+*"'Toolbox' isn't magic. It's an MCP endpoint. Consuming it from an
+MAF agent is auth + one `MCPStreamableHTTPTool` object + the same
+`tools=[]` list you'd use for any other tool. The value is in what
+you DIDN'T do: no tool authoring, no packaging, no hosting, no
+per-tool auth wiring, no versioning story. When you finish Day 2 and
+go home to write a real agent, this is your first check — is there a
+published toolbox already?"*
+
+## Reference
+
+- [Create and manage a toolbox in Foundry (Python pivot)](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/toolbox?pivots=python) — the doc this demo is grounded in
+- [Maintained MAF Foundry Toolbox sample](https://aka.ms/foundry-toolbox-maf) — includes the `_ToolboxAuth` helper
+- Module 5 slides 6–8 — toolbox authoring (creates the artifact this demo consumes)

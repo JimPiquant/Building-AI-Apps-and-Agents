@@ -1,0 +1,9 @@
+[project]
+name = "demo-3-1-score-two-agents"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "azure-ai-evaluation",
+    "azure-identity",
+    "python-dotenv",
+]
