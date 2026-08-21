@@ -33,7 +33,12 @@ Storage container. Everything is created **in the Azure and Foundry portals**
    **Storage account**. Standard tier, LRS is fine for the workshop.
 2. After deployment, open the storage account → **Data storage → Containers**
    → **+ Container**. Name it `contoso-docs`.
-3. Open the `contoso-docs` container and use **Upload** to add every file
+3. On the storage account, **Access control (IAM) → + Add → Add role
+   assignment**. Assign **Storage Blob Data Reader** to **your own user
+   account** on this storage account. Without this, the portal Upload
+   dialog in the next step will fail — the portal uploader uses your
+   Entra identity, not the storage account key.
+4. Open the `contoso-docs` container and use **Upload** to add every file
    from `labs/day2/python/data/docs/` (10 markdown files).
 
 #### 2. Create the Foundry IQ knowledge base (Foundry portal)

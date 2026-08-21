@@ -17,11 +17,13 @@ This directory holds the Python code for the Day 2 lab. Start here after you
 
 ## Setup
 
-Follow the portal setup steps in the main [lab README](../README.md#prerequisites-portal-setup-one-time-15-min):
+Follow the portal setup steps in the main [lab README](../README.md#portal-setup--one-time-15-min):
 create the storage account + blob container, upload the docs corpus, create
-the Foundry IQ knowledge base in the Foundry portal, and grant the two RBAC
-assignments (Storage Blob Data Reader → Search MI; Search Index Data Reader
-→ Foundry project MI). The lab code here only *consumes* the knowledge base.
+the Foundry IQ knowledge base in the Foundry portal, and grant the three RBAC
+assignments (Storage Blob Data Reader → you, on the storage account, so you
+can upload the docs; Storage Blob Data Reader → Search MI, so the indexer
+can read them; Search Index Data Reader → Foundry project MI, so agents
+can retrieve). The lab code here only *consumes* the knowledge base.
 
 ```bash
 uv sync
