@@ -69,7 +69,7 @@ Three role assignments, in two places:
 |---|---|---|
 | **Storage Blob Data Reader** | the **Search service's** system-assigned managed identity | the **storage account** you created in step 1 |
 | **Search Index Data Reader** | the **Foundry project's** system-assigned managed identity | the **Search service** connected to your project |
-| **Cognitive Services OpenAI User** | the **Search service's** system-assigned managed identity | the **Foundry project** connected to your project |
+| **Foundry User** | the **Search service's** system-assigned managed identity | the **Foundry project** connected to your project |
 
 To assign each role:
 1. Open the target resource (storage account for row 1; Search service for row 2).
