@@ -21,7 +21,7 @@ deck: module-1-sessions-state.pptx
 <!-- notes: This is the doc's own "What AgentSession contains" table, verbatim, for the Python pivot, plus the doc's closing Important callout on scope. Three fields only — session_id is local identity, service_session_id points to service-managed state when a service owns history, and state is shared provider state. The fourth bullet is the doc's own safety rule: a session is agent/provider specific, and a service-side session id must only be restored for the user or tenant that owns it. -->
 
 - **AgentSession is the conversation state container used across agent runs**
-- **What AgentSession contains**
+- **What AgentSession contains:**
   - **session_id** — Local unique identifier for this session
   - **service_session_id** — Remote service session identifier, such as a conversation or response ID, when service-managed history is used
   - **state** — Mutable dictionary shared with context/history providers
@@ -43,7 +43,7 @@ await agent.run("Which project?", session=session)
 existing = agent.get_session(service_session_id=owned_service_id)
 # Serialize
 payload = session.to_dict()
-# deserialize
+# Deserialize
 resumed = AgentSession.from_dict(payload)
 ```
 

@@ -7,9 +7,11 @@ const COLORS = {
   white:  "FFFFFF",
   ink:    "212121",   // body text
   muted:  "6B7280",   // captions, module tag
-  panel:  "F3F4F6",   // code block fill
+  panel:  "F3F4F6",   // light panel fill (non-code)
   border: "D1D5DB",   // subtle borders
   accent: "E8A87C",   // warm accent — used sparingly for callouts
+  codeBg:     "1D1E22", // dark code-block fill, sampled from Jim's editor theme
+  codeBorder: "2A2B2E", // subtle edge so the code panel reads on a light slide
 };
 
 const FONTS = {
@@ -173,11 +175,12 @@ function addTwoColumn(slide, left, right, opts = {}) {
 // Not a full parser — a small regex tokenizer covering keywords, strings,
 // and comments for the languages this workshop's code slides actually use.
 // Falls back to plain (uncolored) text for any language without rules.
+// Palette sampled from Jim's own dark editor theme (screenshot, 2026-08-25).
 const CODE_TOKEN_COLORS = {
-  keyword: COLORS.navy,
-  string: "1F7A4D",
-  comment: COLORS.muted,
-  default: COLORS.ink,
+  keyword: "A996B6",
+  string: "E4C98A",
+  comment: "666666",
+  default: "FFFFFF",
 };
 
 const CODE_LANG_RULES = {
@@ -241,10 +244,10 @@ function addCode(slide, code, opts = {}) {
   const h = opts.h || 3.8;
   const x = opts.x || 0.4;
   const w = opts.w || 9.2;
-  // background panel
+  // dark background panel (matches the token colors above)
   slide.addShape("rect", {
     x, y, w, h,
-    fill: { color: COLORS.panel }, line: { color: COLORS.border, width: 0.5 },
+    fill: { color: COLORS.codeBg }, line: { color: COLORS.codeBorder, width: 0.75 },
   });
   slide.addText(codeRuns(code, opts.language || "python"), {
     x: x + 0.15, y: y + 0.1, w: w - 0.3, h: h - 0.2,
