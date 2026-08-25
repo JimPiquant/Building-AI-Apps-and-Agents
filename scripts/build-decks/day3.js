@@ -21,6 +21,10 @@ const MODULE_FILES = [
   "module-8-optional-harnesses.md",
 ];
 
+// Fence language tags recognized by theme.js's code highlighter. Anything
+// else (json's cousin "text", no tag, etc.) renders as plain uncolored code.
+const CODE_LANG_NAMES = new Set(["python", "csharp", "json", "bash"]);
+
 function clean(text) {
   return (text || "")
     .replace(/\*\*(.*?)\*\*/g, "$1")
@@ -99,7 +103,9 @@ function parseSlides(body) {
     const visible = raw
       .replace(/<!--[\s\S]*?-->/g, "")
       .trim();
-    const code = visible.match(/```(?:\w+)?\n([\s\S]*?)```/)?.[1].trimEnd() || "";
+    const codeMatch = visible.match(/```(\w+)?\n([\s\S]*?)```/);
+    const code = codeMatch?.[2].trimEnd() || "";
+    const codeLang = codeMatch?.[1] && CODE_LANG_NAMES.has(codeMatch[1]) ? codeMatch[1] : "text";
     const lines = visible.split("\n");
     const title = layout === "demo" ? stripDemoLabel(clean(match[1])) : clean(match[1]);
     return {
@@ -108,6 +114,7 @@ function parseSlides(body) {
       sources,
       guidance,
       code,
+      codeLang,
       demoTime,
       demoReference,
       description: layout === "demo" ? clean(visible) : visible,
@@ -297,12 +304,12 @@ function renderTable(slide, rows) {
   });
 }
 
-function renderCode(slide, code) {
+function renderCode(slide, code, language) {
   const lines = code.split("\n");
   const longest = Math.max(...lines.map((line) => line.length), 1);
   const fontSize = lines.length > 16 || longest > 84 ? 9.5 : lines.length > 12 ? 10.8 : 12.8;
   const h = Math.min(3.82, Math.max(1.5, lines.length * 0.23 + 0.5));
-  T.addCode(slide, code, { x: 0.4, y: 1.22, w: 9.2, h, fontSize });
+  T.addCode(slide, code, { x: 0.4, y: 1.22, w: 9.2, h, fontSize, language });
 }
 
 function renderLadder(slide, items) {
@@ -418,7 +425,7 @@ function renderSlide(pres, module, spec) {
     if (spec.layout === "flow") renderFlow(slide, spec.flow);
     else if (spec.layout === "compare") renderCompare(slide, spec.items);
     else if (spec.layout === "table") renderTable(slide, spec.table);
-    else if (spec.layout === "code") renderCode(slide, spec.code);
+    else if (spec.layout === "code") renderCode(slide, spec.code, spec.codeLang);
     else if (spec.layout === "ladder") renderLadder(slide, spec.flow);
     else if (spec.layout === "takeaways") renderTakeaways(slide, spec.items);
     else if (spec.layout === "list") renderList(slide, spec.items);

@@ -15,15 +15,17 @@ deck: module-1-sessions-state.pptx
 
 - Create, reuse, restore, and authorize conversation state
 
-## What AgentSession contains
+## Sessions
 <!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/session?tabs=python -->
 <!-- notes: This is the doc's own "What AgentSession contains" table, verbatim, for the Python pivot, plus the doc's closing Important callout on scope. Three fields only — session_id is local identity, service_session_id points to service-managed state when a service owns history, and state is shared provider state. The fourth bullet is the doc's own safety rule: a session is agent/provider specific, and a service-side session id must only be restored for the user or tenant that owns it. -->
 
-- **session_id** — Local unique identifier for this session
-- **service_session_id** — Remote service session identifier, such as a conversation or response ID, when service-managed history is used
-- **state** — Mutable dictionary shared with context/history providers
-- **Sessions are agent/service-specific** — Reusing a session with a different agent configuration or provider can lead to invalid context; restore a service-side session id only for the user or tenant that owns it
+- **AgentSession is the conversation state container used across agent runs**
+- **What AgentSession contains**
+  - **session_id** — Local unique identifier for this session
+  - **service_session_id** — Remote service session identifier, such as a conversation or response ID, when service-managed history is used
+  - **state** — Mutable dictionary shared with context/history providers
+-  **Sessions are agent/service-specific** — Reusing a session with a different agent configuration or provider can lead to invalid context; restore a service-side session id only for the user or tenant that owns it
 
 ## The lifecycle is explicit
 <!-- layout: code -->
@@ -37,9 +39,11 @@ session = agent.create_session()
 await agent.run("Remember this project.", session=session)
 await agent.run("Which project?", session=session)
 
+# Create a session from an existing service conversation id
 existing = agent.get_session(service_session_id=owned_service_id)
-
+# Serialize
 payload = session.to_dict()
+# deserialize
 resumed = AgentSession.from_dict(payload)
 ```
 

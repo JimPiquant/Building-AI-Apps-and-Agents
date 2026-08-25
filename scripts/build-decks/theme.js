@@ -169,6 +169,72 @@ function addTwoColumn(slide, left, right, opts = {}) {
   });
 }
 
+// Lightweight code syntax highlighting.
+// Not a full parser — a small regex tokenizer covering keywords, strings,
+// and comments for the languages this workshop's code slides actually use.
+// Falls back to plain (uncolored) text for any language without rules.
+const CODE_TOKEN_COLORS = {
+  keyword: COLORS.navy,
+  string: "1F7A4D",
+  comment: COLORS.muted,
+  default: COLORS.ink,
+};
+
+const CODE_LANG_RULES = {
+  python: [
+    { type: "comment", re: "#.*" },
+    { type: "string", re: "(?:[rRbBfF]{0,2})(?:'''[\\s\\S]*?'''|\"\"\"[\\s\\S]*?\"\"\"|'(?:[^'\\\\\\n]|\\\\.)*'|\"(?:[^\"\\\\\\n]|\\\\.)*\")" },
+    { type: "keyword", re: "@[A-Za-z_][\\w.]*" },
+    { type: "keyword", re: "\\b(?:import|from|as|def|class|return|if|elif|else|for|while|try|except|finally|with|async|await|lambda|pass|break|continue|in|is|not|and|or|None|True|False|raise|yield|global|nonlocal|self)\\b" },
+  ],
+  csharp: [
+    { type: "comment", re: "//.*" },
+    { type: "comment", re: "/\\*[\\s\\S]*?\\*/" },
+    { type: "string", re: "\"(?:[^\"\\\\]|\\\\.)*\"" },
+    { type: "keyword", re: "\\b(?:using|namespace|class|public|private|protected|internal|static|void|async|await|var|new|return|if|else|for|foreach|while|try|catch|finally|string|int|bool|double|float|object|this|null|true|false|get|set|readonly|const)\\b" },
+  ],
+  json: [
+    { type: "string", re: "\"(?:[^\"\\\\]|\\\\.)*\"" },
+    { type: "keyword", re: "\\b(?:true|false|null)\\b" },
+  ],
+  bash: [
+    { type: "comment", re: "#.*" },
+    { type: "string", re: "\"(?:[^\"\\\\]|\\\\.)*\"" },
+  ],
+};
+
+function tokenizeCode(code, lang) {
+  const rules = CODE_LANG_RULES[lang];
+  if (!rules) return [{ type: "default", text: code }];
+  const regex = new RegExp(rules.map((r) => `(${r.re})`).join("|"), "g");
+  const types = rules.map((r) => r.type);
+  const tokens = [];
+  let lastIndex = 0;
+  let match;
+  while ((match = regex.exec(code))) {
+    if (match.index > lastIndex) {
+      tokens.push({ type: "default", text: code.slice(lastIndex, match.index) });
+    }
+    const groupIndex = match.slice(1).findIndex((g) => g !== undefined);
+    tokens.push({ type: types[groupIndex], text: match[0] });
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < code.length) {
+    tokens.push({ type: "default", text: code.slice(lastIndex) });
+  }
+  return tokens;
+}
+
+function codeRuns(code, lang) {
+  return tokenizeCode(code, lang).map((tok) => ({
+    text: tok.text,
+    options: {
+      color: CODE_TOKEN_COLORS[tok.type] || CODE_TOKEN_COLORS.default,
+      italic: tok.type === "comment",
+    },
+  }));
+}
+
 // Code block on a body slide
 function addCode(slide, code, opts = {}) {
   const y = opts.y || 1.3;
@@ -180,9 +246,9 @@ function addCode(slide, code, opts = {}) {
     x, y, w, h,
     fill: { color: COLORS.panel }, line: { color: COLORS.border, width: 0.5 },
   });
-  slide.addText(code, {
+  slide.addText(codeRuns(code, opts.language || "python"), {
     x: x + 0.15, y: y + 0.1, w: w - 0.3, h: h - 0.2,
-    fontFace: FONTS.mono, fontSize: opts.fontSize || SIZES.code, color: COLORS.ink,
+    fontFace: FONTS.mono, fontSize: opts.fontSize || SIZES.code,
     valign: "top", margin: 0,
   });
 }
