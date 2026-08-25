@@ -77,6 +77,13 @@ function parseTable(lines) {
     .map((line) => line.trim().slice(1, -1).split("|").map(clean));
 }
 
+// Demo placeholder slides carry a "DEMO N.M — Title" heading in the markdown
+// for readability; the leading label is stripped before it reaches the
+// visual demoSlide title (the "DEMO" eyebrow + tag already carry that cue).
+function stripDemoLabel(title) {
+  return title.replace(/^DEMO\s+[0-9.]+\s+—\s+/i, "").trim();
+}
+
 function parseSlides(body) {
   const matches = [...body.matchAll(/^## (.+)$/gm)];
   return matches.map((match, index) => {
@@ -86,18 +93,24 @@ function parseSlides(body) {
     const layout = raw.match(/<!--\s*layout:\s*(.*?)\s*-->/)?.[1].trim() || "cards";
     const sourceText = raw.match(/<!--\s*source:\s*(.*?)\s*-->/)?.[1].trim() || "";
     const guidance = raw.match(/<!--\s*notes:\s*(.*?)\s*-->/)?.[1].trim() || "";
+    const demoTime = raw.match(/<!--\s*demo-time:\s*(.*?)\s*-->/)?.[1].trim() || "";
+    const demoReference = raw.match(/<!--\s*demo-reference:\s*(.*?)\s*-->/)?.[1].trim() || "";
     const sources = sourceText.split(/\s+\|\s+/).filter(Boolean);
     const visible = raw
       .replace(/<!--[\s\S]*?-->/g, "")
       .trim();
     const code = visible.match(/```(?:\w+)?\n([\s\S]*?)```/)?.[1].trimEnd() || "";
     const lines = visible.split("\n");
+    const title = layout === "demo" ? stripDemoLabel(clean(match[1])) : clean(match[1]);
     return {
-      title: clean(match[1]),
+      title,
       layout,
       sources,
       guidance,
       code,
+      demoTime,
+      demoReference,
+      description: layout === "demo" ? clean(visible) : visible,
       items: parseList(lines),
       flow: parseFlow(lines),
       table: parseTable(lines),
@@ -115,6 +128,9 @@ function parseModule(fileName) {
   for (const slide of slides) {
     if (slide.sources.length === 0 || !slide.guidance) {
       throw new Error(`Every slide needs source and notes: ${fileName} / ${slide.title}`);
+    }
+    if (slide.layout === "demo" && (!slide.demoTime || !slide.demoReference || !slide.description)) {
+      throw new Error(`Demo slide needs demo-time, demo-reference, and a description: ${fileName} / ${slide.title}`);
     }
   }
   return { fileName, meta, slides };
@@ -337,6 +353,45 @@ function renderTakeaways(slide, items) {
   });
 }
 
+// Plain bulleted list — one paragraph per item, bold "title" lead-in (when
+// present) followed by an em-dash description, with optional indented
+// sub-bullets from nested markdown children. Unlike renderCards, nothing is
+// boxed; this is a literal bullet list for content lifted verbatim from a
+// source table or short enumeration.
+function renderList(slide, items) {
+  const runs = [];
+  items.forEach((item, index) => {
+    const isLastTop = index === items.length - 1;
+    const hasChildren = item.children.length > 0;
+    if (item.title) {
+      runs.push({
+        text: item.title,
+        options: { bold: true, color: T.COLORS.navy, bullet: true, breakLine: false },
+      });
+      runs.push({
+        text: item.text ? `  —  ${item.text}` : "",
+        options: { color: T.COLORS.ink, breakLine: !(isLastTop && !hasChildren) },
+      });
+    } else {
+      runs.push({
+        text: item.text,
+        options: { color: T.COLORS.ink, bullet: true, breakLine: !(isLastTop && !hasChildren) },
+      });
+    }
+    item.children.forEach((child, childIndex) => {
+      const isLastChild = isLastTop && childIndex === item.children.length - 1;
+      runs.push({
+        text: child,
+        options: { color: T.COLORS.ink, bullet: { indent: 18 }, indentLevel: 1, breakLine: !isLastChild },
+      });
+    });
+  });
+  slide.addText(runs, {
+    x: 0.55, y: 1.28, w: 8.7, h: 3.85,
+    fontFace: T.FONTS.body, fontSize: 16, margin: 0, paraSpaceAfter: 10, valign: "top",
+  });
+}
+
 function renderSlide(pres, module, spec) {
   let slide;
   if (spec.layout === "title") {
@@ -346,6 +401,18 @@ function renderSlide(pres, module, spec) {
       subtitle: module.meta.subtitle,
       footer: "Building AI Apps and Agents",
     });
+  } else if (spec.layout === "demo") {
+    // Same visually-distinct interstitial component used by demos/day1 and
+    // demos/day2 (T.demoSlide) — ice fill, big "DEMO" eyebrow, time budget,
+    // short blurb, and a footer pointing at the runbook. Placeholder only:
+    // the runbook file carries the full narration, setup, and fallback plan.
+    slide = T.demoSlide(pres, {
+      tag: `${module.meta.tag} · Demo`,
+      title: spec.title,
+      time: spec.demoTime,
+      description: spec.description,
+      reference: spec.demoReference,
+    });
   } else {
     slide = bodySlide(pres, module.meta, spec.title);
     if (spec.layout === "flow") renderFlow(slide, spec.flow);
@@ -354,6 +421,7 @@ function renderSlide(pres, module, spec) {
     else if (spec.layout === "code") renderCode(slide, spec.code);
     else if (spec.layout === "ladder") renderLadder(slide, spec.flow);
     else if (spec.layout === "takeaways") renderTakeaways(slide, spec.items);
+    else if (spec.layout === "list") renderList(slide, spec.items);
     else renderCards(slide, spec.items.length ? spec.items : spec.flow);
   }
   addSourceFooter(

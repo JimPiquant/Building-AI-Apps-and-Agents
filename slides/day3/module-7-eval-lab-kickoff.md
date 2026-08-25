@@ -50,6 +50,15 @@ results = await evaluate_agent(
 )
 ```
 
+## DEMO 7.1 — evaluate_agent catches a wrong tool call
+<!-- layout: demo -->
+<!-- demo-time: ~5 min -->
+<!-- demo-reference: Runbook: demos/day3/module-7-demo-1-eval-catches-wrong-tool.md -->
+<!-- source: https://github.com/microsoft/agent-framework/blob/main/python/samples/02-agents/evaluation/evaluate_with_expected.py -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Runs evaluate_with_expected.py as-is, with one seeded query the agent is known to mis-tool on. -->
+
+Run the previous slide's exact `evaluate_agent` call against a seeded query the agent picks the wrong tool for: `tool_calls_present`/`tool_call_args_match` fail the check and print exactly which expectation didn't match — evaluation catching a real regression, not a synthetic pass.
+
 ## Repetitions reveal nondeterminism
 <!-- layout: flow -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?tabs=python -->

@@ -54,6 +54,15 @@ async with MCPStdioTool(
     )
 ```
 
+## DEMO 5.1 — Local stdio MCP tool call, end to end
+<!-- layout: demo -->
+<!-- demo-time: ~5 min -->
+<!-- demo-reference: Runbook: demos/day3/module-5-demo-1-stdio-mcp.md -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/tools/local-mcp-tools?tabs=python -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Runs the previous slide's exact MCPStdioTool + mcp-server-calculator pattern live; no matching sample file exists in the repo's 02-agents/mcp folder, so this demo is grounded directly in the Learn doc's own documented code. -->
+
+Run the previous slide's exact code live: connect to a local `mcp-server-calculator` child process, watch the agent discover and invoke a tool through it, and close the connection — client/server loop end to end.
+
 ## Remote HTTP belongs behind explicit auth
 <!-- layout: code -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/tools/local-mcp-tools?tabs=python | https://learn.microsoft.com/en-us/python/api/agent-framework-core/agent_framework.mcpstreamablehttptool?view=agent-framework-python-latest -->
@@ -105,6 +114,15 @@ async with MCPStreamableHTTPTool(
 | `always_require` | Every exposed MCP tool needs approval | Unknown or high-risk server |
 | `never_require` | Calls proceed without approval | Trusted, low-risk read tools |
 | Per-tool mapping | Different rules by tool name | Read automatically; review writes |
+
+## DEMO 5.2 — approval_mode pauses a write tool for review
+<!-- layout: demo -->
+<!-- demo-time: ~5 min -->
+<!-- demo-reference: Runbook: demos/day3/module-5-demo-2-approval-mode.md -->
+<!-- source: https://learn.microsoft.com/en-us/python/api/agent-framework-core/agent_framework.mcpstreamablehttptool?view=agent-framework-python-latest | https://github.com/microsoft/agent-framework/blob/main/python/samples/02-agents/tools/function_tool_with_approval.py -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Adapts the approval pause/resume mechanic from function_tool_with_approval.py onto an MCP tool's approval_mode constructor option; no MCP-specific approval sample exists in the repo yet, so the API reference is the primary grounding source for the MCP-side wiring. -->
+
+Set `approval_mode="always_require"` on the MCP tool and run a request that needs it: the run pauses with a user-input request naming the tool and arguments, and only resumes after an explicit approval decision — the same pause/resume mechanic the official function-tool sample demonstrates, wired onto an MCP tool.
 
 ## Security is broader than authentication
 <!-- layout: cards -->

@@ -96,6 +96,15 @@ https://mcp.dev.azure.com/{organization}
 }
 ```
 
+## DEMO 6.1 — Read-only ADO MCP in action
+<!-- layout: demo -->
+<!-- demo-time: ~5 min -->
+<!-- demo-reference: Runbook: demos/day3/module-6-demo-1-read-only-ado.md -->
+<!-- source: https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. No SDK sample exists for the GA remote server yet; grounded directly in the Learn doc's documented endpoint, headers, and consolidated tool names. Presenter substitutes their own Entra-backed Azure DevOps org before running. -->
+
+Connect to the presenter's own Azure DevOps organization with `X-MCP-Toolsets: wit` and `X-MCP-Readonly: true`: a `wit_work_item(action="get")` read succeeds, and an attempted write is rejected by the server — the filter is enforced server-side, not by convention.
+
 ## Work item tools are consolidated
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops -->

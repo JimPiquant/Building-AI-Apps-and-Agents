@@ -17,6 +17,14 @@ Eight module decks: **210 minutes core** plus a **20-minute optional** module. E
 
 You make the Day 2 docs assistant production-shaped: preserve owned conversation state, stream typed updates, return a typed triage result, add robust middleware, connect MCP tools, apply read-first Azure DevOps controls, and evaluate tool use. Module 7 frames a future lab; this change intentionally adds no `labs/day3/` implementation.
 
+## Demonstrations
+
+10 demos are authored and placeholder-marked in the decks — see
+[`demos/day3/README.md`](../../demos/day3/README.md) for the full roster,
+setup checklists, and narration. Each demo slide uses the same `T.demoSlide`
+visual component as Day 1 and Day 2 (a `layout: demo` block in the module
+markdown), plus Day 3's own grounding-source footer.
+
 ## Regenerate
 
 ```bash

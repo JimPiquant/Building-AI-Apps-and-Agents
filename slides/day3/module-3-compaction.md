@@ -65,6 +65,15 @@ strategy = SlidingWindowStrategy(
 )
 ```
 
+## DEMO 3.1 — SlidingWindowStrategy pruning old messages, live
+<!-- layout: demo -->
+<!-- demo-time: ~4 min -->
+<!-- demo-reference: Runbook: demos/day3/module-3-demo-1-sliding-window.md -->
+<!-- source: https://github.com/microsoft/agent-framework/blob/main/python/samples/02-agents/compaction/basics.py -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Runs compaction/basics.py as-is, no API key needed. -->
+
+Build a long local message list, print the group count, apply the previous slide's exact `SlidingWindowStrategy(keep_last_groups=20)`, and print the group count again — the EXPERIMENTAL ladder's gentlest rung, proven on real data with no model call required.
+
 ## Compose by token budget
 <!-- layout: cards -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/compaction?tabs=python -->

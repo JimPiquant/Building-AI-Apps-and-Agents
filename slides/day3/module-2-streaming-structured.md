@@ -130,6 +130,15 @@ final = await stream.get_final_response()
 triage = final.value
 ```
 
+## DEMO 2.1 — Watch it stream, then get the typed TriageResult
+<!-- layout: demo -->
+<!-- demo-time: ~5 min -->
+<!-- demo-reference: Runbook: demos/day3/module-2-demo-1-stream-then-triage.md -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Runs the previous slide's exact combined pattern live against the Day 2 docs assistant, now returning a Day-3-shaped TriageResult. -->
+
+Run the previous slide's exact combined pattern live: text tokens render as they arrive, then `stream.get_final_response().value` prints a validated `TriageResult` — the two-contract model made concrete on the Day 2 docs assistant.
+
 ## Partial JSON is display data, not a value
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python -->

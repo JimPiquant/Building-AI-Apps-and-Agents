@@ -1,0 +1,15 @@
+[project]
+name = "day3-demos"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "agent-framework",
+    "agent-framework-foundry",
+    "azure-identity",
+    "pydantic>=2.0",
+    "python-dotenv",
+]
+
+[[tool.uv.index]]
+name = "internal"
+url = "https://packagefeedproxy.microsoft.io/pypi/simple/"

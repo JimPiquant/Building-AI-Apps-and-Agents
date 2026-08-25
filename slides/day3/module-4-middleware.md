@@ -54,6 +54,15 @@ deck: module-4-middleware.pptx
   - A2 exits, then A1
   - The outermost layer finishes last
 
+## DEMO 4.1 — The onion, printed
+<!-- layout: demo -->
+<!-- demo-time: ~5 min -->
+<!-- demo-reference: Runbook: demos/day3/module-4-demo-1-onion-order.md -->
+<!-- source: https://github.com/microsoft/agent-framework/blob/main/python/samples/02-agents/middleware/agent_and_run_level_middleware.py -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Runs agent_and_run_level_middleware.py as-is. -->
+
+Run the official `agent_and_run_level_middleware.py` sample live: printed enter/exit lines match the previous slide's onion diagram exactly — agent-level middleware outermost, run-level middleware inside it, the agent execution at the center.
+
 ## Coordinate through context.metadata
 <!-- layout: cards -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/shared-state?tabs=python -->
@@ -106,6 +115,15 @@ if blocked(context.messages):
 
 await call_next()
 ```
+
+## DEMO 4.2 — Guardrail blocks a request, live
+<!-- layout: demo -->
+<!-- demo-time: ~4 min -->
+<!-- demo-reference: Runbook: demos/day3/module-4-demo-2-guardrail-termination.md -->
+<!-- source: https://github.com/microsoft/agent-framework/blob/main/python/samples/02-agents/middleware/atr_validation_middleware.py -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Runs atr_validation_middleware.py (FunctionMiddleware + MiddlewareTermination, real deny-list fallback with no extra install required). -->
+
+Run the official `atr_validation_middleware.py` sample live: a benign query passes through normally, then a query matching a deny-list rule is blocked before the tool executes — `context.result` set, `MiddlewareTermination` raised, exactly as the previous slide's code shows.
 
 ## Handle exceptions where you can add value
 <!-- layout: table -->
