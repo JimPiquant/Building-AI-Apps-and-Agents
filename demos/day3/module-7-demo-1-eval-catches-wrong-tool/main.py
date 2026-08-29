@@ -54,7 +54,7 @@ async def main() -> None:
     print("\n--- Seeded failing case ---")
     failing = await evaluate_agent(
         agent=agent,
-        queries=["Mark work item 42 as reviewed and get its current state."],
+        queries=["Mark work item 42 as reviewed."],
         expected_tool_calls=[ExpectedToolCall("wit_work_item", {"action": "get", "id": 42})],
         evaluators=local,
     )
