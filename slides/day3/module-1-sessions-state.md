@@ -135,15 +135,6 @@ class UserPreferenceProvider(ContextProvider):
 | Local session state | Full chat history in `AgentSession.state` (for example via `InMemoryHistoryProvider`) | Services that don't require server-side conversation persistence |
 | Service-managed storage | Conversation state in the service; `AgentSession.service_session_id` points to it | Services with native persistent conversation support |
 
-## DEMO 1.3 — Suspend/resume: service-managed vs. in-memory
-<!-- layout: demo -->
-<!-- demo-time: ~5 min -->
-<!-- demo-reference: Runbook: demos/day3/module-1-demo-3-suspend-resume.md -->
-<!-- source: https://github.com/microsoft/agent-framework/blob/main/python/samples/02-agents/conversations/suspend_resume_session.py -->
-<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Runs the official suspend_resume_session.py sample as-is; no adaptation. -->
-
-Run the official `suspend_resume_session.py` sample side by side: the same suspend/resume calls behave differently depending on who owns history — Foundry's service-managed session vs. an OpenAI in-memory session — making the previous slide's local-vs-service-managed distinction concrete.
-
 ## ContextProvider wraps each invocation
 <!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers?tabs=python -->

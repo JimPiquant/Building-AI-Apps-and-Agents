@@ -1,6 +1,6 @@
 # Day 3 Demonstrations
 
-10 demos across 7 of the core Day 3 modules. Same shape as the
+9 demos across 7 of the core Day 3 modules. Same shape as the
 [Day 1](../day1/README.md) and [Day 2](../day2/README.md) demos — each demo
 has slide placement, time budget, setup checklist, narration + step-by-step,
 expected result, fallback story, and teaching payoff. Module 8 (OPTIONAL —
@@ -16,7 +16,7 @@ Where no matching sample exists in the repo, the demo grounds directly in
 the Learn doc the corresponding module slide already cites — flagged
 explicitly in each runbook's opening section.
 
-Placeholder marker slides for all 10 demos are already in the decks
+Placeholder marker slides for all 9 demos are already in the decks
 (`decks/day3/*.pptx`), generated from a new `layout: demo` block in
 `slides/day3/module-N-*.md` — same visually distinct "DEMO" interstitial
 component (`T.demoSlide`) that Day 1 and Day 2 use, plus Day 3's own
@@ -27,7 +27,6 @@ per-slide grounding-source footer.
 | Module | Demo | Title | Time | Placement |
 |---|---|---|---|---|
 | 1 | 1 | [Serialize, kill the process, restore the session](module-1-demo-1-serialize-restore.md) | ~5 min | after slide 3 · "The lifecycle is explicit" |
-| 1 | 3 | [Suspend/resume: service-managed vs. in-memory](module-1-demo-3-suspend-resume.md) | ~5 min | after slide 5 · "Built-in storage modes" |
 | 2 | 1 | [Watch it stream, then get the typed TriageResult](module-2-demo-1-stream-then-triage.md) | ~5 min | after slide 9 · "Combine streaming and structure" |
 | 3 | 1 | [SlidingWindowStrategy pruning old messages, live](module-3-demo-1-sliding-window.md) | ~4 min | after slide 5 · "Grounded Python: keep recent groups" |
 | 4 | 1 | [The onion, printed](module-4-demo-1-onion-order.md) | ~5 min | after slide 3 · "Middleware executes like an onion" |
@@ -66,8 +65,8 @@ Additional per-demo prereqs are called out inside each demo file.
 
 ## Timing sanity check
 
-The 10 authored demos total ~47 minutes against Day 3's 210-minute core
-lecture budget — about 22% of lecture time, in the same range as Day 2
+The 9 authored demos total ~42 minutes against Day 3's 210-minute core
+lecture budget — about 20% of lecture time, in the same range as Day 2
 (~19%). Module 4 and Module 5 each carry two demos (~9–10 min each module);
 if time is tight in dry-run, Module 4 demo 2 (guardrail termination) or
 Module 5 demo 2 (approval_mode) are the first candidates to cut, since
@@ -86,7 +85,6 @@ Recording naming: `moduleN-demoN-<slug>.mp4`.
 ## Authoring status
 
 - [x] 1.1 Serialize, kill the process, restore the session
-- [x] 1.3 Suspend/resume: service-managed vs. in-memory
 - [x] 2.1 Watch it stream, then get the typed TriageResult
 - [x] 3.1 SlidingWindowStrategy pruning old messages, live
 - [x] 4.1 The onion, printed
