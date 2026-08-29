@@ -25,13 +25,19 @@ final = await stream.get_final_response()
 triage = final.value
 ```
 
-This demo runs it live against the Day 2 docs assistant, upgraded with a
-`TriageResult` model that matches the structure Module 2's slides describe
-(`route`, `summary`, `needs_work_item`) — the same typed contract Module 9's
-proposed lab architecture designates for Part A. The audience watches text
-stream token by
-token, then sees a validated Pydantic object print after the stream
-completes.
+This demo runs it live against a standalone agent that shares the same
+"support assistant for the Contoso developer API" narrative premise as
+the Day 2 docs assistant, upgraded with a `TriageResult` model that
+matches the structure Module 2's slides describe (`route`, `summary`,
+`needs_work_item`) — the same typed contract Module 9's proposed lab
+architecture designates for Part A. **This agent has no knowledge source
+or function tools attached** — it's a bare agent isolating one narrow
+concept, not an extension of `labs/day2/python`'s actual assistant.
+Attaching real knowledge or tools would risk triggering a tool call
+mid-stream, which changes the stream's shape and steps on the next
+slide's point (see below) — so this demo deliberately stays standalone.
+The audience watches text stream token by token, then sees a validated
+Pydantic object print after the stream completes.
 
 **What this demo is NOT:** it does not parse or act on anything mid-stream
 — that's the next slide's point ("Partial JSON is display data, not a
@@ -110,8 +116,9 @@ asyncio.run(main())
 
 **Opening (30s):**
 "The previous slide's code combined two things: a stream for the UI, and
-a typed value for the app. Let's run it live against the same docs
-assistant you've been building since Day 2."
+a typed value for the app. Let's run it live — same Contoso support
+assistant premise you've seen since Day 2, stripped down to isolate just
+this one contract."
 
 **Step 1 — Run it, watch the stream (~2 min)**
 
@@ -171,8 +178,8 @@ Then advance the slide.
 
 *"Two contracts, one call. Streaming is for the human watching. The typed
 value is for the code that runs next. You just watched both happen in the
-same request, on the same assistant you'll keep extending in this
-lab."*
+same request — this exact pattern is what Module 9's proposed lab
+carries forward as the typed response contract."*
 
 ## Reference
 
