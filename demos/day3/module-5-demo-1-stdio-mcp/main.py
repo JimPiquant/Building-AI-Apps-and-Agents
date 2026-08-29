@@ -7,13 +7,17 @@ from azure.identity import AzureCliCredential
 
 
 async def main() -> None:
-    async with AzureCliCredential() as credential:
         client = FoundryChatClient(
             project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
             model=os.environ.get("FOUNDRY_MODEL", "gpt-5.6-luna"),
-            credential=credential,
+            credential=AzureCliCredential(),
         )
         agent = Agent(client=client, instructions="You are a helpful assistant.")
+
+        query = (
+            "Use the calculator tool to compute 47 times 89, plus 12. "
+            "Do not calculate it yourself."
+        )
 
         async with MCPStdioTool(
             name="calculator",
@@ -21,7 +25,7 @@ async def main() -> None:
             args=["mcp-server-calculator"],
         ) as mcp:
             result = await agent.run(
-                "What is 47 times 89, plus 12?",
+                query,
                 tools=mcp,
             )
             print(result)

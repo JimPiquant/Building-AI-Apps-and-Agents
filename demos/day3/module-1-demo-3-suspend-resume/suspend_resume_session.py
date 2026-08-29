@@ -1,6 +1,7 @@
 # Copyright (c) Microsoft. All rights reserved.
 
 import asyncio
+import os
 
 from agent_framework import Agent, AgentSession
 from agent_framework.foundry import FoundryChatClient

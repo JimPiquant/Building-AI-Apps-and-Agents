@@ -52,18 +52,19 @@ Do this **before the module starts**:
   Publix-shared project for a personal demo)
 - **One script staged**:
   `demos/day3/module-6-demo-1-read-only-ado/main.py`
-- **`az login`** completed, correct subscription selected (for the
-  Foundry side; the Azure DevOps MCP connection uses its own Entra OAuth
-  flow on first connect — expect a browser consent prompt the first time)
+- **`az login`** completed for the subscription containing the Foundry
+  project. Azure DevOps uses a separate interactive browser login so the
+  two services can belong to different tenants.
 - **Environment variables** in `.env` or shell:
   ```
   AZURE_DEVOPS_ORG=<your-org-name>
+  AZURE_DEVOPS_PROJECT=<project containing the work item>
+  AZURE_DEVOPS_TENANT_ID=<tenant backing the Azure DevOps organization>
   AZURE_DEVOPS_WORK_ITEM_ID=<a known, disposable work item id>
   FOUNDRY_PROJECT_ENDPOINT=...
   FOUNDRY_MODEL=gpt-5.6-luna
   ```
-- **Dry-run once**, including the first-time OAuth consent flow — do not
-  let that consent prompt surprise you live
+- **Dry-run once** to complete the Azure DevOps interactive browser login
 
 ### Reference `main.py`
 
@@ -73,36 +74,50 @@ import os
 
 from agent_framework import Agent, MCPStreamableHTTPTool
 from agent_framework.foundry import FoundryChatClient
-from azure.identity import AzureCliCredential
+from azure.identity import AzureCliCredential, InteractiveBrowserCredential, TokenCachePersistenceOptions
 
 
 async def main() -> None:
     org = os.environ["AZURE_DEVOPS_ORG"]
+    project = os.environ["AZURE_DEVOPS_PROJECT"]
+    tenant_id = os.environ["AZURE_DEVOPS_TENANT_ID"]
     work_item_id = os.environ["AZURE_DEVOPS_WORK_ITEM_ID"]
 
-    async with AzureCliCredential() as credential:
+    with (
+        AzureCliCredential() as foundry_credential,
+      InteractiveBrowserCredential(
+        tenant_id=tenant_id,
+        cache_persistence_options=TokenCachePersistenceOptions(name="day3-ado-mcp"),
+      ) as ado_credential,
+    ):
+        access_token = ado_credential.get_token("https://mcp.dev.azure.com/.default")
+
         client = FoundryChatClient(
             project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
             model=os.environ.get("FOUNDRY_MODEL", "gpt-5.6-luna"),
-            credential=credential,
+            credential=foundry_credential,
         )
         agent = Agent(client=client, instructions="You are a helpful Azure DevOps assistant.")
 
         async with MCPStreamableHTTPTool(
             name="ado",
             url=f"https://mcp.dev.azure.com/{org}",
-            headers={"X-MCP-Toolsets": "wit", "X-MCP-Readonly": "true"},
+            header_provider=lambda _: {
+                "Authorization": f"Bearer {access_token.token}",
+                "X-MCP-Toolsets": "wit",
+                "X-MCP-Readonly": "true",
+            },
         ) as mcp:
             print("--- Read: should succeed ---")
             read_result = await agent.run(
-                f"Get work item {work_item_id} and summarize its title and state.",
+                f"Get work item {work_item_id} in project {project} and summarize its title and state.",
                 tools=mcp,
             )
             print(read_result, "\n")
 
             print("--- Write attempt: should be rejected server-side ---")
             write_result = await agent.run(
-                f"Update work item {work_item_id}: add a comment saying 'reviewed'.",
+                f"Update work item {work_item_id} in project {project}: add a comment saying 'reviewed'.",
                 tools=mcp,
             )
             print(write_result)
@@ -124,8 +139,9 @@ hold."
 uv run python main.py
 ```
 
-If this is the first connection, a browser window may open for Entra
-consent — approve it once. Let the read result print.
+The first run opens an OAuth browser window for the Azure DevOps tenant. Sign
+in with an identity that belongs to the organization; subsequent runs reuse
+the cached authentication record.
 
 **Say:** *"`wit_work_item` with `action=get` — that's the read tool from
 the previous module slide's table. It came back with the title and state.
@@ -156,8 +172,7 @@ route around."*
 - The write attempt is rejected — either the agent reports it cannot
   find a write-capable tool, or the call errors out — because the header
   filter removed write tools from what the server exposes
-- Total elapsed clock: under 5 minutes, plus first-time OAuth consent if
-  not already completed
+- Total elapsed clock: under 5 minutes
 
 ## Fallback story if it breaks live
 
