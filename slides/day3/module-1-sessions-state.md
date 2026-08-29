@@ -56,22 +56,79 @@ resumed = AgentSession.from_dict(payload)
 
 Run the previous slide's exact code live: create a session, run two turns, serialize with `session.to_dict()`, simulate a fresh process, restore with `AgentSession.from_dict()`, and continue the same conversation — proving the session container, not the process, carries continuity.
 
-## Four concepts, four jobs
-<!-- layout: list -->
+## Content Providers
+<!-- layout: list-code -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/session?tabs=python | https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers?tabs=python | https://learn.microsoft.com/en-us/agent-framework/hosting/self-hosting/ -->
 <!-- notes: Do not let these terms collapse into one. HistoryProvider is a specialized ContextProvider. SessionStore belongs to self-host request handling and is not the same as message history — the self-hosting doc draws this exact line: SessionStore persists session metadata/provider state, a separate HistoryProvider persists the conversation messages, and durable hosts keep them apart because appending messages beats rewriting a growing session object every turn. Converted from a table to a list because this specific 4-row comparison is a workshop synthesis across three Learn pages, not a literal table in any one of them — the individual facts below are still doc-sourced. -->
 
-- **AgentSession** — Carries the session id, provider state, and (when present) a service session id across runs — not a durable database by itself
-- **HistoryProvider** — Loads and stores conversation messages — not an authorization mechanism
-- **ContextProvider** — Enriches context before a run and processes state after a run — does not itself own message history (a HistoryProvider is a specialized ContextProvider)
-- **SessionStore** — Self-host helper that saves, retrieves, and deletes sessions by an app-selected key; the default implementation is process-local with no eviction policy
-  - Persists session metadata and provider state, not the conversation itself
-  - A separate HistoryProvider persists the actual messages — durable hosts keep these separate because appending messages beats rewriting a growing session object every turn
 
-## Built-in storage modes
+- Context providers run at every invocation to add context before execution and process data after
+- This includes tools for progressive loading
+- Configure providers through context_providers=[...]
+
+```python
+from agent_framework import Agent, InMemoryHistoryProvider
+from agent_framework.openai import OpenAIChatClient
+
+agent = Agent(
+    client=OpenAIChatClient(),
+    name="MemoryBot",
+    instructions="You are a helpful assistant.",
+    context_providers=[InMemoryHistoryProvider("memory", load_messages=True)],
+)
+
+session = agent.create_session()
+await agent.run("Remember that I prefer vegetarian food.", session=session)
+```
+
+## Custom Content Providers
+<!-- layout: list-code -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/session?tabs=python | https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers?tabs=python | https://learn.microsoft.com/en-us/agent-framework/hosting/self-hosting/ -->
+<!-- notes: Do not let these terms collapse into one. HistoryProvider is a specialized ContextProvider. SessionStore belongs to self-host request handling and is not the same as message history — the self-hosting doc draws this exact line: SessionStore persists session metadata/provider state, a separate HistoryProvider persists the conversation messages, and durable hosts keep them apart because appending messages beats rewriting a growing session object every turn. Converted from a table to a list because this specific 4-row comparison is a workshop synthesis across three Learn pages, not a literal table in any one of them — the individual facts below are still doc-sourced. -->
+
+
+- Use custom context providers when you need to inject dynamic instructions/messages/tools or extract state after runs.
+
+```python
+from typing import Any
+from agent_framework import AgentSession, ContextProvider, SessionContext
+
+class UserPreferenceProvider(ContextProvider):
+    def __init__(self) -> None:
+        super().__init__("user-preferences")
+
+    async def before_run(
+        self, *,
+        agent: Any,
+        session: AgentSession,
+        context: SessionContext,
+        state: dict[str, Any],
+    ) -> None:
+        if favorite := state.get("favorite_food"):
+            context.extend_instructions(self.source_id, f"User's favorite food is {favorite}.")
+
+    async def after_run(
+        self, *,
+        agent: Any,
+        session: AgentSession,
+        context: SessionContext,
+        state: dict[str, Any],
+    ) -> None:
+        for message in context.input_messages:
+            text = (message.text or "") if hasattr(message, "text") else ""
+            if isinstance(text, str) and "favorite food is" in text.lower():
+                state["favorite_food"] = text.split("favorite food is", 1)[1].strip().rstrip(".")
+```
+
+## Storage
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/storage?tabs=python | https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/compaction?tabs=python -->
 <!-- notes: This is the storage doc's own "Built-in storage modes" table, verbatim. Local session state means your provider loads the message list and sends it to the model — you own retention and compaction (Module 3). Service-managed storage means AgentSession.service_session_id points to state the backend already keeps; a local compaction strategy has no effect on that path. -->
+
+- • Two storage modes: Local and service managed
+- • Local storage can be reduced, service managed reduction is service specific
+- • Use more than one provider for auditing  (load_messages=False, store_context_messages=True)
+- • Third party/custom storage providers for alternative storage options
 
 | Mode | What is stored | Typical usage |
 |---|---|---|

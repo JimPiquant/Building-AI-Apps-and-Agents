@@ -15,16 +15,42 @@ deck: module-5-mcp.pptx
 
 - Connect, constrain, approve, and clean up external tools
 
-## The client/server loop
-<!-- layout: flow -->
-<!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/tools/local-mcp-tools?tabs=python -->
-<!-- notes: The MAF MCP tool is the client. It connects, discovers server tools, converts them into agent-callable functions, invokes selected tools, and returns typed results to the agent loop. -->
+## MCP Base Protocol
+<!-- layout: list -->
+<!-- source: https://modelcontextprotocol.io/specification/2025-06-18/basic | https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle | https://modelcontextprotocol.io/specification/2025-06-18/basic/transports | https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization -->
+<!-- notes: Maps to the spec's "Base Protocol" section and its Utilities sub-pages (ping, cancellation, progress). All implementations MUST support Messages and Lifecycle; Authorization and the individual Utilities are optional. This is the layer MAF's MCP tools sit on top of — worth grounding once so later slides about tool calls make sense in context. -->
 
-1. **Connect** — Your MAF MCP tool opens the configured transport
-2. **Discover** — The client loads tools exposed by the server
-3. **Select** — The model chooses from the allowed tool schemas
-4. **Invoke** — The client calls the server with validated arguments
-5. **Synthesize** — The agent uses the returned content
+- **Messages** — JSON-RPC 2.0 requests, responses, and notifications are the only message shapes the protocol defines
+- **Lifecycle** — The `initialize` → `initialized` handshake negotiates protocol version and capabilities before normal operation begins
+- **Transports** — stdio (client launches the server as a subprocess) and Streamable HTTP (with optional SSE) are the two standard transports
+- **Authorization** — Optional OAuth 2.1-based framework for HTTP transports; stdio implementations use environment credentials instead
+- **Utilities** — Ping (liveness check), Cancellation (`notifications/cancelled`), and Progress (`progressToken` updates) support long-running or unreliable connections
+
+## MCP Client Features
+<!-- layout: list -->
+<!-- source: https://modelcontextprotocol.io/specification/2025-06-18/client/roots | https://modelcontextprotocol.io/specification/2025-06-18/client/sampling | https://modelcontextprotocol.io/specification/2025-06-18/client/elicitation -->
+<!-- notes: Maps to the spec's "Client Features" section. These are capabilities a client (the MAF MCP tool, in our case) may optionally offer back to servers — all three require the client to declare the matching capability during initialization, and all three keep a human in the loop by design (the spec is explicit about this for sampling and elicitation). -->
+
+- **Roots** — Servers can query which filesystem/URI boundaries a client exposes, so they know where they're allowed to operate
+- **Sampling** — Servers can request an LLM completion through the client, keeping model access, prompt content, and approval under client control
+- **Elicitation** — Servers can ask the user for additional structured input mid-interaction, validated against a JSON schema
+
+## MCP Server Features
+<!-- layout: list -->
+<!-- source: https://modelcontextprotocol.io/specification/2025-06-18/server/tools | https://modelcontextprotocol.io/specification/2025-06-18/server/resources | https://modelcontextprotocol.io/specification/2025-06-18/server/prompts | https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/logging -->
+<!-- notes: Maps to the spec's "Server Features" section and its Utilities sub-pages (completion, logging, pagination). Tools is the one this module focuses on end to end; Resources and Prompts are the other two things a server can expose, each with a different user-interaction model (application-driven vs. user-invoked). -->
+
+- **Tools** — Model-callable functions that let an agent perform actions or invoke external systems — the loop covered next
+- **Resources** — Context and data (files, schemas, app-specific info) a user or model can bring into the conversation
+- **Prompts** — Reusable, user-triggered templates and workflows a server exposes, e.g. as slash commands
+- **Utilities** — Completion (argument autocomplete), Logging (structured log levels), and Pagination (cursor-based paging for large list results)
+
+## MCP Tool Message Flow
+<!-- layout: image -->
+<!-- source: https://modelcontextprotocol.io/specification/2025-06-18/server/tools -->
+<!-- notes: This is the MCP specification's own sequence diagram for the tools message flow, reproduced verbatim (not redrawn) from the Tools page at modelcontextprotocol.io. The MAF MCP tool plays the "Client" role. Note this diagram starts at Discovery — the earlier connection-level handshake (capability negotiation) is defined separately on the spec's Lifecycle page and isn't shown here. -->
+
+![MCP tools message flow — sequence diagram from the Model Context Protocol specification](assets/mcp-tools-message-flow.png)
 
 ## Pick the transport that matches the server
 <!-- layout: table -->
@@ -133,17 +159,6 @@ Set `approval_mode="always_require"` on the MCP tool and run a request that need
 - **Least privilege** — Narrow identity scopes and allowed_tools
 - **Prompt injection** — Treat tool metadata and results as untrusted
 - **Audit** — Log selected tool, arguments, approval, result status, and caller
-
-## Always close the lifecycle
-<!-- layout: flow -->
-<!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/tools/local-mcp-tools?tabs=python -->
-<!-- notes: Async context managers are not cosmetic. They close transports, sessions, and local child processes even when an exception occurs. Nest credential, MCP tool, and agent lifecycles deliberately. -->
-
-1. **Acquire credential**
-2. **Open MCP tool**
-3. **Open agent**
-4. **Run and handle approvals**
-5. **Exit contexts in reverse order**
 
 ## Local or remote?
 <!-- layout: table -->

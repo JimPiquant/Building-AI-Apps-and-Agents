@@ -26,9 +26,10 @@ triage = final.value
 ```
 
 This demo runs it live against the Day 2 docs assistant, upgraded with a
-`TriageResult` model that matches the shape Module 2's slides describe
-(`route`, `summary`, `needs_work_item`) — the same typed contract Module 7
-names as the target lab shape. The audience watches text stream token by
+`TriageResult` model that matches the structure Module 2's slides describe
+(`route`, `summary`, `needs_work_item`) — the same typed contract Module 9's
+proposed lab architecture designates for Part A. The audience watches text
+stream token by
 token, then sees a validated Pydantic object print after the stream
 completes.
 
@@ -177,4 +178,4 @@ lab."*
 
 - [Structured outputs (Python)](https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python) — the doc this demo's combined pattern is grounded in verbatim
 - Module 2 slide 9 ("Combine streaming and structure") — the code this demo runs live
-- Module 7 slide 5 ("Future lab architecture") — where `TriageResult` becomes part of the proposed Day 3 lab shape
+- Module 9 slide 2 ("Future lab architecture") — where `TriageResult` becomes part of the proposed Day 3 lab design

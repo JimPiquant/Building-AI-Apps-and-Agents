@@ -1,20 +1,20 @@
 # Module 7 · Demo 1 — evaluate_agent catches a wrong tool call
 
-**Placement:** After **slide 3 — "Check tool name and arguments locally"** (Module 7).
+**Placement:** After **slide 4 — "Check tool name and arguments locally"** (Module 7).
 
 **Time:** ~5 min total (30s framing + 90s passing case + 2 min failing case + 30s payoff)
 
 **Language:** Python (MAF SDK). Grounded primarily in
 [Learn — Evaluation](https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?tabs=python),
 which documents `ExpectedToolCall`, `expected_tool_calls=`, and
-`tool_call_args_match` in exactly the shape the previous slide's code
-snippet uses. **Note the divergence:** the repo's checked-in
+`tool_call_args_match` exactly as the previous slide's code
+snippet uses them. **Note the divergence:** the repo's checked-in
 [`evaluate_with_expected.py`](https://github.com/microsoft/agent-framework/blob/main/python/samples/02-agents/evaluation/evaluate_with_expected.py)
 sample currently demonstrates `evaluate_agent` + `LocalEvaluator` with a
 custom `response_matches_expected` evaluator and `tool_calls_present`, but
 does not yet wire `expected_tool_calls=[ExpectedToolCall(...)]` or
 `tool_call_args_match` the way the Learn doc and the Module 7 slide do.
-This demo follows the Learn doc's documented shape (the same one the
+This demo follows the Learn doc's documented pattern (the same one the
 slide's code block already cites) and extends the sample's
 `evaluate_agent`/`LocalEvaluator` orchestration pattern with the
 ADO-flavored `wit_work_item` scenario Module 7 sets up.
@@ -68,7 +68,7 @@ Do this **before the module starts**:
 - **Dry-run twice** — model nondeterminism means the "seeded failing"
   query needs to reliably tempt the wrong tool; adjust the query wording
   until it fails consistently in your dry runs (this is the point of
-  Module 7's later "Repetitions reveal nondeterminism" slide, but for
+  Module 7's later "Use Repetitions to handle nondeterminism" slide, but for
   this single demo you want a stable failure to show)
 
 ### Reference `main.py`
@@ -220,4 +220,4 @@ ever let an agent touch a real work item."*
 
 - [Evaluation (Python)](https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?tabs=python) — the doc `ExpectedToolCall`/`tool_call_args_match` are documented in, matching the previous slide's code exactly
 - [`evaluate_with_expected.py`](https://github.com/microsoft/agent-framework/blob/main/python/samples/02-agents/evaluation/evaluate_with_expected.py) — the adjacent official sample this demo's `evaluate_agent`/`LocalEvaluator` orchestration pattern extends (noted divergence: the checked-in sample doesn't yet use `expected_tool_calls`/`ExpectedToolCall`)
-- Module 7 slide 3 ("Check tool name and arguments locally") — the code this demo runs live
+- Module 7 slide 4 ("Check tool name and arguments locally") — the code this demo runs live

@@ -1,6 +1,6 @@
 ---
 title: Azure DevOps Remote MCP
-subtitle: Use the GA hosted server with read-first controls and Foundry-managed continuity
+subtitle: Use the hosted server with read-first controls and Foundry-managed continuity
 eyebrow: DAY 3 · MODULE 6 · 35 MIN
 tag: Day 3 · Module 6
 deck: module-6-azure-devops-mcp.pptx
@@ -15,7 +15,7 @@ deck: module-6-azure-devops-mcp.pptx
 
 - Remote server: GA · Foundry catalog integration: preview label in current docs
 
-## Keep the two status labels separate
+## Wwo status labels
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/azure/devops/release-notes/2026/sprint-278-update | https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/model-context-protocol -->
 <!-- notes: This resolves the known documentation discrepancy. GA describes the Azure DevOps hosted service. Preview describes the Azure DevOps entry in Foundry's Add Tools catalog. One does not automatically change the other. -->
@@ -42,8 +42,8 @@ deck: module-6-azure-devops-mcp.pptx
 | Authentication | Microsoft Entra ID OAuth | PAT or Microsoft Entra ID |
 | Updates | Managed by Azure DevOps | Managed by you |
 
-## Prerequisites are specific
-<!-- layout: cards -->
+## Prerequisites
+<!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops -->
 <!-- notes: Remote supports Azure DevOps Services organizations backed by a Microsoft Entra tenant. Standalone MSA organizations are unsupported. Azure DevOps Server on-premises is not the remote service target. The signed-in user needs project membership and resource permissions. -->
 
@@ -68,7 +68,7 @@ https://mcp.dev.azure.com/{organization}
 }
 ```
 
-## Filter broad toolsets or exact tools
+## Filter by toolsets or exact tools
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops -->
 <!-- notes: X-MCP-Toolsets enables groups such as wit, repos, wiki, and pipelines. X-MCP-Tools enables exact names. The documentation says not to combine them, so choose one filtering mode. -->
@@ -105,7 +105,7 @@ https://mcp.dev.azure.com/{organization}
 
 Connect to the presenter's own Azure DevOps organization with `X-MCP-Toolsets: wit` and `X-MCP-Readonly: true`: a `wit_work_item(action="get")` read succeeds, and an attempted write is rejected by the server — the filter is enforced server-side, not by convention.
 
-## Work item tools are consolidated
+## Work item tools (wit)
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops -->
 <!-- notes: Use current exact names. Reads use wit_work_item with an action such as get, get_batch, my, or list_for_iteration. Creates and field updates use wit_work_item_write with create, update, update_batch, or add_child. Comments and links have separate write tools. -->

@@ -1,6 +1,7 @@
 // Shared theme + slide helpers for all decks in this workshop.
 // Keep the visual system HERE. Don't one-off styles in module files.
 
+const JSZip = require("jszip");
 const COLORS = {
   navy:   "1E2761",   // primary
   ice:    "CADCFC",   // secondary (surfaces, subtle accents)
@@ -228,14 +229,55 @@ function tokenizeCode(code, lang) {
   return tokens;
 }
 
+// Every token becomes one or more pptxgenjs runs, grouped by source line so
+// that each rendered <a:p> gets exactly the runs that belong to it and ends
+// with breakLine on its last (non-empty) run — never a run in the middle.
+//
+// This matters because pptxgenjs emits a full <a:pPr> for EVERY run object
+// passed to addText, even ones whose text is "" (genXmlTextRun skips the
+// <a:r> tag for empty text, but genXmlParagraphProperties still runs). A
+// naive per-token split on "\n" can produce an empty-text piece that lands
+// in the middle of a paragraph (e.g. a Python "# comment" token doesn't
+// include its own trailing newline — that "\n" belongs to the next token,
+// so splitting it produces a "" piece with breakLine:true right after the
+// comment's real run). The result is a real <a:r> followed by a second,
+// content-less <a:pPr> before <a:endParaRPr> — invalid per the OOXML
+// schema (a <p:txBody>'s <a:p> may have only one <a:pPr>, and it must be
+// the first child) and exactly what triggered PowerPoint's "needs repair"
+// dialog on this deck. Fix: reassemble tokens into per-source-line groups
+// first, so every line becomes one clean sequence of non-empty runs ending
+// in a single breakLine — a wholly blank source line becomes exactly one
+// deliberate empty-text run (the one case pptxgenjs is actually built to
+// support, per its own "empty [lineBreak] runs" handling).
 function codeRuns(code, lang) {
-  return tokenizeCode(code, lang).map((tok) => ({
-    text: tok.text,
-    options: {
-      color: CODE_TOKEN_COLORS[tok.type] || CODE_TOKEN_COLORS.default,
-      italic: tok.type === "comment",
-    },
-  }));
+  const lines = [[]];
+  tokenizeCode(code, lang).forEach((tok) => {
+    tok.text.split("\n").forEach((piece, i, pieces) => {
+      if (piece !== "") lines[lines.length - 1].push({ type: tok.type, text: piece });
+      if (i < pieces.length - 1) lines.push([]);
+    });
+  });
+
+  const runs = [];
+  lines.forEach((lineParts, lineIndex) => {
+    const isLastLine = lineIndex === lines.length - 1;
+    if (lineParts.length === 0) {
+      runs.push({ text: "", options: { color: CODE_TOKEN_COLORS.default, breakLine: !isLastLine } });
+      return;
+    }
+    lineParts.forEach((part, partIndex) => {
+      const isLastPart = partIndex === lineParts.length - 1;
+      runs.push({
+        text: part.text,
+        options: {
+          color: CODE_TOKEN_COLORS[part.type] || CODE_TOKEN_COLORS.default,
+          italic: part.type === "comment",
+          breakLine: isLastPart && !isLastLine,
+        },
+      });
+    });
+  });
+  return runs;
 }
 
 // Code block on a body slide
@@ -252,7 +294,7 @@ function addCode(slide, code, opts = {}) {
   slide.addText(codeRuns(code, opts.language || "python"), {
     x: x + 0.15, y: y + 0.1, w: w - 0.3, h: h - 0.2,
     fontFace: FONTS.mono, fontSize: opts.fontSize || SIZES.code,
-    valign: "top", margin: 0,
+    valign: "top", margin: 0, fit: "shrink",
   });
 }
 
@@ -375,6 +417,93 @@ function demoSlide(pres, opts) {
   return slide;
 }
 
+// Structural validator: opens a saved .pptx (a zip of OOXML parts) and
+// checks every slide for a specific class of invalid XML that pptxgenjs can
+// silently produce and that triggers PowerPoint's "needs repair" dialog on
+// open — even though the file is well-formed XML and opens fine in more
+// lenient tools (python-pptx, Keynote, QuickLook), which is exactly why this
+// class of bug can ship unnoticed without a check like this one.
+//
+// The defect: pptxgenjs emits one <a:pPr> for every run object passed to
+// addText(), even ones whose text is "" (it just skips the <a:r> tag for
+// that one). A <a:p> paragraph may validly contain more than one <a:pPr> in
+// practice — real PowerPoint tolerates a paragraph built from several
+// same-line runs, each preceded by its own <a:pPr>, as long as every <a:pPr>
+// is immediately followed by real content (an <a:r>). What real PowerPoint
+// does NOT tolerate is a <a:pPr> that is followed by nothing (paragraph
+// ends) or by another <a:pPr> with no <a:r> in between — i.e. a <a:pPr>
+// contributed by a run whose text was "". A single, standalone <a:pPr> with
+// no run at all is fine (a deliberate blank line); the invalid case is
+// specifically a non-final, content-less <a:pPr> sitting next to others
+// that do have content.
+//
+// This was empirically confirmed by bisecting a real corrupted deck down to
+// one slide, correlating the exact XML defect with the generator code that
+// produced it, fixing the generator, and confirming both the bad and fixed
+// output in real PowerPoint (not just an XML well-formedness check).
+async function validatePptx(filePath) {
+  const fs = require("fs");
+  const zip = await JSZip.loadAsync(fs.readFileSync(filePath));
+  const slideNames = Object.keys(zip.files)
+    .filter((name) => /^ppt\/slides\/slide\d+\.xml$/.test(name))
+    .sort((a, b) => {
+      const na = Number(a.match(/slide(\d+)\.xml/)[1]);
+      const nb = Number(b.match(/slide(\d+)\.xml/)[1]);
+      return na - nb;
+    });
+
+  const problems = [];
+  for (const name of slideNames) {
+    const xml = await zip.files[name].async("string");
+    const paragraphs = xml.match(/<a:p>[\s\S]*?<\/a:p>/g) || [];
+    paragraphs.forEach((para, paraIndex) => {
+      const pPrBlocks = [...para.matchAll(/<a:pPr\b[^>]*>[\s\S]*?<\/a:pPr>|<a:pPr\s*\/>/g)];
+      // A single, standalone pPr with no run at all is a legitimate blank
+      // paragraph (pptxgenjs's supported "empty [lineBreak]" pattern) — skip
+      // the whole paragraph in that case. Otherwise every pPr, INCLUDING the
+      // last one, must be immediately followed by a real <a:r> before either
+      // the next pPr or the paragraph's end — a multi-pPr paragraph whose
+      // final pPr has no run is the same orphaned-empty-run defect, not a
+      // blank line, because there's real content earlier in the paragraph.
+      if (pPrBlocks.length <= 1) return;
+      pPrBlocks.forEach((match, i) => {
+        const isLast = i === pPrBlocks.length - 1;
+        const afterThisPPr = para.slice(match.index + match[0].length);
+        const gapToNextPPr = isLast
+          ? afterThisPPr
+          : afterThisPPr.slice(0, pPrBlocks[i + 1].index - (match.index + match[0].length));
+        if (!gapToNextPPr.includes("<a:r>")) {
+          problems.push({
+            slide: name,
+            paragraphIndex: paraIndex,
+            detail: "a <a:pPr> with no run before the next <a:pPr> in the same paragraph — orphaned paragraph-properties block from an empty-text run",
+          });
+        }
+      });
+    });
+  }
+  return problems;
+}
+
+// Validates a list of generated .pptx files and throws with a readable
+// summary if any structural problems are found — call this after writing
+// all decks so a build fails loudly instead of shipping a file that opens
+// with a "needs repair" dialog in PowerPoint.
+async function validateDecks(filePaths) {
+  const allProblems = [];
+  for (const filePath of filePaths) {
+    const problems = await validatePptx(filePath);
+    problems.forEach((p) => allProblems.push({ file: filePath, ...p }));
+  }
+  if (allProblems.length > 0) {
+    const lines = allProblems.map(
+      (p) => `  ${p.file} — ${p.slide} paragraph #${p.paragraphIndex}: ${p.detail}`
+    );
+    throw new Error(
+      `Found ${allProblems.length} structurally invalid paragraph(s) that will trigger PowerPoint's "needs repair" dialog:\n${lines.join("\n")}`
+    );
+  }
+}
 
 module.exports = {
   COLORS,
@@ -392,4 +521,6 @@ module.exports = {
   addTable,
   takeawaysSlide,
   notes,
+  validatePptx,
+  validateDecks,
 };

@@ -4,9 +4,11 @@
 [Day 1](../day1/README.md) and [Day 2](../day2/README.md) demos — each demo
 has slide placement, time budget, setup checklist, narration + step-by-step,
 expected result, fallback story, and teaching payoff. Module 8 (OPTIONAL —
-Agent Harness + GitHub Copilot Agent) has no demo: it is an awareness/
-comparison segment outside the 210-minute core, the same reasoning that gave
-Day 2's Lab Kickoff module no demo.
+Agent Harness + GitHub Copilot Agent) and Module 9 (Day 3 Lab Kickoff) have
+no demo: Module 8 is an awareness/comparison segment outside the
+215-minute core, and Module 9 — like Day 1's and Day 2's Lab Kickoff
+modules — frames upcoming work rather than demonstrating a runnable
+scenario.
 
 Every demo grounds in an official `microsoft/agent-framework` SDK sample
 where one exists, run as-is or with a clearly noted, minimal adaptation.
@@ -33,7 +35,7 @@ per-slide grounding-source footer.
 | 5 | 1 | [Local stdio MCP tool call, end to end](module-5-demo-1-stdio-mcp.md) | ~5 min | after slide 4 · "Local stdio is a child-process boundary" |
 | 5 | 2 | [approval_mode pauses a write tool for review](module-5-demo-2-approval-mode.md) | ~5 min | after slide 8 · "approval_mode creates a human boundary" |
 | 6 | 1 | [Read-only ADO MCP in action](module-6-demo-1-read-only-ado.md) | ~5 min | after slide 7 · "Read-only is a server-side filter" |
-| 7 | 1 | [evaluate_agent catches a wrong tool call](module-7-demo-1-eval-catches-wrong-tool.md) | ~5 min | after slide 3 · "Check tool name and arguments locally" |
+| 7 | 1 | [evaluate_agent catches a wrong tool call](module-7-demo-1-eval-catches-wrong-tool.md) | ~5 min | after slide 4 · "Check tool name and arguments locally" |
 
 Not authored in this batch (deferred, tracked for a future pass if more
 demo time budget is wanted): Module 1 demo on duplicate history loaders,

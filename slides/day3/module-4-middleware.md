@@ -15,7 +15,24 @@ deck: module-4-middleware.pptx
 
 - Observe, guard, recover, and terminate at the right layer
 
-## Three layers fire at different frequencies
+## Overview
+<!-- layout: list -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/?tabs=python&pivots=programming-language-python -->
+<!-- notes: Mechanism for cross-cutting concerns. Agent-level middleware wraps run-level middleware.  -->
+
+- Middleware implements cross-cutting concerns
+  - Logging
+  - Security valication
+  - Error handling
+  - Transformation of results
+- Separate from your core logic
+
+When multiple middleware of the same type are registered, they form a chain where each calls the call_next() callback to continue processing. 
+
+call_next() does not take the context as an argument; middleware mutates the shared context object directly and then awaits call_next().
+The call_next callback continues the middleware chain or executes the agent if it's the last middleware.
+
+## Three Types of Middleware
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/?tabs=python -->
 <!-- notes: This frequency model drives both correctness and cost. Agent middleware runs once around a run. Function middleware runs for every invoked tool. Chat middleware runs for every model request, including tool-loop follow-ups. -->
@@ -23,10 +40,22 @@ deck: module-4-middleware.pptx
 | Type | Intercepts | Typical frequency |
 |---|---|---|
 | Agent middleware | Whole agent run | Once per run |
-| Function middleware | One function/tool invocation | Once per invoked tool |
+| Function (tool) middleware | One function/tool invocation | Once per invoked tool |
 | Chat middleware | Request to the model client | Every model call; often several per run |
 
-## Pick agent-level or run-level scope
+All types support both function-based and class-based implementations
+
+## Agent Middleware
+<!-- layout: list -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/agent-vs-run-scope?tabs=python -->
+<!-- notes: Agent-level controls are persistent and outermost. Run-level middleware is request-specific and sits inside agent-level middleware. Use run scope for diagnostics or policy variations that truly belong to one request. -->
+
+- Agent middleware intercepts and modifies agent run execution
+  - Uses AgentContext
+- Agent-level middleware wraps run-level middleware
+- Function/chat middleware follows the same wrapping principle
+
+##  Agent vs Run Scope
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/agent-vs-run-scope?tabs=python -->
 <!-- notes: Agent-level controls are persistent and outermost. Run-level middleware is request-specific and sits inside agent-level middleware. Use run scope for diagnostics or policy variations that truly belong to one request. -->
@@ -38,7 +67,7 @@ deck: module-4-middleware.pptx
 - **Run-level**
   - Passed to one `agent.run(...)`
   - Applies only to that invocation
-  - Best for targeted diagnostics or request policy
+  - Best for targeted diagnostics or per-request customization
 
 ## Middleware executes like an onion
 <!-- layout: compare -->
@@ -73,7 +102,7 @@ Run the official `agent_and_run_level_middleware.py` sample live: printed enter/
 3. **Tool/model interceptors** — Attach trace context and decisions
 4. **Outer unwind** — Read results and emit one summary
 
-## Logging and timing: the smallest useful pattern
+## Logging and timing example
 <!-- layout: code -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/defining-middleware?tabs=python -->
 <!-- notes: The shared context is mutated directly; call_next takes no context argument. A try/finally ensures timing is emitted when downstream execution fails. -->
@@ -91,6 +120,8 @@ async def timing(context, call_next):
         )
 ```
 
+Then add the middleware when creating your agent: middleware=[(add your middleware here)]
+
 ## Guardrails can short-circuit
 <!-- layout: flow -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/termination?tabs=python -->
@@ -100,6 +131,8 @@ async def timing(context, call_next):
 2. **Allow** — Await `call_next()` when the request is permitted
 3. **Set result** — Supply a controlled AgentResponse when blocked
 4. **Raise** — `MiddlewareTermination` ends the pipeline deliberately
+
+In Python, middleware stops execution by setting context.result when needed and raising MiddlewareTermination, or by short-circuiting the chain without calling call_next()
 
 ## Termination has an explicit result
 <!-- layout: code -->
@@ -162,7 +195,7 @@ Run the official `atr_validation_middleware.py` sample live: a benign query pass
   - Add only what standard instrumentation does not provide
 
 ## Ordering and performance trade-offs
-<!-- layout: cards -->
+<!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/?tabs=python -->
 <!-- notes: Chat middleware is the easiest place to accidentally multiply work because it runs per model call. Put cheap rejects outside expensive work. Keep middleware focused so ordering remains auditable. -->
 
@@ -171,19 +204,20 @@ Run the official `atr_validation_middleware.py` sample live: a benign query pass
 - **Mutation risk** — Document which layer changes messages, options, or results
 - **Streaming** — Preserve streaming behavior; do not buffer unless required
 
-## OPTIONAL awareness: Agent Hooks
+## Experimental: Agent Hooks
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/agent-hooks?tabs=python -->
 <!-- notes: Clearly separate this experimental awareness item from normal middleware. Agent Hooks provide a standardized fail-closed governance boundary spanning agent, chat, and function stages, including streaming and persistence coordination. Do not make Hooks part of the core lab. -->
 
 - **Normal middleware**
   - General interception and composition
-  - App-defined ordering and behavior
+  - Application specific ordering and behavior
   - Core pattern for this workshop
 - **Agent Hooks — EXPERIMENTAL**
-  - Standardized fail-closed governance boundary
-  - Coordinates agent, chat, and function stages
-  - Awareness only; verify current API before adoption
+  - Apply standard governance and runtime controls at well-defined points
+  - Implements **Agent Hooks Specification**
+  - Control plane, not telemetry plane
+  - Interceptors return a verdit that can optionally be enforced
 
 ## Takeaways
 <!-- layout: takeaways -->

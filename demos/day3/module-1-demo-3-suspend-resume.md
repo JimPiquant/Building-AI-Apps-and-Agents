@@ -24,6 +24,7 @@ against two different backends in the same script:
 - **`suspend_resume_in_memory_session()`** — an `OpenAIChatCompletionClient`
   agent. There is no backing service tracking history; the payload itself
   is the only place the conversation lives.
+- Also disucss per-tool vs. per-servicde-call (default) persistance 
 
 Both paths ask "What do you remember about me?" after a suspend/resume
 cycle, and both answer correctly — proving the API contract is identical

@@ -16,7 +16,7 @@ deck: module-2-streaming-structured.pptx
 - Stream typed updates; consume one validated final value
 
 ## One run API, two return shapes
-<!-- layout: compare -->
+<!-- layout: list-code -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/running-agents?tabs=python -->
 <!-- notes: The run method is the same. Without stream=True, await an AgentResponse. With stream=True, iterate a ResponseStream and optionally finalize it. -->
 
@@ -24,22 +24,33 @@ deck: module-2-streaming-structured.pptx
   - `await agent.run(...)`
   - Returns `AgentResponse`
   - Read `.text`, `.value`, and typed contents
+
+```python
+result = await agent.run("What is the weather like in Amsterdam?")
+print(result.text)
+```
 - **Streaming**
   - `agent.run(..., stream=True)`
   - Returns `ResponseStream`
   - Iterate `AgentResponseUpdate` values
 
+```python
+async for update in agent.run("What is the weather like in Amsterdam?", stream=True):
+    if update.text:
+        print(update.text, end="", flush=True)
+```
+
 ## Three ways to consume ResponseStream
-<!-- layout: flow -->
+<!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/running-agents?tabs=python | https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python -->
 <!-- notes: Pattern one is display-only iteration. Pattern two iterates and then finalizes. Pattern three skips display and lets get_final_response consume the stream. Pick based on the application's UX and data contract. -->
 
 1. **Iterate only** — Render each update as it arrives
-2. **Iterate + finalize** — Render updates, then await `get_final_response()`
-3. **Finalize only** — Skip iteration; finalizer consumes the stream
+2. **Finalize only** — Skip iteration; finalizer consumes the stream
+3. **Iterate + finalize** — Render updates, then await `get_final_response()`
 
 ## Updates carry typed contents
-<!-- layout: cards -->
+<!-- layout: list-code -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/running-agents -->
 <!-- notes: Avoid teaching a stream as just text chunks. Update.text is convenient, but contents can represent function calls, results, reasoning, usage, and other typed events supported by the client. Consumers should branch on content types they understand. -->
 
@@ -48,18 +59,18 @@ deck: module-2-streaming-structured.pptx
 - **Metadata** — Response IDs, roles, usage, and provider data may be present
 - **Rule** — Ignore unknown types safely; do not flatten every event into text
 
-## Put each option in the right lane
-<!-- layout: table -->
-<!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/running-agents?tabs=python | https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python -->
-<!-- notes: Correct a common SDK-shape mistake. response_format is nested in options. Instructions and tools are direct run kwargs when overriding them for one invocation. -->
-
-| Concern | Run shape | Why |
-|---|---|---|
-| Structured schema | `options={"response_format": TriageResult}` | Chat-client option |
-| Per-run tools | `tools=[...]` | Direct agent run kwarg |
-| Per-run instructions | `instructions="..."` | Direct agent run kwarg |
-| Streaming | `stream=True` | Selects ResponseStream |
-| Conversation continuity | `session=session` | Reuses AgentSession |
+```python
+# Access content from responses
+response = await agent.run("Describe the image")
+for message in response.messages:
+    for content in message.contents:
+        if content.type == "text":
+            print(f"Text: {content.text}")
+        elif content.type == "data":
+            print(f"Data URI: {content.from_data}")
+        elif content.type == "uri":
+            print(f"External URI: {content.uri}")
+```
 
 ## Pydantic gives you a typed value
 <!-- layout: code -->
@@ -99,8 +110,8 @@ response = await agent.run(
 result = response.value  # parsed JSON
 ```
 
-## TriageResult fits your docs assistant
-<!-- layout: flow -->
+## Example: TriageResult fits your docs assistant
+<!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python -->
 <!-- notes: Tie this to the workshop scenario. The assistant can answer from docs, request more information, or recommend an Azure DevOps work item. The typed result is an application contract, not permission to execute a write. -->
 
@@ -140,7 +151,7 @@ triage = final.value
 Run the previous slide's exact combined pattern live: text tokens render as they arrive, then `stream.get_final_response().value` prints a validated `TriageResult` — the two-contract model made concrete on the Day 2 docs assistant.
 
 ## Partial JSON is display data, not a value
-<!-- layout: compare -->
+<!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python -->
 <!-- notes: A token prefix can be syntactically incomplete and semantically unstable. Do not parse or trigger business actions from partial JSON. Finalization assembles the response and applies structured-output parsing. -->
 
@@ -152,16 +163,6 @@ Run the previous slide's exact combined pattern live: text tokens render as they
   - Await `get_final_response()`
   - Read validated `.value`
   - Apply business rules and approvals
-
-## Support follows the underlying client
-<!-- layout: cards -->
-<!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python | https://learn.microsoft.com/en-us/agent-framework/integrations/by-component/model-providers/microsoft-foundry?tabs=python -->
-<!-- notes: Keep the claim narrow. Agent supports structured outputs when paired with a compatible chat client and model. Examples in this course use FoundryChatClient where documented; attendees must verify the selected deployment supports the requested format. -->
-
-- **Framework** — Agent forwards the response format through the client
-- **Client** — Must implement compatible structured-output behavior
-- **Model** — Must support the requested response format
-- **Practice** — Test the exact deployment and handle invalid values
 
 ## Choose the response contract
 <!-- layout: table -->

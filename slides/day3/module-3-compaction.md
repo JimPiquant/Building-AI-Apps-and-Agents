@@ -16,7 +16,7 @@ deck: module-3-compaction.pptx
 - For self-managed in-memory history only
 
 ## Why compact at all?
-<!-- layout: cards -->
+<!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/compaction?tabs=python -->
 <!-- notes: Compaction targets three pressures. It is not a quality improvement by default; every reduction can discard useful context, so measure outcomes. -->
 
@@ -25,7 +25,31 @@ deck: module-3-compaction.pptx
 - **Latency** — More input tokens can slow each response
 - **Trade-off** — Less history can also remove facts the agent needed
 
-## Applicability is deliberately narrow
+## How it works
+<!-- layout: list -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/compaction?tabs=python -->
+<!-- notes: Compaction targets three pressures. It is not a quality improvement by default; every reduction can discard useful context, so measure outcomes. -->
+
+- Compaction operates on a flat list of Message objects
+- Messages are annotated with lightweight group metadata
+- Strategies mutate those annotations in place to mark groups as excluded before the message list is projected to the model
+
+
+## Choosing a strategy
+<!-- layout: table -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/compaction?tabs=python&pivots=programming-language-python#choosing-a-strategy -->
+<!-- notes: This is the doc's own "Choosing a strategy" table, verbatim, for the Python pivot. Six named strategies, ordered here as the doc lists them (not gentlest-to-harshest — that ordering is the earlier ladder slide's own framing). Walk aggressiveness low to high: ToolResult and SelectiveToolCall only touch tool chatter; Summarization costs a model call but preserves meaning; SlidingWindow and Truncation drop oldest groups outright; TokenBudgetComposedStrategy composes several of the above behind one token-budget goal. -->
+
+| Strategy | Aggressiveness | Preserves context | Requires LLM | Best for |
+|---|---|---|---|---|
+| `ToolResultCompactionStrategy` | Low | High — collapses tool results into summary messages | No | Reclaiming space from verbose tool output |
+| `SelectiveToolCallCompactionStrategy` | Low–Medium | Medium — fully excludes old tool-call groups | No | Removing tool history when results are no longer needed |
+| `SummarizationStrategy` | Medium | Medium — replaces history with a summary | Yes | Long conversations where context matters |
+| `SlidingWindowStrategy` | High | Low — drops oldest groups | No | Hard group-count limits |
+| `TruncationStrategy` | High | Low — drops oldest groups | No | Emergency message- or token-budget backstops |
+| `TokenBudgetComposedStrategy` | Configurable | Depends on child strategies | Depends | Layered compaction with a token-budget goal and multiple fallbacks |
+
+## Applicability
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/compaction?tabs=python -->
 <!-- notes: This boundary is critical. Compaction mutates the local message list before it reaches the model. It has no effect where the service owns conversation context. -->
@@ -39,7 +63,7 @@ deck: module-3-compaction.pptx
   - Responses API with `store=true`
   - Copilot Studio conversations
 
-## EXPERIMENTAL strategy ladder
+## EXPERIMENTAL Strategy ladder (least destructive to most)
 <!-- layout: ladder -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/compaction?tabs=python -->
 <!-- notes: Move from gentlest to most destructive. Python documents the named strategies shown here. SelectiveToolCall and ToolResult target tool chatter; Summarization uses another model call; SlidingWindow and Truncation discard old groups. -->
