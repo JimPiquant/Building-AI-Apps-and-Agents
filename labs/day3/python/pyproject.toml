@@ -6,7 +6,6 @@ requires-python = ">=3.11"
 dependencies = [
     "agent-framework",
     "agent-framework-foundry",
-    "azure-ai-projects",
     "azure-identity",
     "pydantic>=2.0",
     "python-dotenv",

@@ -29,10 +29,24 @@ uv run python agent.py    # should print a greeting
 If that greeting doesn't appear, you're not ready to start Part A. Check the
 main [lab README](../README.md#prerequisites).
 
-<!-- TODO: Part E evaluation-model notes, once part_e_evaluate.py is
-authored — mirror labs/day2/python/README.md's "Part A evaluation model"
-section, adapted for FoundryEvals(project_client=..., model=...) instead of
-azure-ai-evaluation's is_reasoning_model flag. -->
+## Part E evaluation model
+
+`part_e_evaluate.py`'s optional Foundry cloud-evaluator section uses a
+**separate** `FoundryChatClient` for the judge role, not the same client
+the agent itself uses — deliberately, since reusing a production model as
+its own judge is a documented conflict of interest (Day 2 Module 3).
+Set `EVALUATION_MODEL` to that judge deployment's name in `.env`; it
+falls back to `FOUNDRY_MODEL` if unset, but a dedicated judge deployment
+is preferred:
+
+```bash
+EVALUATION_MODEL=gpt-5.6-luna uv run part_e_evaluate.py
+```
+
+This section is optional and wrapped so a missing deployment or quota
+issue reports "unavailable" per case rather than failing the whole run —
+the required `LocalEvaluator` results (this part's actual definition of
+done) run first and are unaffected.
 
 ## Reference
 

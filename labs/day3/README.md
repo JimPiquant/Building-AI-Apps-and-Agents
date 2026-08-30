@@ -80,7 +80,7 @@ labs/day3/
     ├── tests/
     │   └── test_part_b_middleware.py   # Part B: isolation tests for guardrail/retry behavior
     └── evals/
-        └── tool_contract_golden_set.jsonl  # Part E: read, approved write, rejected write, no-tool cases
+        └── tool_contract_golden_set.jsonl  # Part E: read, approved write, no-tool cases (rejected-write deferred)
 ```
 
 ---
@@ -235,8 +235,41 @@ type `y`.
 
 ## Part E — Evaluate the tool contract
 
-<!-- TODO: Goal / Time / Steps, once part_e_evaluate.py and
-evals/tool_contract_golden_set.jsonl are authored. -->
+**Goal:** prove `evaluate_agent`/`LocalEvaluator` actually catch a
+regression, rather than trusting a single manual run — this is the same
+"eval → iterate → re-eval" muscle Day 2's lab built, now against Day 3's
+tool-selection contract.
+
+**Time:** ~15 min (this file is provided complete; read and run it).
+
+**Note:** only 3 of Module 9's 4 named golden cases are implemented here
+(read, approved write, no-tool) — the "rejected write" case was
+deliberately deferred; see `part_e_evaluate.py`'s module docstring for why.
+
+### Steps
+
+1. Run it:
+   ```bash
+   cd labs/day3/python
+   uv run part_e_evaluate.py
+   ```
+2. Read the printed results in order — each golden case runs 3 times
+   (`num_repetitions`) and reports the observed pass rate, not a single
+   pass/fail bit:
+   - **Read case** — `Get work item 42.` should pass consistently
+   - **Write case** — `Update work item 42: mark it reviewed.` should
+     pass consistently
+   - **No-tool case** — a general knowledge question; passes only if the
+     agent made zero tool calls (a custom evaluator, not the built-in
+     checks — see the module docstring for why)
+3. Read the optional "Foundry cloud evaluators" section at the end — if
+   your `EVALUATION_MODEL` deployment isn't set up, this section reports
+   "unavailable" per case and does not fail the run.
+4. Read through `part_e_evaluate.py` — note the two documented judgment
+   calls in its module docstring: the `FoundryEvals` constructor
+   discrepancy between two Microsoft Learn pages, and the deliberate
+   choice to use a separate judge client instead of the docs' own
+   same-client example.
 
 **Definition of done:**
 - Expected tool/action/args are reported; no universal pass threshold claimed
