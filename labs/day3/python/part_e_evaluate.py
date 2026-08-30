@@ -48,16 +48,6 @@ workshop (Day 2 Module 3: "Judge model = production model is a conflict
 of interest — use a different, usually smaller, judge"), so this lab
 keeps the two separate.
 
-On the missing "rejected write" case: Module 9's slide names 4 golden
-cases — read, approved write, rejected write, no-tool — but "rejected
-write" describes a human approval-DENIAL decision (Part D's pause/resume
-loop), not a tool-selection question evaluate_agent/LocalEvaluator is
-built to check. None of the Day 3 demos or docs show that combination
-evaluated this way, and Jim chose to defer it (his words: "option 3" —
-ship 3 golden cases now, revisit once the approval+evaluation
-interaction is better understood) rather than have this lab invent an
-ungrounded evaluation mechanism.
-
 Definition of done (from labs/day3/README.md / Module 9's slide):
   - Expected tool/action/args are reported for each golden case; no
     universal pass threshold is claimed — only the observed rate across
