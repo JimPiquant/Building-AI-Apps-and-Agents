@@ -1,10 +1,9 @@
 # Day 3 Lab — Session, streaming, robustness, Azure DevOps MCP, and evaluation
 
-<!-- TODO: one-line goal statement once the docs-assistant extension scope for
-Day 3 is finalized. Draft: extend the Day 2 support-triage assistant with
-owned session continuity, a typed triage response, cross-cutting middleware,
-a real Azure DevOps MCP backend (replacing Day 2's mock tools), and an
-evaluation harness for exact tool-call correctness. -->
+Each part demonstrates one Day 3 primitive with its own standalone agent —
+not a single assistant you extend part to part (unlike Day 2's lab). Run
+each part, read the code, understand the contract it proves; the same
+patterns are what you'd wire into a real production agent.
 
 Five parts, composing every primitive from Day 3's lecture modules:
 
@@ -16,12 +15,12 @@ Five parts, composing every primitive from Day 3's lecture modules:
 | **D** | Approved write | 5 |
 | **E** | Evaluation | 7 |
 
-Estimated time: <!-- TODO --> . Python only, per workshop policy.
+Estimated time: **~75 min** (~15 min per part — every part is provided
+complete; you run and read, not author from scratch), plus a one-time
+Azure DevOps setup below if you don't already have a personal,
+Entra-backed organization. Python only, per workshop policy.
 
 ## Prerequisites
-
-<!-- TODO: finalize once Part C/D setup is authored. Known requirements per
-Module 9's "Prerequisites for the future lab" slide: -->
 
 - Day 2 lab complete and working (baseline docs assistant, `FoundryChatClient`)
 - Your own Entra-backed Azure DevOps Services organization, plus a dedicated
@@ -37,11 +36,44 @@ Module 9's "Prerequisites for the future lab" slide: -->
   (`InteractiveBrowserCredential`, cached after that — see
   `python/ado_mcp.py`)
 
-### Azure DevOps setup — TODO
+### Azure DevOps setup
 
-<!-- TODO: one-time portal/CLI setup steps for provisioning the dedicated ADO
-org/project and the work item fixture, mirroring the level of detail in
-labs/day2/README.md's "Portal setup" section. -->
+This is **a personal instance, not a shared Publix sandbox** — the same
+requirement Day 3's Module 6 demo used. If you already have an
+Entra-backed Azure DevOps organization you can use for this lab, skip to
+[Fill in `.env`](#fill-in-env). Otherwise, one-time setup (~10 min):
+
+1. **Create the organization, signed in with your work/school (Entra)
+   account** — this is the step that matters: signing in with a personal
+   Microsoft account creates an MSA-based organization, which the Azure
+   DevOps remote MCP server does not support (Module 6's own
+   "Prerequisites" slide: "Not supported — Standalone MSA organizations").
+   Signing in with your work/school account instead **automatically
+   connects** the new organization to that Entra tenant.
+   1. Go to [https://dev.azure.com](https://dev.azure.com) and sign in
+      with your work/school account.
+   2. Select **New organization**.
+   3. Enter a name, pick a hosting geography, select an Azure subscription
+      for billing, then **Continue**.
+   4. Note the organization name — this is your `AZURE_DEVOPS_ORG`.
+   (Already have a non-Entra organization instead? See
+   [Connect your organization to Microsoft Entra ID](https://learn.microsoft.com/azure/devops/organizations/accounts/connect-organization-to-azure-ad?view=azure-devops)
+   rather than creating a new one.)
+2. **Create a disposable project.** You're prompted to create one right
+   after the organization is created — name it something like
+   `day3-lab`. This is your `AZURE_DEVOPS_PROJECT`.
+3. **Create one work item.** Open the project → **Boards** → **New Work
+   Item** → **Task** (or **Bug**). Give it any title. Note its numeric ID
+   — this is your `AZURE_DEVOPS_WORK_ITEM_ID`. This is the item Part C
+   reads and Part D mutates; have a reset/cleanup plan (or just accept it
+   ends up with a "reviewed" comment on it).
+4. **Find your Entra tenant ID** — this is your `AZURE_DEVOPS_TENANT_ID`:
+   ```bash
+   az account show --query tenantId -o tsv
+   ```
+   (Or Azure portal → Microsoft Entra ID → Overview → Tenant ID, if the
+   organization is backed by a different tenant than your current `az
+   login` session.)
 
 ### Fill in `.env`
 
@@ -278,10 +310,28 @@ deliberately deferred; see `part_e_evaluate.py`'s module docstring for why.
 
 ## Troubleshooting
 
-<!-- TODO -->
+| Part | Symptom | Check first |
+|---|---|---|
+| A | `session_payload.json` fails to reload / looks stale | Delete it and rerun from scratch — it's overwritten each run, so a file left over from an earlier interrupted attempt is the usual cause |
+| A, B | Auth error on the first Foundry call | `az login` session expired — rerun `az login` and select the correct subscription |
+| C, D | Sign-in or consent fails | Confirm the organization is Entra-backed (not an MSA org) and that your tenant's enterprise app consent policy allows the Azure DevOps MCP server — Module 6's own failure-modes table names this exact check first |
+| C, D | Expected tool is missing | Check `X-MCP-Readonly` / the tool allow-list in `ado_mcp.py` against what the server actually exposes |
+| C, D | Tool call returns forbidden | Your signed-in user needs membership and resource permissions on the specific project/work item, not just the organization |
+| D | Approval loop hangs or resubmits the original query | Confirm you're reusing one `agent.create_session()` across both `agent.run()` calls and sending only `Message("user", approval_responses)` on resume — not replaying the original query text |
+| D | A write you expected to require approval goes straight through | The tool name performing the write may not be the one you listed in `always_require_approval` — for example, adding a *comment* on a work item routes through `wit_work_item_comment_write`, a different tool from `wit_work_item_write` |
+| E | A golden case's pass/fail flips between runs | Expected — this is the same model nondeterminism Module 7 names directly; `num_repetitions=3` exists so you see the distribution, not a single sample |
+| E | "Foundry evaluation unavailable" printed for every case | `run_foundry_evals()` is wrapped so this can't fail the lab — check `EVALUATION_MODEL` (or `FOUNDRY_MODEL` as its fallback) is a deployed model name your Foundry project can reach |
 
 ---
 
 ## What you'll build tomorrow (Day 4)
 
-<!-- TODO -->
+Day 3 kept every demonstration to a single agent — deeper tool use, but
+still one agent making its own decisions. Day 1's architecture map already
+places Day 4 as the week's **multi-agent** day, and Day 2's evaluation
+module named it the **evaluation anchor**: the habit you started today
+(golden cases, repeated runs, tool-call correctness) extends to
+trajectory evaluation, cost-per-successful-outcome, and a regression
+harness — now applied across multiple cooperating agents instead of one.
+Nothing here commits you to a specific Day 4 lab shape; that content
+hasn't been authored yet.
