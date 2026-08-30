@@ -27,6 +27,14 @@ Definition of done (from labs/day3/README.md / Module 9's slide):
 Prereqs:
   1. `uv run python agent.py` prints a greeting (baseline works)
   2. FOUNDRY_PROJECT_ENDPOINT and FOUNDRY_MODEL are set in .env
+
+Run with:
+    uv run part_a_session_response.py
+
+Tip: set a breakpoint on the first line of run_and_serialize() and step
+through with the VS Code debugger (Run and Debug > Python File) to watch
+each turn build the session, then step into restore_and_stream() to watch
+AgentSession.from_dict() rebuild it from the serialized payload.
 """
 import asyncio
 import json

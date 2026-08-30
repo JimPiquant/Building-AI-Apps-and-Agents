@@ -4,6 +4,9 @@ Day 3 baseline agent — plain MAF agent, no session reuse, middleware, or MCP.
 Parts A-E progressively extend this. Run this file first to confirm your
 `.env` is set up and Foundry is reachable. If this prints a greeting, you're
 ready for Part A.
+
+Run with:
+    uv run agent.py
 """
 import asyncio
 import os
