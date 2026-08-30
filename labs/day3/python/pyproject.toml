@@ -1,0 +1,26 @@
+[project]
+name = "day3-lab"
+version = "0.1.0"
+description = "Day 3 lab — session continuity, robustness, Azure DevOps MCP, and evaluation."
+requires-python = ">=3.11"
+dependencies = [
+    "agent-framework",
+    "agent-framework-foundry",
+    "azure-ai-projects",
+    "azure-identity",
+    "pydantic>=2.0",
+    "python-dotenv",
+    "pytest",
+    "pytest-asyncio",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+#[[tool.uv.index]]
+#name = "internal"
+#url = "https://packagefeedproxy.microsoft.io/pypi/simple/"

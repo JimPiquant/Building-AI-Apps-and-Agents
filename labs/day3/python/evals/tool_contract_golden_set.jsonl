@@ -1,0 +1,21 @@
+// tool_contract_golden_set.jsonl — Part E eval spec.
+//
+// Format: one JSON object per line. Lines starting with // are ignored by
+// the runner (part_e_evaluate.py must strip them before parsing).
+// You'll AUTHOR the four entries below in Part E.
+//
+// Requirements (Module 9's "Golden cases" list):
+//   - 1 row: a read case  -> expected_tool "wit_work_item", expected_action "get"
+//   - 1 row: an approved-write case -> expected_tool "wit_work_item_write"
+//   - 1 row: a rejected-write case (approval denied) -> expect no mutation to persist
+//   - 1 row: a no-tool case -> expected_tool = null
+//
+// Schema (per row):
+//   {
+//     "query": "the user's message",
+//     "expected_tool": "wit_work_item" | "wit_work_item_write" | null,
+//     "expected_args": { "action": "...", "id": <work-item-id> }
+//   }
+//
+// Example — DELETE this line and add your four entries below.
+// {"query": "Get work item 42.", "expected_tool": "wit_work_item", "expected_args": {"action": "get", "id": 42}}
