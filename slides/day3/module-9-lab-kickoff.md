@@ -1,6 +1,6 @@
 ---
 title: Day 3 Lab Kickoff
-subtitle: Frame a proposed lab that composes Day 3's primitives
+subtitle: Preview the lab you're about to build
 eyebrow: DAY 3 · MODULE 9 · 15 MIN
 tag: Day 3 · Module 9
 deck: module-9-lab-kickoff.pptx
@@ -11,14 +11,14 @@ deck: module-9-lab-kickoff.pptx
 ## Day 3 Lab Kickoff
 <!-- layout: title -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/session?tabs=python | https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python | https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?tabs=python -->
-<!-- notes: This module frames a proposed future lab. No Day 3 lab files are created in this change. -->
+<!-- notes: This module previews labs/day3/'s five parts before hands-on time. The lab is complete and ready to run. -->
 
-- A proposed five-stage build: state and response, robustness, read, write, and evaluation
+- A five-part lab: state and response, robustness, read, write, and evaluation
 
-## Future lab architecture
+## Lab architecture
 <!-- layout: flow -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/session?tabs=python | https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs?tabs=python | https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?tabs=python -->
-<!-- notes: This sequence composes the day's primitives. It is a proposed lab flow only; the repository intentionally has no labs/day3 implementation yet. -->
+<!-- notes: This sequence composes the day's primitives and matches labs/day3/'s five parts exactly — each part is its own standalone agent, not one assistant extended across parts. -->
 
 1. **A · State + response** — Session, serialization, stream, TriageResult
 2. **B · Robustness** — Timing, guardrail, exception handling
@@ -61,7 +61,7 @@ deck: module-9-lab-kickoff.pptx
 ## Part E: evaluate the tool contract
 <!-- layout: flow -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?tabs=python -->
-<!-- notes: Include positive read, positive write, and no-tool cases. Ground truth must include the consolidated tool plus action. Repeat enough to observe variation, then report the observed rate without inventing a universal threshold. -->
+<!-- notes: Include positive read, positive write, and no-tool cases. Ground truth must include the consolidated tool plus action. Repeat enough to observe variation, then report the observed rate without inventing a universal threshold. The built lab implements 3 of the 4 cases below — rejected write is deferred; see labs/day3/python/part_e_evaluate.py's module docstring for why. -->
 
 1. **Golden cases** — Read, approved write, rejected write, and no-tool request
 2. **Expected calls** — Tool name plus action and key arguments
@@ -69,10 +69,10 @@ deck: module-9-lab-kickoff.pptx
 4. **Repetitions** — Observe consistency across independent runs
 5. **FoundryEvals** — Add tool selection/input accuracy where available
 
-## Prerequisites for the future lab
+## Lab prerequisites
 <!-- layout: cards -->
 <!-- source: https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops | https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?tabs=python -->
-<!-- notes: Do not claim setup has already happened. A future lab author must supply a dedicated Entra-backed Azure DevOps Services organization/project, Foundry project and judge deployment, least-privilege identity, and known work-item fixtures. -->
+<!-- notes: These are learner-provided, per labs/day3/README.md's Prerequisites and Azure DevOps setup sections — a dedicated Entra-backed Azure DevOps Services organization/project, Foundry project and judge deployment, least-privilege identity, and known work-item fixtures. -->
 
 - **Day 2 baseline** — Working docs assistant and FoundryChatClient
 - **Azure DevOps** — Entra-backed Services org plus dedicated workshop project
@@ -96,9 +96,9 @@ deck: module-9-lab-kickoff.pptx
 ## Takeaways
 <!-- layout: takeaways -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?tabs=python | https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops -->
-<!-- notes: Close the core Day 3 live time here. Learners have all required primitives for the proposed future lab. -->
+<!-- notes: Close the core Day 3 live time here. Learners have all required primitives before starting labs/day3/'s Parts A-E. -->
 
 - You build read-only behavior before approved writes.
-- You treat the lab sequence as a proposed structure, not a completed lab.
+- You'll see this five-part structure again in labs/day3/, then work through it yourself.
 - You compose Day 3's primitives across five stages: state and response, robustness, read, write, and evaluation.
-- You confirm prerequisites — a dedicated Azure DevOps project, a Foundry evaluation project, and known work-item fixtures — before this proposed lab can be scaffolded.
+- You confirm prerequisites — a dedicated Azure DevOps project, a Foundry evaluation project, and known work-item fixtures — before you start the lab.
