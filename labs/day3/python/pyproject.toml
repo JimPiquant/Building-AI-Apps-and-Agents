@@ -19,7 +19,3 @@ package = false
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
-
-#[[tool.uv.index]]
-#name = "internal"
-#url = "https://packagefeedproxy.microsoft.io/pypi/simple/"

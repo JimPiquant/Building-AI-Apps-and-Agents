@@ -10,7 +10,3 @@ dependencies = [
     "python-dotenv",
     "pyatr",
 ]
-
-[[tool.uv.index]]
-name = "internal"
-url = "https://packagefeedproxy.microsoft.io/pypi/simple/"
