@@ -18,7 +18,7 @@ This directory holds the Python code for the Day 3 lab. Start here after you
 ## Setup
 
 Follow the Azure DevOps setup steps in the main
-[lab README](../README.md#azure-devops-setup--todo) — provision your own
+[lab README](../README.md#azure-devops-setup) — provision your own
 dedicated organization/project, and seed a known work item ID.
 
 ```bash
@@ -56,4 +56,4 @@ done) run first and are unaffected.
 - Module 5 slides — MCP with Agent Framework
 - Module 6 slides — Azure DevOps Remote MCP
 - Module 7 slides — Evaluation
-- Module 9 slides — Day 3 Lab Kickoff (the proposed architecture this lab implements)
+- Module 9 slides — Day 3 Lab Kickoff (the architecture this lab implements)

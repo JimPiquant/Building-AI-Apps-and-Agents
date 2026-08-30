@@ -85,11 +85,15 @@ def build_write_enabled_ado_mcp(
     approval_mode defaults to the per-tool mapping form the
     MCPStreamableHTTPTool API reference documents (a dict with an
     always_require_approval/never_require_approval key mapping to a list
-    of tool names) so only wit_work_item_write pauses for a human
-    decision — matching Module 5's "approval_mode creates a human
-    boundary" slide's "Per-tool mapping | Read automatically; review
-    writes" row. wit_work_item (the verify-read in part_d_approved_write.py)
-    is not listed in either key, so it proceeds automatically.
+    of tool names). Both write tools are named: wit_work_item_write covers
+    field updates, and wit_work_item_comment_write covers comments. A
+    comment is its own tool rather than an action on wit_work_item_write,
+    so gating only the latter would let part_d_approved_write.py's comment
+    write execute without review. This matches Module 5's "approval_mode
+    creates a human boundary" slide's "Per-tool mapping | Read
+    automatically; review writes" row. wit_work_item (the verify-read in
+    part_d_approved_write.py) is not listed in either key, so it proceeds
+    automatically.
     """
     if approval_mode is None:
         approval_mode = {

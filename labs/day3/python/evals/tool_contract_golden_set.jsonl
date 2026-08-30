@@ -7,10 +7,11 @@
 // approved write, and a no-tool request. The fourth case Module 9 names
 // ("rejected write") is deliberately NOT included here: evaluating a
 // human approval-DENIAL decision through evaluate_agent/LocalEvaluator
-// isn't demonstrated anywhere in the Day 3 demos or docs, and Jim chose
-// to defer it as a follow-up rather than have this lab invent an
-// ungrounded evaluation mechanism for it (see part_e_evaluate.py's
-// module docstring for the full reasoning).
+// isn't demonstrated anywhere in the Day 3 demonstrations or docs, so it
+// is deferred as a follow-up rather than having this lab invent an
+// ungrounded evaluation mechanism for it (see the "On the missing
+// 'rejected write' case" section of part_e_evaluate.py's module docstring
+// for the full reasoning).
 //
 // Schema (per row):
 //   {

@@ -40,6 +40,16 @@ Story:
      persisted in your Foundry project — see "After you run it" below
      for where to find them.
 
+On the missing "rejected write" case: Module 9's slide names four golden
+cases; three are implemented here. The fourth — a write the human rejects
+at the approval prompt — is deliberately deferred. Its outcome turns on a
+human approval DECISION rather than on the agent's own tool selection, and
+evaluating that decision path through evaluate_agent/LocalEvaluator is not
+demonstrated in the Day 3 demonstrations or in the Agent Framework
+evaluation documentation. Rather than invent an ungrounded mechanism, this
+lab covers the three cases the documented API supports and leaves the
+rejected-write case as a follow-up.
+
 On run_foundry_evals()'s separate judge client: it builds a SEPARATE
 FoundryChatClient using EVALUATION_MODEL as the judge, rather than
 reusing the agent's own client. Reusing the same client/model for both
@@ -217,23 +227,31 @@ async def run_foundry_evals(agent: Agent, cases: list[GoldenCase]) -> None:
     """Optional: also score the tool-using cases with Foundry's cloud evaluators.
 
     Wrapped separately from evaluate_golden_case() so a Foundry-side
-    problem (missing EVALUATION_MODEL deployment, quota, network) doesn't
-    block the LocalEvaluator results above, which are this lab's actual
-    definition-of-done requirement.
+    problem doesn't block the LocalEvaluator results above, which are this
+    lab's actual definition-of-done requirement. The import and the client
+    construction are inside the guard too, so a missing
+    FOUNDRY_PROJECT_ENDPOINT or an unavailable FoundryEvals class reports
+    the same way a missing EVALUATION_MODEL deployment does, instead of
+    raising out of main().
     """
-    from agent_framework.foundry import FoundryEvals
-
-    judge_client = FoundryChatClient(
-        project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-        model=os.environ.get("EVALUATION_MODEL", os.environ.get("FOUNDRY_MODEL", "gpt-5.6-luna")),
-        credential=AzureCliCredential(),
-    )
-    foundry = FoundryEvals(
-        client=judge_client,
-        evaluators=[FoundryEvals.TOOL_CALL_ACCURACY, FoundryEvals.TOOL_SELECTION],
-    )
-
     print("\n=== Optional: Foundry cloud evaluators ===")
+
+    try:
+        from agent_framework.foundry import FoundryEvals
+
+        judge_client = FoundryChatClient(
+            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
+            model=os.environ.get("EVALUATION_MODEL", os.environ.get("FOUNDRY_MODEL", "gpt-5.6-luna")),
+            credential=AzureCliCredential(),
+        )
+        foundry = FoundryEvals(
+            client=judge_client,
+            evaluators=[FoundryEvals.TOOL_CALL_ACCURACY, FoundryEvals.TOOL_SELECTION],
+        )
+    except Exception as exc:  # noqa: BLE001 — optional path, report and continue
+        print(f"Foundry evaluation unavailable ({exc})")
+        print("The LocalEvaluator results above are unaffected.")
+        return
     for case in cases:
         if case.expected_tool is None:
             continue  # FoundryEvals' tool evaluators need a tool-using case
