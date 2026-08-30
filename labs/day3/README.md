@@ -296,12 +296,16 @@ deliberately deferred; see `part_e_evaluate.py`'s module docstring for why.
      checks — see the module docstring for why)
 3. Read the optional "Foundry cloud evaluators" section at the end — if
    your `EVALUATION_MODEL` deployment isn't set up, this section reports
-   "unavailable" per case and does not fail the run.
-4. Read through `part_e_evaluate.py` — note the two documented judgment
-   calls in its module docstring: the `FoundryEvals` constructor
-   discrepancy between two Microsoft Learn pages, and the deliberate
-   choice to use a separate judge client instead of the docs' own
-   same-client example.
+   "unavailable" per case and does not fail the run. If it succeeds, each
+   result prints a `report_url` — **open it in a browser** to see that
+   evaluation run persisted in the Foundry portal. You can also get there
+   by hand: [https://ai.azure.com](https://ai.azure.com) → your project →
+   **Evaluation** in the left pane → select the run for row-level detail
+   (query, response, ground truth, evaluator scores, token usage).
+4. Read through `part_e_evaluate.py` — note the documented judgment call
+   in its module docstring: using a separate judge client
+   (`EVALUATION_MODEL`) rather than reusing the agent's own client as its
+   judge, to avoid the conflict of interest Day 2 Module 3 named.
 
 **Definition of done:**
 - Expected tool/action/args are reported; no universal pass threshold claimed

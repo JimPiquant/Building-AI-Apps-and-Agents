@@ -36,26 +36,17 @@ Story:
   6. Optionally (run_foundry_evals, called last, wrapped so a failure here
      doesn't block the LocalEvaluator results above): also score the read
      and write cases with Microsoft Foundry's cloud tool-use evaluators.
+     Unlike LocalEvaluator, these results are scored server-side and
+     persisted in your Foundry project — see "After you run it" below
+     for where to find them.
 
-On FoundryEvals' constructor — a documentation discrepancy found and
-resolved: the general evaluation doc
-(https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?pivots=programming-language-python)
-shows `FoundryEvals(project_client=..., model=...)`, but the more
-specific integration doc
-(https://learn.microsoft.com/en-us/agent-framework/integrations/by-component/evaluation/microsoft-foundry?tabs=python)
-— which the first doc explicitly defers to for setup — shows
-`FoundryEvals(client=chat_client, evaluators=[...])`, reusing a
-FoundryChatClient directly with no separate azure-ai-projects
-AIProjectClient needed. This file uses the more specific doc's
-`client=` form (azure-ai-projects has been removed from pyproject.toml
-accordingly). Layered on top of that documented API shape is this lab's
-OWN judgment call, not stated in either doc: the docs' own example reuses
-the SAME client/model for both the agent and its judge, but doing so is
-a documented anti-pattern elsewhere in this workshop (Day 2 Module 3:
-"Judge model = production model is a conflict of interest — use a
-different, usually smaller, judge"). So run_foundry_evals() builds a
-SEPARATE FoundryChatClient using EVALUATION_MODEL as the judge, rather
-than reusing the agent's own client.
+On run_foundry_evals()'s separate judge client: it builds a SEPARATE
+FoundryChatClient using EVALUATION_MODEL as the judge, rather than
+reusing the agent's own client. Reusing the same client/model for both
+the agent and its judge is a documented anti-pattern elsewhere in this
+workshop (Day 2 Module 3: "Judge model = production model is a conflict
+of interest — use a different, usually smaller, judge"), so this lab
+keeps the two separate.
 
 On the missing "rejected write" case: Module 9's slide names 4 golden
 cases — read, approved write, rejected write, no-tool — but "rejected
@@ -77,6 +68,13 @@ Prereqs:
 
 Run with:
     uv run part_e_evaluate.py
+
+After you run it: each Foundry evaluator result prints a report_url —
+open it in a browser to see the persisted evaluation run in the Foundry
+portal (aggregated pass/fail counts, per-evaluator scores, token usage).
+You can also browse there directly: Foundry portal (https://ai.azure.com)
+-> your project -> Evaluation in the left pane -> select the run for
+row-level detail (query, response, ground truth, evaluator scores).
 
 Tip: set a breakpoint inside no_tool_called() and step through with the
 VS Code debugger (Run and Debug > Python File) to inspect the actual
@@ -246,7 +244,8 @@ async def run_foundry_evals(agent: Agent, cases: list[GoldenCase]) -> None:
             continue
         for r in results:
             print(f"--- {case.query!r} ---")
-            print(f"{r.provider}: {r.passed}/{r.total} passed — {r.report_url}")
+            print(f"{r.provider}: {r.passed}/{r.total} passed")
+            print(f"  Persisted in Foundry — open to see row-level detail: {r.report_url}")
 
 
 async def main() -> None:
