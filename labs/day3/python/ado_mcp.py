@@ -25,6 +25,7 @@ part_d_approved_write.py for the usage pattern:
 from __future__ import annotations
 
 import os
+from typing import Any
 
 from agent_framework import MCPStreamableHTTPTool
 from azure.identity import InteractiveBrowserCredential, TokenCachePersistenceOptions
@@ -50,19 +51,24 @@ def _get_ado_bearer_token() -> str:
     return access_token.token
 
 
-def _build_ado_mcp(*, readonly: bool) -> MCPStreamableHTTPTool:
+def _build_ado_mcp(
+    *, readonly: bool, approval_mode: str | dict[str, list[str]] | None = None
+) -> MCPStreamableHTTPTool:
     org = os.environ["AZURE_DEVOPS_ORG"]
     bearer_token = _get_ado_bearer_token()
 
-    return MCPStreamableHTTPTool(
-        name="ado",
-        url=f"https://mcp.dev.azure.com/{org}",
-        header_provider=lambda _: {
+    kwargs: dict[str, Any] = {
+        "name": "ado",
+        "url": f"https://mcp.dev.azure.com/{org}",
+        "header_provider": lambda _: {
             "Authorization": f"Bearer {bearer_token}",
             "X-MCP-Toolsets": "wit",
             "X-MCP-Readonly": "true" if readonly else "false",
         },
-    )
+    }
+    if approval_mode is not None:
+        kwargs["approval_mode"] = approval_mode
+    return MCPStreamableHTTPTool(**kwargs)
 
 
 def build_read_only_ado_mcp() -> MCPStreamableHTTPTool:
@@ -70,11 +76,21 @@ def build_read_only_ado_mcp() -> MCPStreamableHTTPTool:
     return _build_ado_mcp(readonly=True)
 
 
-def build_write_enabled_ado_mcp() -> MCPStreamableHTTPTool:
+def build_write_enabled_ado_mcp(
+    approval_mode: str | dict[str, list[str]] | None = None,
+) -> MCPStreamableHTTPTool:
     """Part D: write-enabled Azure DevOps MCP tool.
 
-    X-MCP-Readonly is false here so the server will accept a write call —
-    Part D's own approval gate is what should stop an unapproved write
-    from ever reaching this tool, not this header.
+    X-MCP-Readonly is false here so the server will accept a write call.
+    approval_mode defaults to the per-tool mapping form the
+    MCPStreamableHTTPTool API reference documents (a dict with an
+    always_require_approval/never_require_approval key mapping to a list
+    of tool names) so only wit_work_item_write pauses for a human
+    decision — matching Module 5's "approval_mode creates a human
+    boundary" slide's "Per-tool mapping | Read automatically; review
+    writes" row. wit_work_item (the verify-read in part_d_approved_write.py)
+    is not listed in either key, so it proceeds automatically.
     """
-    return _build_ado_mcp(readonly=False)
+    if approval_mode is None:
+        approval_mode = {"always_require_approval": ["wit_work_item_write"]}
+    return _build_ado_mcp(readonly=False, approval_mode=approval_mode)

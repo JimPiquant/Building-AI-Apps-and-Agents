@@ -1,37 +1,123 @@
 """
 Day 3 Lab — Part D — Approved write.
 
-You'll build this in Part D:
+This file is provided complete — run it to see a write pause for your
+approval, then verify the mutation actually took effect.
 
-    - Connect to your Azure DevOps organization with the write-enabled MCP
-      tool (see ado_mcp.py) — allow wit_work_item_write, action="create"
-      or "update".
-    - Require explicit approval before the write executes: show the exact
-      arguments to a human (e.g. via approval_mode, Module 5's tool
-      approval pattern) before the mutation runs.
-    - After the write is approved and executes, read the work item again
-      (Part C's read path) to verify the mutation actually took effect.
+Story (one agent, two requests against the known work item in .env):
+  1. An approval-gated write — the SAME "add a comment saying 'reviewed'"
+     request Part C tried and had rejected server-side by
+     X-MCP-Readonly: true. Here ado_mcp.build_write_enabled_ado_mcp() sets
+     X-MCP-Readonly: false, so the server accepts the call — but only
+     after you approve it. agent.run() returns immediately with
+     result.user_input_requests populated instead of executing the tool;
+     the pause/resume loop below prints the exact tool name and arguments,
+     asks you to approve, and resumes with your decision — the same
+     mechanic demos/day3/module-5-demo-2-approval-mode/main.py
+     demonstrates on a local calculator tool, wired here onto the ADO MCP
+     tool instead.
+  2. A read-again request on the same work item, to verify the mutation
+     actually took effect. This read does NOT pause for approval —
+     ado_mcp.build_write_enabled_ado_mcp()'s default approval_mode only
+     names wit_work_item_write, so wit_work_item (the read tool) proceeds
+     automatically. This is the per-tool mapping Module 5's "approval_mode
+     creates a human boundary" slide's table row describes: "Different
+     rules by tool name — Read automatically; review writes."
 
---------------------------------------------------------------------------
-Definition of done for Part D (from Module 9's "Definition of done and
-guardrails" slide):
+Definition of done (from labs/day3/README.md / Module 9's slide):
   - Write requires approval; the read-after-write verifies the mutation;
-    dedicated project only (never point this at a shared/production ADO org)
---------------------------------------------------------------------------
+    dedicated project only — never point this at a shared/production
+    Azure DevOps organization
 
-TODO: implement build_agent() and main() below, following Module 5's tool
-approval slides and demos/day3/module-5-demo-2-approval-mode/main.py as
-reference code. ado_mcp.build_write_enabled_ado_mcp() provides the MCP tool.
+Prereqs:
+  1. `uv run part_c_read_only.py` has run at least once (confirms your
+     ADO connection and .env are correct, and shows what the SAME request
+     looks like when the server rejects it)
+  2. Your own Entra-backed Azure DevOps org/project + a known work item ID
+     are set in .env — see labs/day3/README.md's Prerequisites section
+
+Run with:
+    uv run part_d_approved_write.py
+
+Tip: set a breakpoint on the `while result.user_input_requests:` line in
+run_with_approval() and step through with the VS Code debugger (Run and
+Debug > Python File) to inspect exactly what a FunctionApprovalRequestContent
+looks like before you approve or reject it.
 """
 from __future__ import annotations
 
 import asyncio
+import os
+from pathlib import Path
+from typing import Any
 
-from ado_mcp import build_write_enabled_ado_mcp  # noqa: F401  # use when you build the agent
+from dotenv import load_dotenv
+
+from agent_framework import Agent, AgentResponse, Message, MCPStreamableHTTPTool
+from agent_framework.foundry import FoundryChatClient
+from azure.identity import AzureCliCredential
+
+from ado_mcp import build_write_enabled_ado_mcp
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+
+
+def build_agent() -> Agent:
+    client = FoundryChatClient(
+        project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
+        model=os.environ.get("FOUNDRY_MODEL", "gpt-5.6-luna"),
+        credential=AzureCliCredential(),
+    )
+    return Agent(client=client, instructions="You are a helpful Azure DevOps assistant.")
+
+
+async def run_with_approval(agent: Agent, query: str, mcp: MCPStreamableHTTPTool) -> AgentResponse:
+    """Run a request that may pause for approval, resuming after each decision.
+
+    Mirrors demos/day3/module-5-demo-2-approval-mode/main.py's pause/resume
+    loop exactly: when a tool call needs approval, agent.run() returns
+    immediately with result.user_input_requests populated instead of
+    executing the tool. Show each request's name/arguments, collect a
+    decision, and resume the run with that decision until nothing is left
+    pending.
+    """
+    result = await agent.run(query, tools=mcp)
+
+    while result.user_input_requests:
+        new_inputs: list[Any] = [query]
+        for request in result.user_input_requests:
+            if request.function_call is None:
+                continue
+            print(f"\nApproval requested for: {request.function_call.name}")
+            print(f"Arguments: {request.function_call.arguments}")
+            approval = input("Approve? (y/n): ")
+            new_inputs.append(Message("assistant", [request]))
+            new_inputs.append(
+                Message("user", [request.to_function_approval_response(approval.lower() == "y")])
+            )
+        result = await agent.run(new_inputs, tools=mcp)
+
+    return result
 
 
 async def main() -> None:
-    raise NotImplementedError("Part D: connect the write-enabled ADO MCP tool, require approval, then verify.")
+    project = os.environ["AZURE_DEVOPS_PROJECT"]
+    work_item_id = os.environ["AZURE_DEVOPS_WORK_ITEM_ID"]
+
+    agent = build_agent()
+
+    async with build_write_enabled_ado_mcp() as mcp:
+        print("--- Approved write: add a comment (requires approval) ---")
+        write_query = f"Update work item {work_item_id} in project {project}: add a comment saying 'reviewed'."
+        write_result = await run_with_approval(agent, write_query, mcp)
+        print("\nFinal:", write_result, "\n")
+
+        print("--- Read again: verify the mutation actually took effect ---")
+        read_result = await agent.run(
+            f"Get work item {work_item_id} in project {project} and show its most recent comment.",
+            tools=mcp,
+        )
+        print(read_result)
 
 
 if __name__ == "__main__":

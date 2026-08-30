@@ -199,7 +199,34 @@ agent's own instructions merely promise.
 
 ## Part D — Approved write
 
-<!-- TODO: Goal / Time / Steps, once part_d_approved_write.py is authored. -->
+**Goal:** prove a write actually requires a human decision before it
+executes, and that once approved, the mutation is real — the same
+request Part C tried and had rejected now succeeds, but only after you
+type `y`.
+
+**Time:** ~15 min (this file is provided complete; read and run it).
+
+### Steps
+
+1. Run `part_c_read_only.py` first if you haven't — it shows the SAME
+   request being rejected server-side, so you have a clean before/after
+   comparison.
+2. Run it:
+   ```bash
+   cd labs/day3/python
+   uv run part_d_approved_write.py
+   ```
+3. When prompted `Approval requested for: wit_work_item_write` /
+   `Arguments: ...` / `Approve? (y/n):`, read the exact arguments before
+   deciding — type `y` to see the write go through, or `n` to see it
+   rejected by your own decision instead of the server.
+4. Read the "Read again" output — confirm the comment you approved is
+   actually present on the work item now, both in the printed response
+   and by checking the work item directly in Azure DevOps.
+5. Read through `part_d_approved_write.py`'s `run_with_approval()`
+   function, then `ado_mcp.build_write_enabled_ado_mcp()`'s default
+   `approval_mode` — note that only `wit_work_item_write` is listed, so
+   the verify-read in step 4 never paused for approval.
 
 **Definition of done:**
 - Write requires approval; dedicated project only
