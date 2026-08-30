@@ -116,7 +116,39 @@ streamed run can end with a validated typed value.
 
 ## Part B — Robustness (middleware)
 
-<!-- TODO: Goal / Time / Steps, once part_b_middleware.py is authored. -->
+**Goal:** wrap Part A's plain agent with three cross-cutting controls that
+don't touch the core instructions or tools — logging/timing, a request
+guardrail, and a bounded retry around a flaky tool.
+
+**Time:** ~15 min (this file is provided complete; read and run it).
+
+### Steps
+
+1. Run it:
+   ```bash
+   cd labs/day3/python
+   uv run part_b_middleware.py
+   ```
+2. Read the printed runs in order:
+   - **Run 1** is a plain request — only `[Logging]` lines print (start,
+     finish, duration); the guardrail and retry middleware stay silent
+     since neither condition triggers
+   - **Run 2** asks about a password — `[Guardrail]` blocks it before the
+     agent runs; `MiddlewareTermination` propagates out of `agent.run()`
+     to the caller, same as `demos/day3/module-4-demo-2-guardrail-termination/`
+   - **Run 3** calls a tool armed to fail twice then succeed — watch
+     `[Retry]` print each attempt, then "succeeded on attempt 3"
+   - **Run 4** calls the same tool armed to always fail — watch `[Retry]`
+     stop at `MAX_RETRIES` and give up gracefully, instead of looping
+     forever or crashing the request
+3. Run the isolation tests (no Foundry credentials needed — these test the
+   middleware logic directly with fake context objects):
+   ```bash
+   uv run pytest tests/test_part_b_middleware.py -v
+   ```
+4. Read through `part_b_middleware.py` itself, then
+   `tests/test_part_b_middleware.py` — note how the tests never construct
+   a real agent, only the exact attributes each middleware reads/writes.
 
 **Definition of done:**
 - Guard and failure path are observable; retry is bounded
