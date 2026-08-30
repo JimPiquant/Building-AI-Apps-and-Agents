@@ -32,6 +32,10 @@ Module 9's "Prerequisites for the future lab" slide: -->
 - A Foundry project + judge model deployment for Part E's `FoundryEvals`
 - `uv` installed (from Day 1)
 - `az login` works against your Azure tenant
+- Be ready for a one-time browser sign-in prompt against your Azure DevOps
+  tenant the first time you run Part C or Part D
+  (`InteractiveBrowserCredential`, cached after that — see
+  `python/ado_mcp.py`)
 
 ### Azure DevOps setup — TODO
 
@@ -157,7 +161,36 @@ guardrail, and a bounded retry around a flaky tool.
 
 ## Part C — Read-only Azure DevOps MCP
 
-<!-- TODO: Goal / Time / Steps, once part_c_read_only.py is authored. -->
+**Goal:** prove that `X-MCP-Readonly: true` is a real server-side filter,
+enforced by the Azure DevOps MCP endpoint itself — not something the
+agent's own instructions merely promise.
+
+**Time:** ~15 min (this file is provided complete; read and run it).
+
+### Steps
+
+1. Make sure your `.env` has `AZURE_DEVOPS_ORG`, `AZURE_DEVOPS_PROJECT`,
+   `AZURE_DEVOPS_TENANT_ID`, and `AZURE_DEVOPS_WORK_ITEM_ID` filled in —
+   see Prerequisites above.
+2. Run it:
+   ```bash
+   cd labs/day3/python
+   uv run part_c_read_only.py
+   ```
+   The first run opens a browser for a one-time Entra sign-in against your
+   Azure DevOps tenant (separate from the `az login` your Foundry calls
+   use) — subsequent runs reuse the cached token.
+3. Read the printed output in order:
+   - **Read** — the agent gets the known work item and summarizes its
+     title/state; verify this matches what's actually in your Azure
+     DevOps project
+   - **Write attempt** — the agent tries to add a comment to the same
+     work item; the server rejects it because the MCP tool sent
+     `X-MCP-Readonly: true` — read the response text to see how the
+     rejection surfaces back through the agent (no exception, no crash)
+4. Read through `ado_mcp.py`, then `part_c_read_only.py` — note how
+   `build_read_only_ado_mcp()` is the only place `X-MCP-Readonly` is set;
+   Part D reuses the same module with that flag flipped.
 
 **Definition of done:**
 - Read succeeds; dedicated project only
