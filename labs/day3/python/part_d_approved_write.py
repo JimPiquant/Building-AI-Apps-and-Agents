@@ -49,7 +49,6 @@ from __future__ import annotations
 import asyncio
 import os
 from pathlib import Path
-from typing import Any
 
 from dotenv import load_dotenv
 
@@ -74,28 +73,26 @@ def build_agent() -> Agent:
 async def run_with_approval(agent: Agent, query: str, mcp: MCPStreamableHTTPTool) -> AgentResponse:
     """Run a request that may pause for approval, resuming after each decision.
 
-    Mirrors demos/day3/module-5-demo-2-approval-mode/main.py's pause/resume
-    loop exactly: when a tool call needs approval, agent.run() returns
-    immediately with result.user_input_requests populated instead of
-    executing the tool. Show each request's name/arguments, collect a
-    decision, and resume the run with that decision until nothing is left
-    pending.
+    Reuse one session so Foundry retains the complete assistant response,
+    including reasoning content associated with an approved function call.
     """
-    result = await agent.run(query, tools=mcp)
+    session = agent.create_session()
+    result = await agent.run(query, tools=mcp, session=session)
 
     while result.user_input_requests:
-        new_inputs: list[Any] = [query]
+        approval_responses = []
         for request in result.user_input_requests:
             if request.function_call is None:
                 continue
             print(f"\nApproval requested for: {request.function_call.name}")
             print(f"Arguments: {request.function_call.arguments}")
             approval = input("Approve? (y/n): ")
-            new_inputs.append(Message("assistant", [request]))
-            new_inputs.append(
-                Message("user", [request.to_function_approval_response(approval.lower() == "y")])
-            )
-        result = await agent.run(new_inputs, tools=mcp)
+            approval_responses.append(request.to_function_approval_response(approval.lower() == "y"))
+        result = await agent.run(
+            Message("user", approval_responses),
+            tools=mcp,
+            session=session,
+        )
 
     return result
 

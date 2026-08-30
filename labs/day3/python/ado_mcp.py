@@ -92,5 +92,10 @@ def build_write_enabled_ado_mcp(
     is not listed in either key, so it proceeds automatically.
     """
     if approval_mode is None:
-        approval_mode = {"always_require_approval": ["wit_work_item_write"]}
+        approval_mode = {
+            "always_require_approval": [
+                "wit_work_item_write",
+                "wit_work_item_comment_write",
+            ]
+        }
     return _build_ado_mcp(readonly=False, approval_mode=approval_mode)
