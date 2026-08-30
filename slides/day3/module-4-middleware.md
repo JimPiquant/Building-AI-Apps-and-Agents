@@ -22,7 +22,7 @@ deck: module-4-middleware.pptx
 
 - Middleware implements cross-cutting concerns
   - Logging
-  - Security valication
+  - Security validation
   - Error handling
   - Transformation of results
 - Separate from your core logic
@@ -55,7 +55,7 @@ All types support both function-based and class-based implementations
 - Agent-level middleware wraps run-level middleware
 - Function/chat middleware follows the same wrapping principle
 
-##  Agent vs Run Scope
+## Agent vs Run Scope
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/agent-vs-run-scope?tabs=python -->
 <!-- notes: Agent-level controls are persistent and outermost. Run-level middleware is request-specific and sits inside agent-level middleware. Use run scope for diagnostics or policy variations that truly belong to one request. -->
@@ -120,7 +120,7 @@ async def timing(context, call_next):
         )
 ```
 
-Then add the middleware when creating your agent: middleware=[(add your middleware here)]
+Then reference the middleware when creating your agent: middleware=[(add your middleware here)]
 
 ## Guardrails can short-circuit
 <!-- layout: flow -->
@@ -217,7 +217,7 @@ Run the official `atr_validation_middleware.py` sample live: a benign query pass
   - Apply standard governance and runtime controls at well-defined points
   - Implements **Agent Hooks Specification**
   - Control plane, not telemetry plane
-  - Interceptors return a verdit that can optionally be enforced
+  - Interceptors return a verdict that can optionally be enforced
 
 ## Takeaways
 <!-- layout: takeaways -->

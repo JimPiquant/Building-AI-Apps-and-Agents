@@ -15,7 +15,7 @@ deck: module-7-evaluation.pptx
 
 - Run fast local checks, cloud-based Foundry evaluators, or both in a single evaluation run
 
-## Local checks and Foundry evaluators complement each other 
+## Local checks and Foundry evaluators complement each other
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/evaluation?pivots=programming-language-python | https://learn.microsoft.com/en-us/agent-framework/integrations/by-component/evaluation/microsoft-foundry?tabs=python -->
 <!-- notes: Local checks are fast and deterministic. FoundryEvals uses the Foundry evaluation service and requires a project plus judge model deployment. A single run can include both providers and returns separate results. -->
@@ -24,7 +24,7 @@ deck: module-7-evaluation.pptx
   - No evaluator API call
   - Exact tool names and argument subsets
   - Fast inner loop and CI smoke tests
-- **Microsoft Foundry Evalutators: FoundryEvals**
+- **Microsoft Foundry Evaluators: FoundryEvals**
   - Cloud-based evaluation service
   - LLM-as-judge quality and agent behavior
   - Portal dashboards and comparisons

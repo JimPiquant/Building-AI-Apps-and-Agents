@@ -15,7 +15,7 @@ deck: module-6-azure-devops-mcp.pptx
 
 - Remote server: GA · Foundry catalog integration: preview label in current docs
 
-## Wwo status labels
+## Two status labels
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/azure/devops/release-notes/2026/sprint-278-update | https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/model-context-protocol -->
 <!-- notes: This resolves the known documentation discrepancy. GA describes the Azure DevOps hosted service. Preview describes the Azure DevOps entry in Foundry's Add Tools catalog. One does not automatically change the other. -->
