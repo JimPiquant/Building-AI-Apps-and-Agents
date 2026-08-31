@@ -28,15 +28,16 @@ Story (one agent, two requests against the known work item in .env):
 
 Definition of done (from labs/day3/README.md / Module 9's slide):
   - Write requires approval; the read-after-write verifies the mutation;
-    dedicated project only — never point this at a shared/production
-    Azure DevOps organization
+    dedicated project only — never point this at your organization's real
+    production Azure DevOps project
 
 Prereqs:
   1. `uv run part_c_read_only.py` has run at least once (confirms your
      ADO connection and .env are correct, and shows what the SAME request
      looks like when the server offers no write tool at all)
-  2. Your own Entra-backed Azure DevOps org/project + a known work item ID
-     are set in .env — see labs/day3/README.md's Prerequisites section
+  2. The workshop's shared Azure DevOps org + your own dedicated project,
+     plus a known work item ID, are set in .env — see labs/day3/README.md's
+     Prerequisites section
 
 Run with:
     uv run part_d_approved_write.py

@@ -2,8 +2,8 @@
 Day 3 Lab — Part C — Read-only Azure DevOps MCP.
 
 This file is provided complete — run it to prove the read-only header
-holds against your own Azure DevOps organization, then read through it
-before moving on to Part D.
+holds against the workshop's Azure DevOps organization, then read through
+it before moving on to Part D.
 
 Story (one agent, two requests against the known work item in .env):
   1. A read request — should succeed and return the title/state.
@@ -24,13 +24,14 @@ inline.
 
 Definition of done (from labs/day3/README.md / Module 9's slide):
   - Read succeeds; the write request completes with no write tool having
-    been offered; dedicated project only — never point this at a
-    shared/production Azure DevOps organization
+    been offered; dedicated project only — never point this at your
+    organization's real production Azure DevOps project
 
 Prereqs:
   1. `uv run agent.py` prints a greeting (baseline works)
-  2. Your own Entra-backed Azure DevOps org/project + a known work item ID
-     are set in .env — see labs/day3/README.md's Prerequisites section
+  2. The workshop's shared Azure DevOps org + your own dedicated project,
+     plus a known work item ID, are set in .env — see labs/day3/README.md's
+     Prerequisites section
   3. Be ready for a one-time browser sign-in prompt
      (InteractiveBrowserCredential, cached after the first run — see
      ado_mcp.py)

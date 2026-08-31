@@ -17,15 +17,16 @@ Five parts, composing every primitive from Day 3's lecture modules:
 
 Estimated time: **~75 min** (~15 min per part — every part is provided
 complete; you run and read, not author from scratch), plus a one-time
-Azure DevOps setup below if you don't already have a personal,
+Azure DevOps project setup below within the workshop's shared,
 Entra-backed organization. Python only, per workshop policy.
 
 ## Prerequisites
 
 - A working Foundry project and `az login` from Days 1-2 — each part here
   builds its own `FoundryChatClient`; no code from the Day 2 lab is imported
-- Your own Entra-backed Azure DevOps Services organization, plus a dedicated
-  workshop project within it — **not** a shared/production org
+- The workshop's shared, Entra-backed Azure DevOps Services organization,
+  plus your own dedicated project within it — **not** your organization's
+  real production project
 - A known work item ID in that project (seed one; have a reset/cleanup plan
   for Part D, which mutates it)
 - Read access first; write access separately approved (see Part D)
@@ -39,18 +40,26 @@ Entra-backed organization. Python only, per workshop policy.
 
 ### Azure DevOps setup
 
-This is **a shared test instance, not production organization** —
-the same requirement Day 3's Module 6 demonstration used. If you already have an
-Entra-backed Azure DevOps organization you can use for this lab, skip to
-[Fill in `.env`](#fill-in-env). Otherwise, one-time setup (~10 min):
+The workshop provides **a shared, Entra-backed Azure DevOps Services
+organization** — a test instance, not your organization's production
+Azure DevOps — the same one Day 3's Module 6 demonstration used. You'll
+be given sign-in details for it. Once you're signed in, create your own
+dedicated project and work item within it (steps 2-3 below); skip step 1
+entirely.
 
-1. **Create the organization, signed in with your work/school (Entra)
-   account** — this is the step that matters: signing in with a personal
-   Microsoft account creates an MSA-based organization, which the Azure
-   DevOps remote MCP server does not support (Module 6's own
-   "Prerequisites" slide: "Not supported — Standalone MSA organizations").
-   Signing in with your work/school account instead **automatically
-   connects** the new organization to that Entra tenant.
+Don't have access to the shared organization (for example, working
+through this lab outside the live session)? Do step 1 first to create
+your own personal one instead — everything else below works identically
+either way.
+
+1. **(Only if you don't have access to the shared organization) Create
+   your own, signed in with your work/school (Entra) account** — this is
+   the step that matters: signing in with a personal Microsoft account
+   creates an MSA-based organization, which the Azure DevOps remote MCP
+   server does not support (Module 6's own "Prerequisites" slide: "Not
+   supported — Standalone MSA organizations"). Signing in with your
+   work/school account instead **automatically connects** the new
+   organization to that Entra tenant.
    1. Go to [https://dev.azure.com](https://dev.azure.com) and sign in
       with your work/school account.
    2. Select **New organization**.
@@ -60,14 +69,17 @@ Entra-backed Azure DevOps organization you can use for this lab, skip to
    (Already have a non-Entra organization instead? See
    [Connect your organization to Microsoft Entra ID](https://learn.microsoft.com/azure/devops/organizations/accounts/connect-organization-to-azure-ad?view=azure-devops)
    rather than creating a new one.)
-2. **Create a disposable project.** You're prompted to create one right
-   after the organization is created — name it something like
-   `day3-lab`. This is your `AZURE_DEVOPS_PROJECT`.
+2. **Create your own dedicated project** in the organization (the shared
+   one you were given, or the one you just created) — name it something
+   like `day3-lab-<yourname>` so it's clearly yours within a shared org.
+   This is your `AZURE_DEVOPS_PROJECT`.
 3. **Create one work item.** Open the project → **Boards** → **New Work
    Item** → **Task** (or **Bug**). Give it any title. Note its numeric ID
    — this is your `AZURE_DEVOPS_WORK_ITEM_ID`. This is the item Part C
    reads and Part D mutates; have a reset/cleanup plan (or just accept it
-   ends up with a "reviewed" comment on it).
+   ends up with a "reviewed" comment on it). Since your project is your
+   own within the organization, this work item is yours alone — no
+   collision with other attendees sharing the same organization.
 4. **Find your Entra tenant ID** — this is your `AZURE_DEVOPS_TENANT_ID`:
    ```bash
    az account show --query tenantId -o tsv
