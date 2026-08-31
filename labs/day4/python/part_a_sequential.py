@@ -15,8 +15,18 @@ Story:
      live Foundry IQ knowledge base Day 2/3 used, so this lab has zero
      dependency on any Azure resource surviving intact since Day 2.
   2. Load the shared golden set (evals/golden_set.jsonl — the SAME
-     15 questions Parts B and C will also run) and run every question
-     through the workflow once.
+     15 questions Parts B and C will also run), but only run the FIRST
+     GOLDEN_SET_LIMIT (5) of them through the workflow — each question
+     runs 3 live agent turns (Planner, Retriever, Critic) with a fresh
+     workflow, so the full 15-question set is slow for a quick dry run.
+     Part A is the only part that limits the golden set this way; Parts
+     B and C still run all 15 (see their own files) since this speed
+     trade-off is specific to Part A's fast, provided-complete
+     read-and-run role. Note: the golden set's first 5 rows are all
+     `"expects_revision": false` clean questions (see
+     evals/golden_set.jsonl) — with the default limit, Part A's own
+     "no correction" limitation may NOT show up in this shorter run. Set
+     GOLDEN_SET_LIMIT higher (or None) locally if you want to see it live.
   3. For each question, extract the Critic's structured CriticVerdict
      from the workflow's terminal AgentResponse and compare it against
      the golden set's expectation.
@@ -99,6 +109,10 @@ from roles import CriticVerdict, build_critic, build_planner, build_retriever, l
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
+GOLDEN_SET_LIMIT = 5  # Part A only — each question is 3 live agent turns
+# with a fresh workflow, so the full 15-question set is slow for a quick
+# dry run. Set to None to run the whole golden set (matches Parts B/C).
+
 
 def extract_verdict(final) -> CriticVerdict:
     """Extract the Critic's structured CriticVerdict from the workflow's
@@ -123,7 +137,8 @@ def build_workflow(credential: AzureCliCredential):
 
 async def main() -> None:
     credential = AzureCliCredential()
-    golden_set = load_golden_set()
+    full_golden_set = load_golden_set()
+    golden_set = full_golden_set[:GOLDEN_SET_LIMIT]
 
     results = []
     for row in golden_set:
@@ -136,7 +151,7 @@ async def main() -> None:
         verdict = extract_verdict(final)
         results.append((row, verdict))
 
-    print(f"Part A — Sequential — {len(results)} golden-set questions\n")
+    print(f"Part A — Sequential — {len(results)} of {len(full_golden_set)} golden-set questions\n")
     approved_count = 0
     unexpected_fails = []
     for row, verdict in results:

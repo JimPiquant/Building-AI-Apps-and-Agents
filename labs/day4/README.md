@@ -106,11 +106,17 @@ and see, live, why Sequential can't be the whole answer.
      `SequentialBuilder(participants=[planner, retriever, critic]).build()`
      — Module 2's simplest orchestration builder, a flat participants list,
      strict order, no loop.
-   - Every one of the 15 golden-set questions runs through the workflow
-     exactly once. Most come back `APPROVED`. At least one — the golden
-     set marks a few with `"expects_revision": true` — comes back
-     `NOT APPROVED`, and stays that way: there's nowhere for that verdict
-     to go back to.
+   - Only the **first `GOLDEN_SET_LIMIT` (5) of the 15** golden-set
+     questions run by default — each question is 3 live agent turns with
+     a fresh workflow, so the full set is slow for a quick read-and-run.
+     Parts B and C still run all 15. The first 5 rows are all clean
+     `"expects_revision": false` questions, so **with the default limit
+     Part A's own "no correction" result may not show up** — set
+     `GOLDEN_SET_LIMIT = None` (or a higher number) at the top of the
+     file if you want to see it live.
+   - Most come back `APPROVED`. Any question the golden set marks
+     `"expects_revision": true` comes back `NOT APPROVED`, and stays that
+     way: there's nowhere for that verdict to go back to.
    - Finally, the same workflow gets wrapped with `workflow.as_agent()`
      and run once more — Module 1's "composition goes full circle" slide,
      now in code: the whole three-role pipeline, called just like a
