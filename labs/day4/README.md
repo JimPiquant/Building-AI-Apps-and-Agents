@@ -109,11 +109,10 @@ and see, live, why Sequential can't be the whole answer.
    - Only the **first `GOLDEN_SET_LIMIT` (5) of the 15** golden-set
      questions run by default — each question is 3 live agent turns with
      a fresh workflow, so the full set is slow for a quick read-and-run.
-     Parts B and C still run all 15. The first 5 rows are all clean
-     `"expects_revision": false` questions, so **with the default limit
-     Part A's own "no correction" result may not show up** — set
-     `GOLDEN_SET_LIMIT = None` (or a higher number) at the top of the
-     file if you want to see it live.
+     Parts B and C still run all 15. The golden set is ordered so those
+     first 5 rows are a representative mix — 3 clean successes + 2
+     revision-triggering questions — so Part A's "no correction" result
+     still shows up even in this shorter run.
    - Most come back `APPROVED`. Any question the golden set marks
      `"expects_revision": true` comes back `NOT APPROVED`, and stays that
      way: there's nowhere for that verdict to go back to.

@@ -22,11 +22,11 @@ Story:
      Part A is the only part that limits the golden set this way; Parts
      B and C still run all 15 (see their own files) since this speed
      trade-off is specific to Part A's fast, provided-complete
-     read-and-run role. Note: the golden set's first 5 rows are all
-     `"expects_revision": false` clean questions (see
-     evals/golden_set.jsonl) — with the default limit, Part A's own
-     "no correction" limitation may NOT show up in this shorter run. Set
-     GOLDEN_SET_LIMIT higher (or None) locally if you want to see it live.
+     read-and-run role. The golden set is ordered (2026-08-31) so those
+     first 5 rows are a representative mix — 3 clean successes + 2
+     revision-triggering questions (see evals/golden_set.jsonl) — so
+     Part A's own "no correction" limitation still shows up even in this
+     shorter run.
   3. For each question, extract the Critic's structured CriticVerdict
      from the workflow's terminal AgentResponse and compare it against
      the golden set's expectation.
