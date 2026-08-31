@@ -1,28 +1,36 @@
 // golden_set.jsonl — shared golden set for Parts A, B, and C.
 //
 // Format: one JSON object per line. Lines starting with // are ignored by
-// the runner (each part's main() must strip them before parsing).
-// Build this ONCE, before Part A — the same ~15 questions run against all
-// three parts, which is what makes the eval deltas between parts mean
-// something instead of being noise from different test data.
-//
-// Requirements (Module 7's "Build a golden set" slide):
-//   ~15 realistic questions, each with expected citations/answers as
-//   ground truth. Cover the real branches:
-//     - a question that grounds cleanly on the first pass (Part A should
-//       already handle these)
-//     - a question that should trigger the Critic's revision loop (Part
-//       A will fail these; Parts B/C should not)
-//     - a general-knowledge question needing no retrieval at all
+// the runner (each part's main() strips them before parsing). Built once
+// here — the same 15 questions run against all three parts, which is what
+// makes the eval deltas between parts mean something instead of being
+// noise from different test data.
 //
 // Schema (per row):
 //   {
 //     "query": "the user's question",
-//     "expected_citations": ["...zero or more expected source references..."],
-//     "expects_revision": true | false   // true if this question should
-//                                        // trigger at least one Critic
-//                                        // reject-and-loop decision
+//     "expected_citations": ["...zero or more expected doc filenames..."],
+//     "expects_revision": true | false   // true if this question is hard
+//                                        // enough that Part A's Critic
+//                                        // (no correction) is expected to
+//                                        // NOT approve it on the first pass
 //   }
 //
-// Example — DELETE this line and add your ~15 entries below.
-// {"query": "What authentication methods does the Contoso API support?", "expected_citations": ["docs/auth.md"], "expects_revision": false}
+// Grounded against the real Day 2 knowledge base documents
+// (labs/day2/python/data/docs/) — reuse the SAME Foundry IQ knowledge
+// base, nothing new to provision.
+{"query": "How do I generate an API key?", "expected_citations": ["authentication.md"], "expects_revision": false}
+{"query": "What roles can a user have on a Contoso developer account?", "expected_citations": ["account-management.md"], "expects_revision": false}
+{"query": "What SDKs does Contoso officially support?", "expected_citations": ["faq.md"], "expects_revision": false}
+{"query": "What is the base URL for the Contoso API?", "expected_citations": ["api-reference.md"], "expects_revision": false}
+{"query": "What are the prerequisites before I make my first API call?", "expected_citations": ["getting-started.md"], "expects_revision": false}
+{"query": "When are Contoso invoices due after a statement generates?", "expected_citations": ["billing.md"], "expects_revision": false}
+{"query": "My API calls are failing to authenticate - what should I check first?", "expected_citations": ["troubleshooting-login.md"], "expects_revision": false}
+{"query": "What does a 429 response mean?", "expected_citations": ["error-codes.md", "rate-limits.md"], "expects_revision": false}
+{"query": "Why would my account enter payment_review status?", "expected_citations": ["payment-review.md"], "expects_revision": false}
+{"query": "What HTTP status code is returned when my request isn't authenticated, and exactly what should I do about it?", "expected_citations": ["authentication.md", "error-codes.md"], "expects_revision": false}
+{"query": "Compare the standard rate limits across all Contoso plan tiers and recommend which plan fits a bursty traffic pattern.", "expected_citations": ["rate-limits.md"], "expects_revision": true}
+{"query": "Walk me through diagnosing a 401 error end-to-end, from first symptom to final resolution, citing every relevant doc along the way.", "expected_citations": ["troubleshooting-login.md", "authentication.md", "error-codes.md"], "expects_revision": true}
+{"query": "If my account enters payment_review and I don't resolve it before my next invoice is due, what exactly happens to my API access and my account status?", "expected_citations": ["payment-review.md", "billing.md"], "expects_revision": true}
+{"query": "What's the capital of France?", "expected_citations": [], "expects_revision": false}
+{"query": "Can Contoso support cancel a specific pending order for me right now?", "expected_citations": [], "expects_revision": true}

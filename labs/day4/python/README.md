@@ -8,7 +8,7 @@ This directory holds the Python code for the Day 4 lab. Start here after you
 | File | Part | What it does |
 |---|---|---|
 | [`agent.py`](agent.py) | prereq | Baseline sanity check — plain MAF agent, no workflow |
-| [`roles.py`](roles.py) | A/B/C | Shared: Planner/Retriever/Critic agent factories + the `Answer` model |
+| [`roles.py`](roles.py) | A/B/C | Shared: Planner/Retriever/Critic agent factories + their structured-output models (`Plan`, `Evidence`, `RetrievalResult`, `Answer`, `CriticVerdict`) |
 | [`evals/golden_set.jsonl`](evals/golden_set.jsonl) | prereq | ~15 questions, built once, reused by all 3 parts |
 | [`part_a_sequential.py`](part_a_sequential.py) | A | `SequentialBuilder`, no correction — the limitation, live |
 | [`part_b_custom_graph.py`](part_b_custom_graph.py) | B | `WorkflowBuilder` + conditional edge + required budget guardrail |

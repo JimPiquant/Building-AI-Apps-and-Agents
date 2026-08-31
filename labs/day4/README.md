@@ -73,7 +73,40 @@ labs/day4/
 
 ## Part A — Sequential (warm-up)
 
-<!-- TODO: Goal / Time / Steps, once part_a_sequential.py is authored. -->
+**Goal:** stand up the shared Planner/Retriever/Critic roles for the first
+time, wired together with the simplest orchestration builder there is —
+and see, live, why Sequential can't be the whole answer.
+
+**Time:** ~15 min (this file is provided complete; read and run it).
+
+### Steps
+
+1. Build the golden set first, if you haven't already —
+   `evals/golden_set.jsonl` is shared across all 3 parts and already
+   contains 15 questions grounded in your Day 2 docs.
+2. Run it:
+   ```bash
+   cd labs/day4/python
+   uv run python part_a_sequential.py
+   ```
+3. Read the printed results in order:
+   - `roles.py` builds the Planner, Retriever, and Critic as three
+     separate agents, each with a `default_options={"response_format":
+     ...}` structured output — Plan, RetrievalResult, and CriticVerdict.
+   - `part_a_sequential.py` wires them into one workflow with
+     `SequentialBuilder(participants=[planner, retriever, critic]).build()`
+     — Module 2's simplest orchestration builder, a flat participants list,
+     strict order, no loop.
+   - Every one of the 15 golden-set questions runs through the workflow
+     exactly once. Most come back `APPROVED`. At least one — the golden
+     set marks a few with `"expects_revision": true` — comes back
+     `NOT APPROVED`, and stays that way: there's nowhere for that verdict
+     to go back to.
+4. That last point IS Part A's point, not a bug to chase down:
+   `SequentialBuilder`'s own docs are explicit that "Order Matters" —
+   agents execute strictly in the order given, with no loop-back to an
+   earlier participant. Part B rebuilds this same golden set against a
+   custom `WorkflowBuilder` graph specifically to fix this.
 
 **Definition of done:**
 - Runs end-to-end on the golden set; the "no correction" limitation shows
