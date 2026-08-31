@@ -14,6 +14,7 @@ This directory holds the Python code for the Day 3 lab. Start here after you
 | [`part_c_read_only.py`](part_c_read_only.py) | C | Read-only ADO MCP (`X-MCP-Readonly: true`) |
 | [`part_d_approved_write.py`](part_d_approved_write.py) | D | Approval-gated write, re-read to verify the mutation |
 | [`part_e_evaluate.py`](part_e_evaluate.py) | E | `evaluate_agent` / `ExpectedToolCall` / `LocalEvaluator` / `FoundryEvals` over the tool contract |
+| [`part_f_optional_harness.py`](part_f_optional_harness.py) | F *(optional)* | `create_harness_agent` vs. plain `Agent` — awareness/comparison only, provided complete |
 | [`tests/test_part_b_middleware.py`](tests/test_part_b_middleware.py) | B | Self-check tests — run these FIRST (see them fail cleanly), then author until 5/5 pass |
 | [`solutions/`](solutions/) | A, B | Completed reference for each part's authoring exercise — try it yourself first |
 
@@ -67,6 +68,16 @@ issue reports "unavailable" per case rather than failing the whole run —
 the required `LocalEvaluator` results (this part's actual definition of
 done) run first and are unaffected.
 
+## Part F (optional)
+
+`part_f_optional_harness.py` is stretch content for anyone who finishes
+Parts A-E early — not required, not graded, provided complete (nothing to
+author). It compares a plain `Agent` against the same chat client wrapped
+with `create_harness_agent`, matching Module 8's own "awareness and
+comparison only" framing. See that file's module docstring for what it
+deliberately leaves out (web search, looping, skills, shell tooling,
+`GitHubCopilotAgent`) and why.
+
 ## Reference
 
 - Module 1 slides — Sessions & Conversation State
@@ -75,4 +86,5 @@ done) run first and are unaffected.
 - Module 5 slides — MCP with Agent Framework
 - Module 6 slides — Azure DevOps Remote MCP
 - Module 7 slides — Evaluation
+- Module 8 slides — OPTIONAL Agent Harness + GitHub Copilot Agent (Part F)
 - Module 9 slides — Day 3 Lab Kickoff (the architecture this lab implements)

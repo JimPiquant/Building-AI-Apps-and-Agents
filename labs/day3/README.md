@@ -7,7 +7,8 @@ contract it proves. Parts A and B are a mix: some pieces are provided,
 some you author yourself, test-first where a test exists. The same
 patterns are what you'd wire into a real production agent.
 
-Five parts, composing every primitive from Day 3's lecture modules:
+Five required parts plus one optional stretch part, composing every
+primitive from Day 3's lecture modules:
 
 | Part | Focus | Module(s) | You author |
 |---|---|---|---|
@@ -16,12 +17,13 @@ Five parts, composing every primitive from Day 3's lecture modules:
 | **C** | Read-only Azure DevOps MCP | 5, 6 | — (provided complete) |
 | **D** | Approved write | 5 | — (provided complete) |
 | **E** | Evaluation | 7 | — (provided complete) |
+| **F** *(optional)* | Agent Harness | 8 | — (provided complete; awareness/comparison only) |
 
-Estimated time: **~125 min** (Part A ~30 min, Part B ~50 min, Parts C-E
-~15 min each — provided complete; you run and read those, not author
-from scratch), plus a one-time Azure DevOps project setup below within
-the workshop's shared, Entra-backed organization. Python only, per
-workshop policy.
+Estimated time: **~125 min required** (Part A ~30 min, Part B ~50 min,
+Parts C-E ~15 min each — provided complete; you run and read those, not
+author from scratch) **+ ~15-20 min optional** for Part F, plus a
+one-time Azure DevOps project setup below within the workshop's shared,
+Entra-backed organization. Python only, per workshop policy.
 
 ## Prerequisites
 
@@ -125,6 +127,7 @@ labs/day3/
     ├── part_c_read_only.py         # Part C: read-only ADO MCP (X-MCP-Readonly: true)
     ├── part_d_approved_write.py    # Part D: approval-gated write, re-read to verify
     ├── part_e_evaluate.py          # Part E: evaluate_agent / ExpectedToolCall / LocalEvaluator / FoundryEvals
+    ├── part_f_optional_harness.py  # Part F (OPTIONAL): create_harness_agent vs. plain Agent comparison — awareness only
     ├── solutions/
     │   ├── part_a_session_response.py  # completed reference for Part A's authoring step (stream_typed_response()) — try it yourself first; runs in the same uv venv as the lab files
     │   └── part_b_middleware.py        # completed reference for Part B's authoring steps (GuardrailMiddleware.process() + resilient_tool_middleware()) — try it yourself first
@@ -380,6 +383,51 @@ section of `part_e_evaluate.py`'s module docstring for why.
 
 **Definition of done:**
 - Expected tool/action/args are reported; no universal pass threshold claimed
+
+---
+
+## Part F (OPTIONAL) — Agent Harness
+
+**Goal:** none required — this is stretch content for anyone who finishes
+Parts A-E early. Matches Module 8's own framing exactly: "Awareness and
+comparison only · no required lab work."
+
+**Time:** ~15-20 min, optional.
+
+### Steps
+
+1. Run it:
+   ```bash
+   cd labs/day3/python
+   uv run part_f_optional_harness.py
+   ```
+2. Compare the two runs it prints:
+   - **Plain Agent** — the same shape as every other agent you've built
+     today
+   - **Harness Agent** — the SAME chat client, wrapped with
+     `create_harness_agent(client=...)` instead of `Agent(client=...)`.
+     Read the printed note after this run: todo tracking and plan/execute
+     mode tracking were composed around your client automatically —
+     Module 8's "create_harness_agent architecture" flow (chat client →
+     chat pipeline → providers → middleware → your application UX), not
+     a second runtime.
+3. Read `part_f_optional_harness.py`'s module docstring — it explains two
+   things this file deliberately does NOT demonstrate, and why (both
+   straight from Module 8's own slides):
+   - No web search, looping, skills, or shell tooling — Module 8's
+     capability table marks several of these "Experimental" or
+     pre-release, out of scope for an unsupervised stretch exercise
+   - No `GitHubCopilotAgent` code — Module 8 is explicit there is "no
+     official direct composition pattern" combining it with the harness;
+     it's a separate MAF agent integration with its own permission model,
+     recommended to run inside Docker/a dev container once shell/file
+     access is granted
+4. Re-read Module 8's "Choose the least opinionated fit" table — with
+   both runs fresh, decide for yourself which of the three (plain Agent,
+   Harness Agent, GitHubCopilotAgent) you'd reach for on a real task.
+
+**Definition of done:** none — optional and ungraded, matching Module 8's
+own "end without assigning lab work."
 
 ---
 
