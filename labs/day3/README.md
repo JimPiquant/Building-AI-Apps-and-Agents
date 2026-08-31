@@ -39,7 +39,7 @@ Entra-backed organization. Python only, per workshop policy.
 
 ### Azure DevOps setup
 
-This is **a personal instance, not a shared or production organization** —
+This is **a shared test instance, not production organization** —
 the same requirement Day 3's Module 6 demonstration used. If you already have an
 Entra-backed Azure DevOps organization you can use for this lab, skip to
 [Fill in `.env`](#fill-in-env). Otherwise, one-time setup (~10 min):
@@ -349,4 +349,3 @@ module named it the **evaluation anchor**: the habit you started today
 (golden cases, repeated runs, tool-call correctness) extends to
 trajectory evaluation, cost-per-successful-outcome, and a regression
 harness — now applied across multiple cooperating agents instead of one.
-Nothing here commits you to a specific Day 4 lab shape.
