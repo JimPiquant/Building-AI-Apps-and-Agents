@@ -408,6 +408,38 @@ function renderCompare(slide, items) {
   });
 }
 
+// Column widths proportional to each column's longest cell (by character
+// count, consistent with the character-based height estimates used
+// elsewhere in this file) rather than split evenly. An even split badly
+// starves whichever column happens to hold the longest prose — forcing
+// extra wrapped lines and taller rows — while leaving a short column
+// (e.g. a "Pattern" name) with wasted white space. Each column is floored
+// at a minimum width so a short column never looks unreadably cramped;
+// the floor is subtracted from the total budget first, then the
+// remainder is split across the still-unclamped columns in proportion to
+// their content length.
+function computeColumnWidths(rows, totalW, minW = 1.3) {
+  const columns = rows[0].length;
+  const maxLen = Array(columns).fill(0);
+  for (const row of rows) {
+    row.forEach((cell, i) => {
+      maxLen[i] = Math.max(maxLen[i], String(cell ?? "").length);
+    });
+  }
+  const totalLen = maxLen.reduce((a, b) => a + b, 0) || 1;
+  let widths = maxLen.map((len) => (totalW * len) / totalLen);
+  const belowFloor = widths.map((w) => w < minW);
+  const floorCount = belowFloor.filter(Boolean).length;
+  if (floorCount > 0 && floorCount < columns) {
+    const remaining = totalW - minW * floorCount;
+    const remainingLen = maxLen.reduce((sum, len, i) => sum + (belowFloor[i] ? 0 : len), 0) || 1;
+    widths = maxLen.map((len, i) => (belowFloor[i] ? minW : (remaining * len) / remainingLen));
+  } else if (floorCount === columns) {
+    widths = Array(columns).fill(totalW / columns); // degenerate: all columns tiny, fall back to even split
+  }
+  return widths;
+}
+
 function renderTable(slide, rows, opts = {}) {
   if (rows.length === 0) return;
   const columns = rows[0].length;
@@ -420,7 +452,7 @@ function renderTable(slide, rows, opts = {}) {
   const rowH = Math.min(0.72, (bottom - top) / rows.length);
   T.addTable(slide, rows, {
     x: 0.4, y: top, w: 9.2,
-    colW: Array(columns).fill(9.2 / columns),
+    colW: computeColumnWidths(rows, 9.2),
     rowH, fontSize,
   });
 }
