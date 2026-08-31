@@ -129,7 +129,52 @@ and see, live, why Sequential can't be the whole answer.
 
 ## Part B — A custom graph fixes it
 
-<!-- TODO: Goal / Time / Steps, once part_b_custom_graph.py is authored. -->
+**Goal:** fix Part A's exact limitation — a genuine revision loop, with a
+required budget guardrail so it can't run forever.
+
+**Time:** ~25 min (this file is provided complete; read and run it).
+
+### Steps
+
+1. Run it:
+   ```bash
+   cd labs/day4/python
+   uv run python part_b_custom_graph.py
+   ```
+2. Read the printed results in order:
+   - `part_b_custom_graph.py` rebuilds the SAME three roles (unchanged
+     from `roles.py`) on a custom `WorkflowBuilder` graph instead of
+     `SequentialBuilder` — a genuine rewrite of the orchestration
+     plumbing, not a small diff on Part A's code.
+   - A conditional edge routes the Critic's not-approved verdicts to
+     `revision_gate`, a small custom executor, instead of straight back
+     to the Planner (Module 3's "Conditional edges in code" slide, the
+     exact mechanic Sequential can't do).
+   - `revision_gate` tracks a revision counter in workflow state
+     (`ctx.set_state`/`get_state`) and either routes a new request back
+     to the Planner with the Critic's feedback, or — once the budget
+     (`MAX_REVISIONS = 3`) is exceeded — stops with a graceful
+     `GuardrailStop` instead of looping forever. **This guardrail is
+     required, not a stretch goal**: unlike `AgentLoopMiddleware`'s
+     built-in `max_iterations`, a conditional edge has no automatic cap.
+   - Every one of the same 15 golden-set questions runs through this
+     graph once. Compare the results against Part A's: questions Part A
+     marked `NOT APPROVED` with no way to recover should now come back
+     either `APPROVED` (the revision loop worked) or
+     `GUARDRAIL TRIPPED` (a genuinely hard question, stopped safely
+     instead of burning tokens forever).
+3. Read `part_b_custom_graph.py`'s module docstring for a grounding note
+   worth knowing: the real conditional-edge/state API is slightly more
+   involved than Module 3's simplified slide code — condition functions
+   receive the raw `AgentExecutorResponse`, not a pre-parsed verdict, and
+   they never get `ctx`, so the revision counter has to live in a small
+   downstream executor (`revision_gate`) rather than inside the condition
+   itself. The slide's code is the right *mental model*; this file is the
+   real, confirmed shape.
+4. Run the guardrail's isolation tests (no live Foundry call needed):
+   ```bash
+   uv run pytest tests/test_part_b_guardrail.py -v
+   ```
 
 **Definition of done:**
 - Revision loop works; trajectory eval scores and cost per successful

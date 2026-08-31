@@ -53,6 +53,20 @@ same way. As a safety net in case that inference is wrong,
 extract_verdict() below falls back to parsing the last message's raw
 text as JSON if `.value` isn't already a CriticVerdict.
 
+On rebuilding the workflow per golden-set question (not once, reused for
+all 15): confirmed directly against Microsoft Learn's Workflows "State"
+doc, "State Isolation" section — "Agent threads are persisted across
+workflow runs... if the same workflow instance is reused for different
+tasks or requests[, this] can lead to unintended state sharing. To
+ensure each task has isolated agent state, wrap agent and workflow
+creation inside a helper method so that each call produces new agent
+instances with their own threads." build_workflow() already IS that
+helper method (fresh Agent instances every call); main() below calls it
+fresh inside the golden-set loop for exactly this reason — otherwise
+question #2 would run with question #1's entire exchange still sitting
+in every agent's thread, which would both skew results and burn
+unnecessary tokens.
+
 --------------------------------------------------------------------------
 Definition of done for Part A (from labs/day4/README.md):
   - Runs end-to-end on the golden set; the "no correction" limitation
@@ -74,7 +88,6 @@ workflow.run() returned for yourself.
 from __future__ import annotations
 
 import asyncio
-import json
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -82,22 +95,9 @@ from dotenv import load_dotenv
 from agent_framework.orchestrations import SequentialBuilder
 from azure.identity import AzureCliCredential
 
-from roles import CriticVerdict, build_critic, build_planner, build_retriever
+from roles import CriticVerdict, build_critic, build_planner, build_retriever, load_golden_set
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
-
-GOLDEN_SET_PATH = Path(__file__).resolve().parent / "evals" / "golden_set.jsonl"
-
-
-def load_golden_set() -> list[dict]:
-    """Parse the shared JSONL golden set, skipping blank lines and // comments."""
-    rows: list[dict] = []
-    for line in GOLDEN_SET_PATH.read_text().splitlines():
-        stripped = line.strip()
-        if not stripped or stripped.startswith("//"):
-            continue
-        rows.append(json.loads(stripped))
-    return rows
 
 
 def extract_verdict(final) -> CriticVerdict:
@@ -111,7 +111,10 @@ def extract_verdict(final) -> CriticVerdict:
 
 
 def build_workflow(credential: AzureCliCredential):
-    """Part A: Planner -> Retriever -> Critic, no correction."""
+    """Part A: Planner -> Retriever -> Critic, no correction. Call this
+    fresh for every task/request (see module docstring on state
+    isolation) — never reuse one build_workflow() result across
+    unrelated questions."""
     planner = build_planner(credential)
     retriever = build_retriever(credential)
     critic = build_critic(credential)
@@ -120,11 +123,13 @@ def build_workflow(credential: AzureCliCredential):
 
 async def main() -> None:
     credential = AzureCliCredential()
-    workflow = build_workflow(credential)
     golden_set = load_golden_set()
 
     results = []
     for row in golden_set:
+        # Fresh workflow (fresh Agent instances, fresh threads) per question —
+        # required for state isolation, see module docstring.
+        workflow = build_workflow(credential)
         events = await workflow.run(row["query"])
         outputs = events.get_outputs()
         final = outputs[0]
@@ -169,9 +174,11 @@ async def main() -> None:
     # "composition goes full circle" slide, in code). Nothing about the
     # roles or the workflow changes — .as_agent() just lets any caller
     # invoke the whole three-role pipeline through the plain Agent
-    # interface, as if it were one agent.
+    # interface, as if it were one agent. Own fresh workflow instance
+    # again, same state-isolation reason as the loop above.
     print("\n--- Bonus: the same workflow, wrapped with .as_agent() ---")
-    pipeline_agent = workflow.as_agent(name="planner-retriever-critic-pipeline")
+    bonus_workflow = build_workflow(credential)
+    pipeline_agent = bonus_workflow.as_agent(name="planner-retriever-critic-pipeline")
     bonus_response = await pipeline_agent.run(
         "What are the prerequisites before I make my first API call?"
     )

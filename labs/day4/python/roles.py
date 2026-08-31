@@ -43,6 +43,7 @@ is required for these three roles to work together.
 """
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 from typing import Annotated
@@ -54,6 +55,7 @@ from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
 
 DOCS_DIR = Path(__file__).resolve().parent / "data" / "docs"
+GOLDEN_SET_PATH = Path(__file__).resolve().parent / "evals" / "golden_set.jsonl"
 
 
 class Plan(BaseModel):
@@ -175,3 +177,17 @@ def build_critic(credential: AzureCliCredential) -> Agent:
         ),
         default_options={"response_format": CriticVerdict},
     )
+
+
+def load_golden_set() -> list[dict]:
+    """Parse the shared JSONL golden set (evals/golden_set.jsonl), skipping
+    blank lines and // comments. Shared across Parts A, B, and C so all
+    three run against the exact same 15 questions — same parsing approach
+    Day 3's part_e_evaluate.py uses for its own golden set."""
+    rows: list[dict] = []
+    for line in GOLDEN_SET_PATH.read_text().splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("//"):
+            continue
+        rows.append(json.loads(stripped))
+    return rows
