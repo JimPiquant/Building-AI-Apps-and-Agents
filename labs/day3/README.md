@@ -1,26 +1,27 @@
 # Day 3 Lab — Session, streaming, robustness, Azure DevOps MCP, and evaluation
 
 Each part demonstrates one Day 3 primitive with its own standalone agent —
-not a single assistant you extend part to part (unlike Day 2's lab). Most
+not a single assistant you extend part to part (unlike Day 2's lab). Some
 parts are provided complete — run each, read the code, understand the
-contract it proves. Part A is a mix: some turns are provided, one you
-author yourself. The same patterns are what you'd wire into a real
-production agent.
+contract it proves. Parts A and B are a mix: some pieces are provided,
+some you author yourself, test-first where a test exists. The same
+patterns are what you'd wire into a real production agent.
 
 Five parts, composing every primitive from Day 3's lecture modules:
 
 | Part | Focus | Module(s) | You author |
 |---|---|---|---|
 | **A** | Session continuity + typed response | 1, 2 | Turn 4 (streaming + typed response) |
-| **B** | Robustness (middleware) | 4 | — (provided complete) |
+| **B** | Robustness (middleware) | 4 | `GuardrailMiddleware.process()` + `resilient_tool_middleware()`, test-first |
 | **C** | Read-only Azure DevOps MCP | 5, 6 | — (provided complete) |
 | **D** | Approved write | 5 | — (provided complete) |
 | **E** | Evaluation | 7 | — (provided complete) |
 
-Estimated time: **~90 min** (Part A ~30 min, Parts B-E ~15 min each —
-provided complete; you run and read those, not author from scratch),
-plus a one-time Azure DevOps project setup below within the workshop's
-shared, Entra-backed organization. Python only, per workshop policy.
+Estimated time: **~125 min** (Part A ~30 min, Part B ~50 min, Parts C-E
+~15 min each — provided complete; you run and read those, not author
+from scratch), plus a one-time Azure DevOps project setup below within
+the workshop's shared, Entra-backed organization. Python only, per
+workshop policy.
 
 ## Prerequisites
 
@@ -119,15 +120,16 @@ labs/day3/
     ├── README.md                   # Python starter guide
     ├── agent.py                    # baseline sanity check
     ├── part_a_session_response.py  # Part A: session, serialize/restore provided; YOU author stream_typed_response()
-    ├── part_b_middleware.py        # Part B: logging/timing, guardrail short-circuit, exception handling, bounded retry
+    ├── part_b_middleware.py        # Part B: logging/timing provided; YOU author GuardrailMiddleware.process() + resilient_tool_middleware(), test-first
     ├── ado_mcp.py                  # Part C/D: authenticated MCPStreamableHTTPTool client to Azure DevOps
     ├── part_c_read_only.py         # Part C: read-only ADO MCP (X-MCP-Readonly: true)
     ├── part_d_approved_write.py    # Part D: approval-gated write, re-read to verify
     ├── part_e_evaluate.py          # Part E: evaluate_agent / ExpectedToolCall / LocalEvaluator / FoundryEvals
     ├── solutions/
-    │   └── part_a_session_response.py  # completed reference for Part A's authoring step (stream_typed_response()) — try it yourself first; runs in the same uv venv as the lab files
+    │   ├── part_a_session_response.py  # completed reference for Part A's authoring step (stream_typed_response()) — try it yourself first; runs in the same uv venv as the lab files
+    │   └── part_b_middleware.py        # completed reference for Part B's authoring steps (GuardrailMiddleware.process() + resilient_tool_middleware()) — try it yourself first
     ├── tests/
-    │   └── test_part_b_middleware.py   # Part B: isolation tests for guardrail/retry behavior
+    │   └── test_part_b_middleware.py   # Part B: self-check tests — run these FIRST (see them fail), then author until 5/5 pass
     └── evals/
         └── tool_contract_golden_set.jsonl  # Part E: read, approved write, no-tool cases (rejected-write deferred)
 ```
@@ -185,16 +187,47 @@ Turn 4 yourself, `stream_typed_response()`).
 don't touch the core instructions or tools — logging/timing, a request
 guardrail, and a bounded retry around a flaky tool.
 
-**Time:** ~15 min (this file is provided complete; read and run it).
+**Time:** ~50 min (`LoggingTimingMiddleware` is provided; you author
+`GuardrailMiddleware.process()` and `resilient_tool_middleware()`
+yourself, test-first).
 
 ### Steps
 
-1. Run it:
+1. **Run the self-check test FIRST, before writing any code** — this is
+   deliberate, not a mistake:
    ```bash
    cd labs/day3/python
+   uv run pytest tests/test_part_b_middleware.py -v
+   ```
+   You should see `test_guardrail_short_circuits_blocked_request`,
+   `test_guardrail_allows_clean_request`, `test_retry_is_bounded`,
+   `test_retry_recovers_within_budget`, and
+   `test_retry_does_not_catch_unclassified_exceptions` all reported as
+   **FAILED**, each with a clear `NotImplementedError` message pointing
+   at the function you need to author — not a crash, not an import
+   error, not a collection error. That clean, readable failure is the
+   starting point for this exercise.
+2. Open `part_b_middleware.py` and author `GuardrailMiddleware.process()`
+   — follow the TODO comment above it (Module 4's "Termination has an
+   explicit result" contract: set `context.result`, THEN raise
+   `MiddlewareTermination`, in that order).
+3. Rerun the tests. The two `test_guardrail_*` tests should now pass; the
+   three `test_retry_*` tests still fail (expected — you haven't authored
+   that function yet).
+4. Author `resilient_tool_middleware()` — follow its TODO comment (Module
+   4's "Retry must be bounded and idempotent": classify, check safety,
+   back off, stop).
+5. Rerun the tests one more time — **all 5 should now pass.** This is
+   your actual definition of done for this part, not just "the file runs
+   without crashing."
+   - Stuck, or want to check your work at any point?
+     [`labs/day3/python/solutions/part_b_middleware.py`](python/solutions/part_b_middleware.py)
+     has a completed reference — try authoring it yourself first.
+6. Now run the file itself against live Foundry:
+   ```bash
    uv run part_b_middleware.py
    ```
-2. Read the printed runs in order:
+   Read the printed runs in order:
    - **Run 1** is a plain request — only `[Logging]` lines print (start,
      finish, duration); the guardrail and retry middleware stay silent
      since neither condition triggers
@@ -206,17 +239,15 @@ guardrail, and a bounded retry around a flaky tool.
    - **Run 4** calls the same tool armed to always fail — watch `[Retry]`
      stop at `MAX_RETRIES` and give up gracefully, instead of looping
      forever or crashing the request
-3. Run the isolation tests (no Foundry credentials needed — these test the
-   middleware logic directly with fake context objects):
-   ```bash
-   uv run pytest tests/test_part_b_middleware.py -v
-   ```
-4. Read through `part_b_middleware.py` itself, then
-   `tests/test_part_b_middleware.py` — note how the tests never construct
-   a real agent, only the exact attributes each middleware reads/writes.
+7. Read through `tests/test_part_b_middleware.py` — note how the tests
+   never construct a real agent, only the exact attributes each
+   middleware reads/writes; that's why they ran instantly in step 1 with
+   no Foundry credentials at all.
 
 **Definition of done:**
-- Guard and failure path are observable; retry is bounded
+- `tests/test_part_b_middleware.py` passes 5/5 (your own authored code,
+  not the provided stub)
+- Guard and failure path are observable when run live; retry is bounded
 
 ---
 

@@ -1,31 +1,36 @@
 """
-Day 3 Lab — Part B — Robustness (middleware).
+SOLUTIONS FOLDER — Day 3 Lab — Part B — Robustness (middleware).
 
-Run 1 (LoggingTimingMiddleware) is provided complete. Runs 2-4 exercise
-code YOU author: GuardrailMiddleware.process() and
-resilient_tool_middleware() are stubs — see their TODO comments below.
+This is the completed reference implementation. Try authoring
+GuardrailMiddleware.process() and resilient_tool_middleware() yourself in
+labs/day3/python/part_b_middleware.py FIRST (see that file's TODO
+comments) — come back here only to check your work or if you're stuck.
+LoggingTimingMiddleware and everything else in this file is identical to
+the lab's provided code.
+
+This file is provided complete — run it to see three middleware patterns in
+action, then read through it before moving on to Part C.
 
 Story (four runs against one agent):
   1. Normal run — LoggingTimingMiddleware (agent-level) wraps every run
      with a trace ID and duration, following the exact `timing()` pattern
      Module 4's "Logging and timing example" slide documents.
-  2. YOU AUTHOR THIS: Blocked run — GuardrailMiddleware (agent-level)
-     inspects the request, sets context.result to a controlled
-     AgentResponse, and raises MiddlewareTermination BEFORE the agent
-     ever runs — the exact contract Module 4's "Termination has an
-     explicit result" slide documents verbatim. (demos/day3/
-     module-4-demo-2-guardrail-termination/ blocks at the function/tool
-     level with FunctionMiddleware instead; this one blocks at the agent
-     level with AgentMiddleware, matching the slide's own code sample and
-     demos/day3/module-4-demo-1-onion-order/'s SecurityAgentMiddleware
-     precedent.)
-  3. YOU AUTHOR THIS: Flaky-tool run (recovers) — resilient_tool_middleware
-     (function-level) wraps a tool that fails its first two calls, then
-     succeeds. The middleware classifies TimeoutError as a transient
-     failure (per Module 4's "Retry must be bounded and idempotent"
-     slide: classify, check safety, back off, stop) and retries with a
-     short delay, up to a fixed MAX_RETRIES — the tool succeeds on the
-     3rd attempt, within budget.
+  2. Blocked run — GuardrailMiddleware (agent-level) inspects the request,
+     sets context.result to a controlled AgentResponse, and raises
+     MiddlewareTermination BEFORE the agent ever runs — the exact contract
+     Module 4's "Termination has an explicit result" slide documents
+     verbatim. (demos/day3/module-4-demo-2-guardrail-termination/ blocks
+     at the function/tool level with FunctionMiddleware instead; this one
+     blocks at the agent level with AgentMiddleware, matching the slide's
+     own code sample and demos/day3/module-4-demo-1-onion-order/'s
+     SecurityAgentMiddleware precedent.)
+  3. Flaky-tool run (recovers) — resilient_tool_middleware (function-level)
+     wraps a tool that fails its first two calls, then succeeds. The
+     middleware classifies TimeoutError as a transient failure (per
+     Module 4's "Retry must be bounded and idempotent" slide: classify,
+     check safety, back off, stop) and retries with a short delay, up to
+     a fixed MAX_RETRIES — the tool succeeds on the 3rd attempt, within
+     budget.
   4. Flaky-tool run (exhausts) — same middleware, but the tool is set to
      fail every call. After MAX_RETRIES attempts, the middleware gives up
      gracefully (context.result = a friendly message) instead of looping
@@ -46,7 +51,6 @@ Definition of done (from labs/day3/README.md / Module 9's slide):
   - Guard and failure path are observable (both middleware print clearly
     when they act); the retry is bounded — a fixed max attempt count, not
     an unbounded loop
-  - `tests/test_part_b_middleware.py` passes (self-check, no network calls)
 
 Prereqs:
   1. `uv run agent.py` prints a greeting (baseline works)
@@ -56,20 +60,11 @@ Prereqs:
 Run with:
     uv run part_b_middleware.py
 
-Self-check as you author (no network calls, no Foundry credentials
-needed): `uv run pytest tests/test_part_b_middleware.py -v`. Before
-you've implemented anything, `test_guardrail_*` and `test_retry_*` FAIL
-cleanly with a `NotImplementedError` message pointing at the TODO — that's
-expected, not a crash. Implement each function and rerun until they pass.
-
-Stuck, or want to check your work? labs/day3/python/solutions/part_b_middleware.py
-has a completed reference — try authoring it yourself first.
-
-Tip: once resilient_tool_middleware is implemented, set a breakpoint
-inside its `except TimeoutError` block and step through with the VS Code
-debugger (Run and Debug > Python File) to watch the attempt counter, the
-back-off delay, and the exact point where it gives up and sets
-context.result instead of re-raising.
+Tip: set a breakpoint inside resilient_tool_middleware's `except
+TimeoutError` block and step through with the VS Code debugger (Run and
+Debug > Python File) to watch the attempt counter, the back-off delay, and
+the exact point where it gives up and sets context.result instead of
+re-raising.
 """
 import asyncio
 import os
@@ -94,7 +89,7 @@ from agent_framework import (
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
 
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 MAX_RETRIES = 3
 BLOCKED_KEYWORDS = ("password", "secret", "credentials")
@@ -126,36 +121,18 @@ class GuardrailMiddleware(AgentMiddleware):
     Follows Module 4's "Termination has an explicit result" contract
     exactly: set context.result to a controlled AgentResponse, THEN raise
     MiddlewareTermination — never just return and assume the run stopped.
-
-    Stuck, or want to check your work? See
-    labs/day3/python/solutions/part_b_middleware.py — try authoring this
-    yourself first.
     """
 
-    # ---------------------------------------------------------------------
-    # TODO: implement process() below. Steps:
-    #   1. Get the last message's text — guard for context.messages being
-    #      empty (last_message = context.messages[-1] if context.messages
-    #      else None).
-    #   2. Lowercase it and check whether any BLOCKED_KEYWORDS substring
-    #      appears (any(word in text for word in BLOCKED_KEYWORDS)).
-    #   3. If blocked: print a message saying so, set context.result to a
-    #      controlled AgentResponse containing a refusal Message, THEN
-    #      raise MiddlewareTermination() — in that exact order. Do NOT
-    #      call call_next() on this branch.
-    #   4. If not blocked: await call_next() and return normally.
-    #
-    # Reference: slides/day3/module-4-middleware.md, "Termination has an
-    # explicit result", and demos/day3/module-4-demo-2-guardrail-termination/.
-    #
-    # Self-check (no network calls): uv run pytest tests/test_part_b_middleware.py -v
-    # test_guardrail_short_circuits_blocked_request and
-    # test_guardrail_allows_clean_request FAIL cleanly with a
-    # NotImplementedError message until this is implemented — that's
-    # expected, not a crash.
-    # ---------------------------------------------------------------------
     async def process(self, context: AgentContext, call_next: Callable[[], Awaitable[None]]) -> None:
-        raise NotImplementedError("Implement GuardrailMiddleware.process() — see the TODO comment above")
+        last_message = context.messages[-1] if context.messages else None
+        text = (last_message.text or "").lower() if last_message else ""
+        if any(word in text for word in BLOCKED_KEYWORDS):
+            print("[Guardrail] Blocked request — matched a sensitive keyword.")
+            context.result = AgentResponse(
+                messages=[Message("assistant", ["I can't process requests that mention credentials."])]
+            )
+            raise MiddlewareTermination()
+        await call_next()
 
 
 # Controls how many times flaky_data_service fails before it succeeds.
@@ -196,38 +173,24 @@ async def resilient_tool_middleware(
     would need an idempotency key first). Back off: a short fixed delay
     between attempts. Stop: after MAX_RETRIES attempts, give up and set a
     friendly context.result instead of looping forever or crashing.
-
-    Stuck, or want to check your work? See
-    labs/day3/python/solutions/part_b_middleware.py — try authoring this
-    yourself first.
     """
-    # ---------------------------------------------------------------------
-    # TODO: implement the bounded retry loop. Steps:
-    #   1. Loop attempt from 1 to MAX_RETRIES (inclusive).
-    #   2. Inside a try block, await call_next(). If it succeeds, print a
-    #      success message and RETURN immediately — do not keep retrying.
-    #   3. Catch ONLY TimeoutError as exc (the classified transient
-    #      failure). Any other exception type must NOT be caught here —
-    #      let it propagate.
-    #   4. On a caught TimeoutError: if this was the last attempt
-    #      (attempt == MAX_RETRIES), give up gracefully — print that
-    #      you're giving up, set context.result to a friendly fallback
-    #      string, and return (do NOT re-raise). Otherwise, print the
-    #      transient failure, back off briefly (await
-    #      asyncio.sleep(0.2 * attempt) — short and fixed, never
-    #      unbounded), and let the loop continue to the next attempt.
-    #
-    # Reference: slides/day3/module-4-middleware.md, "Retry must be
-    # bounded and idempotent", and
-    # https://learn.microsoft.com/en-us/agent-framework/concepts/agents/middleware/exception-handling?tabs=python
-    #
-    # Self-check (no network calls): uv run pytest tests/test_part_b_middleware.py -v
-    # test_retry_is_bounded, test_retry_recovers_within_budget, and
-    # test_retry_does_not_catch_unclassified_exceptions FAIL cleanly with
-    # a NotImplementedError message until this is implemented — that's
-    # expected, not a crash.
-    # ---------------------------------------------------------------------
-    raise NotImplementedError("Implement resilient_tool_middleware — see the TODO comment above")
+    function_name = context.function.name
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            print(f"[Retry] {function_name}: attempt {attempt}/{MAX_RETRIES}")
+            await call_next()
+            print(f"[Retry] {function_name}: succeeded on attempt {attempt}")
+            return
+        except TimeoutError as exc:
+            print(f"[Retry] {function_name}: attempt {attempt} failed transiently: {exc}")
+            if attempt == MAX_RETRIES:
+                print(f"[Retry] {function_name}: exhausted {MAX_RETRIES} attempts, giving up gracefully")
+                context.result = (
+                    "The data service is temporarily unavailable. "
+                    "Respond with: 'Sorry for the inconvenience, please try again later.'"
+                )
+                return
+            await asyncio.sleep(0.2 * attempt)  # short, fixed back-off — never unbounded
 
 
 def build_agent() -> Agent:

@@ -9,12 +9,13 @@ This directory holds the Python code for the Day 3 lab. Start here after you
 |---|---|---|
 | [`agent.py`](agent.py) | prereq | Baseline sanity check — plain MAF agent, no session, tools, or MCP |
 | [`part_a_session_response.py`](part_a_session_response.py) | A | Session create/reuse, serialize/restore provided; **you author** `stream_typed_response()` |
-| [`part_b_middleware.py`](part_b_middleware.py) | B | Logging/timing middleware, guardrail short-circuit, exception handling, bounded retry |
+| [`part_b_middleware.py`](part_b_middleware.py) | B | Logging/timing provided; **you author** `GuardrailMiddleware.process()` + `resilient_tool_middleware()`, test-first |
 | [`ado_mcp.py`](ado_mcp.py) | C/D | Authenticated `MCPStreamableHTTPTool` client to your Azure DevOps organization |
 | [`part_c_read_only.py`](part_c_read_only.py) | C | Read-only ADO MCP (`X-MCP-Readonly: true`) |
 | [`part_d_approved_write.py`](part_d_approved_write.py) | D | Approval-gated write, re-read to verify the mutation |
 | [`part_e_evaluate.py`](part_e_evaluate.py) | E | `evaluate_agent` / `ExpectedToolCall` / `LocalEvaluator` / `FoundryEvals` over the tool contract |
-| [`solutions/`](solutions/) | A | Completed reference for Part A's authoring exercise — try it yourself first |
+| [`tests/test_part_b_middleware.py`](tests/test_part_b_middleware.py) | B | Self-check tests — run these FIRST (see them fail cleanly), then author until 5/5 pass |
+| [`solutions/`](solutions/) | A, B | Completed reference for each part's authoring exercise — try it yourself first |
 
 ## Setup
 
@@ -32,11 +33,20 @@ main [lab README](../README.md#prerequisites).
 
 ## Authoring exercises
 
-Part A has one function you author yourself — `stream_typed_response()`
-in `part_a_session_response.py` — instead of running provided-complete
-code. Try it first; a completed reference lives in
-[`solutions/part_a_session_response.py`](solutions/part_a_session_response.py)
-if you get stuck or want to check your work.
+Two parts have you author real code instead of running provided-complete
+files — a completed reference for each lives in `solutions/`; try each
+one yourself first.
+
+- **Part A**: `stream_typed_response()` in `part_a_session_response.py`.
+  Reference: [`solutions/part_a_session_response.py`](solutions/part_a_session_response.py).
+- **Part B**: `GuardrailMiddleware.process()` and
+  `resilient_tool_middleware()` in `part_b_middleware.py` — **test-first**.
+  Run `uv run pytest tests/test_part_b_middleware.py -v` before writing
+  any code; you should see all 5 tests reported as `FAILED` with a clear
+  `NotImplementedError` message (not a crash or import error) pointing at
+  what to implement. Author each function, rerunning the tests as you go,
+  until all 5 pass. Reference:
+  [`solutions/part_b_middleware.py`](solutions/part_b_middleware.py).
 
 ## Part E evaluation model
 
