@@ -100,7 +100,7 @@ Rebuild Part A's three roles with `WorkflowBuilder` instead of `SequentialBuilde
 <!-- notes: Mirrors Day 3 Module 9's prerequisites-card style. The ADO MCP path is only needed for the optional Ticket agent stretch, not the core lab. -->
 
 1. **Day 3 lab complete** — a working single agent with memory, streaming, structured outputs, and MCP
-2. **Foundry IQ knowledge source** — the same one your Day 2/3 docs assistant already grounds against
+2. **Bundled reference docs** — included in the repo (`labs/day4/python/data/docs/`); nothing to provision, no live knowledge base required
 3. **A Foundry judge model deployment** — for cost/trajectory evaluation
 4. **(Optional stretch only)** — Day 3's Azure DevOps MCP path, for the Ticket agent
 

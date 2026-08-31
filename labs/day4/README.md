@@ -21,8 +21,6 @@ Estimated time: <!-- TODO -->. Python only, per workshop policy.
 
 - Day 3 lab complete and working (baseline single agent with memory,
   streaming, structured outputs, and MCP)
-- A Foundry IQ knowledge source — the same one your Day 2/3 docs
-  assistant already grounds against
 - A Foundry judge model deployment, for trajectory/cost evaluation
 - `uv` installed (from Day 1)
 - `az login` works against your Azure tenant
@@ -30,6 +28,11 @@ Estimated time: <!-- TODO -->. Python only, per workshop policy.
   only needed if you build the optional Ticket agent. See
   [`labs/day3/README.md`'s Azure DevOps setup](../day3/README.md#azure-devops-setup)
   section; nothing new to provision for the core lab.
+
+No Foundry IQ / Azure AI Search dependency: the Retriever role grounds
+against a small bundle of local docs shipped in this repo
+(`python/data/docs/*.md`, copied from Day 2), not a live knowledge base —
+nothing to have kept provisioned since Day 2.
 
 ### Fill in `.env`
 
@@ -59,7 +62,10 @@ labs/day4/
     ├── pyproject.toml              # uv-managed
     ├── README.md                   # Python starter guide
     ├── agent.py                    # baseline sanity check
-    ├── roles.py                    # shared: Planner/Retriever/Critic agent factories + Answer model
+    ├── roles.py                    # shared: Planner/Retriever/Critic agent factories + structured-output models + the search_docs tool
+    ├── data/
+    │   ├── README.md                # provenance note (copied from Day 2)
+    │   └── docs/                    # bundled local docs the Retriever's search_docs tool grounds against
     ├── part_a_sequential.py        # Part A: SequentialBuilder, no correction
     ├── part_b_custom_graph.py      # Part B: WorkflowBuilder + conditional edge + required guardrail
     ├── part_c_group_chat.py        # Part C: GroupChatBuilder swap, compared against Part B
@@ -83,7 +89,8 @@ and see, live, why Sequential can't be the whole answer.
 
 1. Build the golden set first, if you haven't already —
    `evals/golden_set.jsonl` is shared across all 3 parts and already
-   contains 15 questions grounded in your Day 2 docs.
+   contains 15 questions grounded in the bundled local docs
+   (`data/docs/*.md`, copied from Day 2 — nothing to provision).
 2. Run it:
    ```bash
    cd labs/day4/python
@@ -93,6 +100,8 @@ and see, live, why Sequential can't be the whole answer.
    - `roles.py` builds the Planner, Retriever, and Critic as three
      separate agents, each with a `default_options={"response_format":
      ...}` structured output — Plan, RetrievalResult, and CriticVerdict.
+     The Retriever grounds via `search_docs`, a plain local Python tool
+     that searches the bundled docs — no MCP, no Azure resource.
    - `part_a_sequential.py` wires them into one workflow with
      `SequentialBuilder(participants=[planner, retriever, critic]).build()`
      — Module 2's simplest orchestration builder, a flat participants list,
@@ -102,8 +111,12 @@ and see, live, why Sequential can't be the whole answer.
      set marks a few with `"expects_revision": true` — comes back
      `NOT APPROVED`, and stays that way: there's nowhere for that verdict
      to go back to.
-4. That last point IS Part A's point, not a bug to chase down:
-   `SequentialBuilder`'s own docs are explicit that "Order Matters" —
+   - Finally, the same workflow gets wrapped with `workflow.as_agent()`
+     and run once more — Module 1's "composition goes full circle" slide,
+     now in code: the whole three-role pipeline, called just like a
+     single agent.
+4. That last "no correction" result IS Part A's point, not a bug to chase
+   down: `SequentialBuilder`'s own docs are explicit that "Order Matters" —
    agents execute strictly in the order given, with no loop-back to an
    earlier participant. Part B rebuilds this same golden set against a
    custom `WorkflowBuilder` graph specifically to fix this.

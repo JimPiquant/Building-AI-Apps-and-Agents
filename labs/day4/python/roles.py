@@ -11,12 +11,23 @@ from re-authored agents.
 
 Roles (from Module 7's "What you'll build" slide):
     Planner   - decomposes the user's question into sub-questions
-    Retriever - grounds each sub-question against the Foundry IQ knowledge
-                source (foundry_iq.py), returns citations
+    Retriever - grounds each sub-question against the bundled local docs
+                (data/docs/*.md, copied from Day 2's docs assistant docs)
+                via the search_docs tool below, returns citations
     Critic    - checks groundedness, coverage, and safety; emits the final
                 structured Answer on pass, feedback for another pass on
                 fail (Parts B/C only — Part A's Critic has nowhere to
                 send a fail back to, see part_a_sequential.py)
+
+On search_docs, deliberately NOT Foundry IQ: an earlier draft of this lab
+had the Retriever call a live Foundry IQ knowledge base (Day 2's Azure AI
+Search + knowledge base MCP endpoint). That makes Day 4 depend on a
+per-attendee Azure resource surviving intact since Day 2 — if someone
+deleted it, or never finished provisioning it, Part A breaks on line 1 for
+reasons that have nothing to do with what Day 4 teaches. search_docs is a
+plain local Python function (no network call, no MCP, no Azure resource)
+searching the bundled copy of Day 2's own docs in data/docs/ — the only
+dependency is the repo checkout itself.
 
 Structured outputs are set via `default_options={"response_format": ...}`
 at agent construction time (confirmed API — see
@@ -33,12 +44,16 @@ is required for these three roles to work together.
 from __future__ import annotations
 
 import os
+from pathlib import Path
+from typing import Annotated
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from agent_framework import Agent, MCPStreamableHTTPTool
+from agent_framework import Agent, tool
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
+
+DOCS_DIR = Path(__file__).resolve().parent / "data" / "docs"
 
 
 class Plan(BaseModel):
@@ -83,6 +98,30 @@ def _client(credential: AzureCliCredential) -> FoundryChatClient:
     )
 
 
+@tool
+def search_docs(
+    keyword: Annotated[
+        str,
+        Field(description="A keyword or short phrase to search for in the bundled Contoso developer docs."),
+    ],
+) -> str:
+    """Search the bundled Contoso developer API docs (data/docs/*.md) for a
+    keyword. Returns the full text of every doc file that contains a
+    case-insensitive match to the keyword, each prefixed with its filename
+    so it can be cited, or a plain "no matches" message if nothing is
+    found. Local, in-process, and offline — no network call, no MCP, no
+    Azure resource."""
+    needle = keyword.lower()
+    matches = []
+    for path in sorted(DOCS_DIR.glob("*.md")):
+        text = path.read_text()
+        if needle in text.lower():
+            matches.append(f"--- {path.name} ---\n{text}")
+    if not matches:
+        return f"No docs matched '{keyword}'."
+    return "\n\n".join(matches)
+
+
 def build_planner(credential: AzureCliCredential) -> Agent:
     """Decomposes the user's question into sub-questions for the Retriever."""
     return Agent(
@@ -97,21 +136,21 @@ def build_planner(credential: AzureCliCredential) -> Agent:
     )
 
 
-def build_retriever(credential: AzureCliCredential, knowledge_tool: MCPStreamableHTTPTool) -> Agent:
-    """Grounds each sub-question in the Planner's plan against the Foundry IQ knowledge source."""
+def build_retriever(credential: AzureCliCredential) -> Agent:
+    """Grounds each sub-question in the Planner's plan against the bundled local docs."""
     return Agent(
         client=_client(credential),
         name="retriever",
         instructions=(
             "You are a research retriever. The previous assistant message is a "
-            "JSON Plan with a sub_questions list. For EACH sub-question, use the "
-            "documentation knowledge source to find grounding, then report your "
-            "findings and the exact citations the tool returned. If the "
-            "knowledge source has nothing relevant for a sub-question, say so "
-            "plainly in that sub-question's findings and leave its citations "
-            "empty — do not guess."
+            "JSON Plan with a sub_questions list. For EACH sub-question, call "
+            "search_docs with a relevant keyword to find grounding, then report "
+            "your findings and the exact filenames the tool returned as "
+            "citations. If search_docs has nothing relevant for a "
+            "sub-question, say so plainly in that sub-question's findings and "
+            "leave its citations empty — do not guess."
         ),
-        tools=[knowledge_tool],
+        tools=[search_docs],
         default_options={"response_format": RetrievalResult},
     )
 

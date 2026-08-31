@@ -9,7 +9,11 @@ Story:
   1. Build the workflow with plain SequentialBuilder — Planner ->
      Retriever -> Critic, in that fixed order, matching Module 2's
      "Sequential in code" slide exactly (same API, same terminal-output
-     shape: the last participant's AgentResponse).
+     shape: the last participant's AgentResponse). The Retriever grounds
+     against a small bundle of local docs (data/docs/*.md, copied from
+     Day 2) via the search_docs tool in roles.py — deliberately NOT the
+     live Foundry IQ knowledge base Day 2/3 used, so this lab has zero
+     dependency on any Azure resource surviving intact since Day 2.
   2. Load the shared golden set (evals/golden_set.jsonl — the SAME
      15 questions Parts B and C will also run) and run every question
      through the workflow once.
@@ -23,6 +27,16 @@ Story:
      Agents execute strictly in the order specified in the participants
      list" — there is no loop-back. That's not a bug in this file; it's
      the exact limitation Part B exists to fix.
+  5. Finally, demonstrate `workflow.as_agent()` (Module 1's "composition
+     goes full circle" slide, in code) — the exact same three-role
+     pipeline, wrapped so it can be called just like a single agent. This
+     is a genuinely useful pattern beyond this lab: it's how you'd hand
+     this whole pipeline to ANOTHER orchestrator as one participant, or
+     expose it behind a single agent-shaped interface. Per the SDK's own
+     sequential_workflow_as_agent.py sample, `.as_agent()` returns only
+     the terminal participant's (the Critic's) response — the same
+     `CriticVerdict` shape as every other call in this file, nothing new
+     to parse.
 
 On extracting the Critic's structured output from a workflow (a flagged
 inference, not directly shown in any fetched sample): every prior
@@ -68,7 +82,6 @@ from dotenv import load_dotenv
 from agent_framework.orchestrations import SequentialBuilder
 from azure.identity import AzureCliCredential
 
-from foundry_iq import create_knowledge_base_tool
 from roles import CriticVerdict, build_critic, build_planner, build_retriever
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
@@ -99,9 +112,8 @@ def extract_verdict(final) -> CriticVerdict:
 
 def build_workflow(credential: AzureCliCredential):
     """Part A: Planner -> Retriever -> Critic, no correction."""
-    knowledge_tool = create_knowledge_base_tool(credential)
     planner = build_planner(credential)
-    retriever = build_retriever(credential, knowledge_tool)
+    retriever = build_retriever(credential)
     critic = build_critic(credential)
     return SequentialBuilder(participants=[planner, retriever, critic]).build()
 
@@ -152,6 +164,21 @@ async def main() -> None:
         "is final. Part B fixes this with a custom WorkflowBuilder graph "
         "and a conditional Critic -> Planner edge."
     )
+
+    # Bonus: the SAME pipeline, wrapped as a single agent (Module 1's
+    # "composition goes full circle" slide, in code). Nothing about the
+    # roles or the workflow changes — .as_agent() just lets any caller
+    # invoke the whole three-role pipeline through the plain Agent
+    # interface, as if it were one agent.
+    print("\n--- Bonus: the same workflow, wrapped with .as_agent() ---")
+    pipeline_agent = workflow.as_agent(name="planner-retriever-critic-pipeline")
+    bonus_response = await pipeline_agent.run(
+        "What are the prerequisites before I make my first API call?"
+    )
+    bonus_verdict = extract_verdict(bonus_response)
+    print(f"approved={bonus_verdict.approved}")
+    if bonus_verdict.answer:
+        print(f"summary: {bonus_verdict.answer.summary}")
 
 
 if __name__ == "__main__":
