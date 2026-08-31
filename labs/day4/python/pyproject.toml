@@ -1,0 +1,21 @@
+[project]
+name = "day4-lab"
+version = "0.1.0"
+description = "Day 4 lab — multi-agent workflows (Sequential, custom graph, Group Chat) and evaluation."
+requires-python = ">=3.11"
+dependencies = [
+    "agent-framework",
+    "agent-framework-foundry",
+    "azure-identity",
+    "pydantic>=2.0",
+    "python-dotenv",
+    "pytest",
+    "pytest-asyncio",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

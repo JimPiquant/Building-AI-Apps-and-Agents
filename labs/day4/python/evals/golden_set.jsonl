@@ -1,0 +1,28 @@
+// golden_set.jsonl — shared golden set for Parts A, B, and C.
+//
+// Format: one JSON object per line. Lines starting with // are ignored by
+// the runner (each part's main() must strip them before parsing).
+// Build this ONCE, before Part A — the same ~15 questions run against all
+// three parts, which is what makes the eval deltas between parts mean
+// something instead of being noise from different test data.
+//
+// Requirements (Module 7's "Build a golden set" slide):
+//   ~15 realistic questions, each with expected citations/answers as
+//   ground truth. Cover the real branches:
+//     - a question that grounds cleanly on the first pass (Part A should
+//       already handle these)
+//     - a question that should trigger the Critic's revision loop (Part
+//       A will fail these; Parts B/C should not)
+//     - a general-knowledge question needing no retrieval at all
+//
+// Schema (per row):
+//   {
+//     "query": "the user's question",
+//     "expected_citations": ["...zero or more expected source references..."],
+//     "expects_revision": true | false   // true if this question should
+//                                        // trigger at least one Critic
+//                                        // reject-and-loop decision
+//   }
+//
+// Example — DELETE this line and add your ~15 entries below.
+// {"query": "What authentication methods does the Contoso API support?", "expected_citations": ["docs/auth.md"], "expects_revision": false}
