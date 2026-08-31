@@ -1,12 +1,16 @@
 """
-Day 3 Lab — Part A — Session continuity + typed response.
+SOLUTIONS FOLDER — Day 3 Lab — Part A — Session continuity + typed response.
 
-Turns 1-3 (session serialize/restore) are provided complete — run them,
-read them, understand the contract. Turn 4 (streaming + a typed
-TriageResult) is yours to author: see stream_typed_response()'s TODO
-below.
+This is the completed reference implementation. Try authoring
+stream_typed_response() yourself in labs/day3/python/part_a_session_response.py
+FIRST (see that file's TODO) — come back here only to check your work or
+if you're stuck. Everything else in this file (session serialize/restore,
+build_agent(), TriageResult) is identical to the lab's provided code.
 
-Story (one continuous session, four turns):
+This file is provided complete — run it to prove two contracts hold, then
+read through it before moving on to Part B.
+
+Story (one continuous session, three turns):
   1. Create an AgentSession, run two turns, and serialize it with
      session.to_dict() — same contract as
      demos/day3/module-1-demo-1-serialize-restore/.
@@ -14,11 +18,10 @@ Story (one continuous session, four turns):
      serialized payload from disk, and restore it with
      AgentSession.from_dict(). A third turn on the restored session proves
      state survived — it can still answer a question about turn 1.
-  3. YOU AUTHOR THIS: on that same restored session, run a fourth turn
-     with stream=True and options={"response_format": TriageResult} —
-     the same combined pattern demos/day3/module-2-demo-1-stream-then-triage/
-     showed live in Module 2. Watch the text stream token by token, then
-     read the finalized typed TriageResult.
+  3. On that same restored session, run a fourth turn with stream=True and
+     options={"response_format": TriageResult} — same combined pattern as
+     demos/day3/module-2-demo-1-stream-then-triage/main.py. Watch the text
+     stream token by token, then read the finalized typed TriageResult.
 
 Definition of done (from labs/day3/README.md / Module 9's slide):
   - Session: the restored turn (step 2) retains the state from turns 1-2 —
@@ -34,14 +37,10 @@ Prereqs:
 Run with:
     uv run part_a_session_response.py
 
-Stuck, or want to check your work? labs/day3/solutions/part_a_session_response.py
-has a completed reference implementation of stream_typed_response() — try
-authoring it yourself first.
-
 Tip: set a breakpoint on the first line of run_and_serialize() and step
 through with the VS Code debugger (Run and Debug > Python File) to watch
-each turn build the session, then step into restore_session_and_verify()
-to watch AgentSession.from_dict() rebuild it from the serialized payload.
+each turn build the session, then step into restore_session_and_verify() to watch
+AgentSession.from_dict() rebuild it from the serialized payload.
 """
 import asyncio
 import json
@@ -123,38 +122,27 @@ async def restore_session_and_verify(agent: Agent) -> AgentSession:
     return resumed
 
 
-# ---------------------------------------------------------------------------
-# Part A, Turn 4 — Author stream_typed_response()
-#
-# Reference: slides/day3/module-2-streaming-structured.md, "Combine
-# streaming and structure", and the exact working pattern
-# demos/day3/module-2-demo-1-stream-then-triage/main.py just showed live
-# in Module 2 — this is the same call shape, adapted to run on the
-# restored session from Turn 3 instead of a fresh one.
-#
-# TODO: replace the raise below with your implementation. Steps:
-#   1. Call agent.run(request, stream=True, session=session,
-#      options={"response_format": TriageResult}) — do NOT await this
-#      call directly; it returns an async stream object.
-#   2. Iterate it with `async for update in stream:` and print
-#      update.text as it arrives (this is the live token-by-token
-#      display) — check update.text is truthy before printing.
-#   3. Once the loop finishes, call `await stream.get_final_response()`
-#      to get the finalized AgentResponse, then read its `.value` — this
-#      is the parsed TriageResult, not the raw text you streamed above.
-#   4. Validate the result is actually a TriageResult (isinstance check)
-#      before returning it — don't just trust `.value`'s type.
-# ---------------------------------------------------------------------------
-
 async def stream_typed_response(agent: Agent, session: AgentSession) -> TriageResult:
-    """Turn 4: stream text for display, then read the finalized typed value.
-
-    Stuck, or want to check your work? See
-    labs/day3/solutions/part_a_session_response.py — try authoring this
-    yourself first.
-    """
+    """Turn 4: stream text for display, then read the finalized typed value."""
     request = "I keep getting 500 errors when I POST /login."
-    raise NotImplementedError("Implement stream_typed_response — see the TODO comment above this function")
+    stream = agent.run(
+        request,
+        stream=True,
+        session=session,
+        options={"response_format": TriageResult},
+    )
+
+    print("--- streaming ---")
+    async for update in stream:
+        if update.text:
+            print(update.text, end="", flush=True)
+    print("\n--- finalized ---")
+
+    final = await stream.get_final_response()
+    triage = final.value
+    if not isinstance(triage, TriageResult):
+        raise RuntimeError("Agent did not return a valid TriageResult")
+    return triage
 
 
 async def main() -> None:

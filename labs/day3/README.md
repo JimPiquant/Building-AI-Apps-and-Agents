@@ -1,24 +1,26 @@
 # Day 3 Lab — Session, streaming, robustness, Azure DevOps MCP, and evaluation
 
 Each part demonstrates one Day 3 primitive with its own standalone agent —
-not a single assistant you extend part to part (unlike Day 2's lab). Run
-each part, read the code, understand the contract it proves; the same
-patterns are what you'd wire into a real production agent.
+not a single assistant you extend part to part (unlike Day 2's lab). Most
+parts are provided complete — run each, read the code, understand the
+contract it proves. Part A is a mix: some turns are provided, one you
+author yourself. The same patterns are what you'd wire into a real
+production agent.
 
 Five parts, composing every primitive from Day 3's lecture modules:
 
-| Part | Focus | Module(s) |
-|---|---|---|
-| **A** | Session continuity + typed response | 1, 2 |
-| **B** | Robustness (middleware) | 4 |
-| **C** | Read-only Azure DevOps MCP | 5, 6 |
-| **D** | Approved write | 5 |
-| **E** | Evaluation | 7 |
+| Part | Focus | Module(s) | You author |
+|---|---|---|---|
+| **A** | Session continuity + typed response | 1, 2 | Turn 4 (streaming + typed response) |
+| **B** | Robustness (middleware) | 4 | — (provided complete) |
+| **C** | Read-only Azure DevOps MCP | 5, 6 | — (provided complete) |
+| **D** | Approved write | 5 | — (provided complete) |
+| **E** | Evaluation | 7 | — (provided complete) |
 
-Estimated time: **~75 min** (~15 min per part — every part is provided
-complete; you run and read, not author from scratch), plus a one-time
-Azure DevOps project setup below within the workshop's shared,
-Entra-backed organization. Python only, per workshop policy.
+Estimated time: **~90 min** (Part A ~30 min, Parts B-E ~15 min each —
+provided complete; you run and read those, not author from scratch),
+plus a one-time Azure DevOps project setup below within the workshop's
+shared, Entra-backed organization. Python only, per workshop policy.
 
 ## Prerequisites
 
@@ -112,11 +114,13 @@ first (or ask for help).
 labs/day3/
 ├── README.md                       # you're here
 ├── .env.example                    # copy to .env at this level
+├── solutions/
+│   └── part_a_session_response.py  # completed reference for Part A's authoring step (stream_typed_response()) — try it yourself first
 └── python/
     ├── pyproject.toml              # uv-managed
     ├── README.md                   # Python starter guide
     ├── agent.py                    # baseline sanity check
-    ├── part_a_session_response.py  # Part A: session, serialize/restore, stream, typed TriageResult
+    ├── part_a_session_response.py  # Part A: session, serialize/restore provided; YOU author stream_typed_response()
     ├── part_b_middleware.py        # Part B: logging/timing, guardrail short-circuit, exception handling, bounded retry
     ├── ado_mcp.py                  # Part C/D: authenticated MCPStreamableHTTPTool client to Azure DevOps
     ├── part_c_read_only.py         # Part C: read-only ADO MCP (X-MCP-Readonly: true)
@@ -136,11 +140,13 @@ labs/day3/
 them — session state survives a serialize/restore round trip, and a single
 streamed run can end with a validated typed value.
 
-**Time:** ~15 min (this file is provided complete; read and run it).
+**Time:** ~30 min (Turns 1-3 are provided — run and read them; you author
+Turn 4 yourself, `stream_typed_response()`).
 
 ### Steps
 
-1. Run it:
+1. Run it (Turn 4 will fail with `NotImplementedError` until you author
+   it — that's expected):
    ```bash
    cd labs/day3/python
    uv run python part_a_session_response.py
@@ -151,15 +157,25 @@ streamed run can end with a validated typed value.
    - **Turn 3** reloads that payload from disk with `AgentSession.from_dict()`
      and asks about the fact from turn 1 — the correct answer proves the
      restored session retains state from before the "restart"
-   - **Turn 4** runs on that same restored session with `stream=True` and
-     `options={"response_format": TriageResult}` — watch the text stream,
-     then see the finalized `TriageResult` printed after
-3. Read through `part_a_session_response.py` itself — this is the pattern
-   Part B's middleware wraps around, so understand it before moving on.
+3. **Author Turn 4 yourself**: open `part_a_session_response.py` and find
+   `stream_typed_response()` — follow the TODO comment above it. You just
+   saw this exact pattern demonstrated live in Module 2
+   (`demos/day3/module-2-demo-1-stream-then-triage/`); reproduce it here,
+   adapted to run on the restored session from Turn 3 instead of a fresh
+   one. Once it's implemented, rerun the file: it should stream text live,
+   then print a finalized `TriageResult`.
+   - Stuck, or want to check your work?
+     [`labs/day3/solutions/part_a_session_response.py`](../solutions/part_a_session_response.py)
+     has a completed reference — try it yourself first.
+4. Read through the rest of `part_a_session_response.py` — this is the
+   pattern Part B's middleware wraps around, so understand it before
+   moving on.
 
 **Definition of done** (from Module 9's "Definition of done and guardrails" slide):
 - Session: restored turn retains intended state; ownership mapping verified
 - Structured stream: UI updates, final typed value; no partial JSON actions
+- `stream_typed_response()` is authored (not the provided stub) and the
+  file runs end-to-end without raising `NotImplementedError`
 
 ---
 

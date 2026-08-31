@@ -8,7 +8,7 @@ This directory holds the Python code for the Day 3 lab. Start here after you
 | File | Part | What it does |
 |---|---|---|
 | [`agent.py`](agent.py) | prereq | Baseline sanity check — plain MAF agent, no session, tools, or MCP |
-| [`part_a_session_response.py`](part_a_session_response.py) | A | Session create/reuse, serialize/restore, stream, typed `TriageResult` |
+| [`part_a_session_response.py`](part_a_session_response.py) | A | Session create/reuse, serialize/restore provided; **you author** `stream_typed_response()` |
 | [`part_b_middleware.py`](part_b_middleware.py) | B | Logging/timing middleware, guardrail short-circuit, exception handling, bounded retry |
 | [`ado_mcp.py`](ado_mcp.py) | C/D | Authenticated `MCPStreamableHTTPTool` client to your Azure DevOps organization |
 | [`part_c_read_only.py`](part_c_read_only.py) | C | Read-only ADO MCP (`X-MCP-Readonly: true`) |
@@ -28,6 +28,14 @@ uv run python agent.py    # should print a greeting
 
 If that greeting doesn't appear, you're not ready to start Part A. Check the
 main [lab README](../README.md#prerequisites).
+
+## Authoring exercises
+
+Part A has one function you author yourself — `stream_typed_response()`
+in `part_a_session_response.py` — instead of running provided-complete
+code. Try it first; a completed reference lives in
+[`../solutions/part_a_session_response.py`](../solutions/part_a_session_response.py)
+if you get stuck or want to check your work.
 
 ## Part E evaluation model
 
