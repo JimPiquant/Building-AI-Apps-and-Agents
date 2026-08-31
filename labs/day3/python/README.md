@@ -14,6 +14,7 @@ This directory holds the Python code for the Day 3 lab. Start here after you
 | [`part_c_read_only.py`](part_c_read_only.py) | C | Read-only ADO MCP (`X-MCP-Readonly: true`) |
 | [`part_d_approved_write.py`](part_d_approved_write.py) | D | Approval-gated write, re-read to verify the mutation |
 | [`part_e_evaluate.py`](part_e_evaluate.py) | E | `evaluate_agent` / `ExpectedToolCall` / `LocalEvaluator` / `FoundryEvals` over the tool contract |
+| [`solutions/`](solutions/) | A | Completed reference for Part A's authoring exercise — try it yourself first |
 
 ## Setup
 
@@ -34,7 +35,7 @@ main [lab README](../README.md#prerequisites).
 Part A has one function you author yourself — `stream_typed_response()`
 in `part_a_session_response.py` — instead of running provided-complete
 code. Try it first; a completed reference lives in
-[`../solutions/part_a_session_response.py`](../solutions/part_a_session_response.py)
+[`solutions/part_a_session_response.py`](solutions/part_a_session_response.py)
 if you get stuck or want to check your work.
 
 ## Part E evaluation model

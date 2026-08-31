@@ -54,7 +54,7 @@ from agent_framework import Agent, AgentSession
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
 
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 SESSION_PAYLOAD_PATH = Path(__file__).resolve().parent / "part_a_session_payload.json"
 

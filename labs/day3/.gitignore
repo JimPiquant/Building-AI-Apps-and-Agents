@@ -73,3 +73,4 @@ coverage.*
 # Runtime artifact from part_a_session_response.py — not source, and the
 # script deletes it on a clean run anyway
 python/part_a_session_payload.json
+python/solutions/part_a_session_payload.json

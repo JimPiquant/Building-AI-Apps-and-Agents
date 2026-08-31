@@ -34,7 +34,7 @@ Prereqs:
 Run with:
     uv run part_a_session_response.py
 
-Stuck, or want to check your work? labs/day3/solutions/part_a_session_response.py
+Stuck, or want to check your work? labs/day3/python/solutions/part_a_session_response.py
 has a completed reference implementation of stream_typed_response() — try
 authoring it yourself first.
 
@@ -150,7 +150,7 @@ async def stream_typed_response(agent: Agent, session: AgentSession) -> TriageRe
     """Turn 4: stream text for display, then read the finalized typed value.
 
     Stuck, or want to check your work? See
-    labs/day3/solutions/part_a_session_response.py — try authoring this
+    labs/day3/python/solutions/part_a_session_response.py — try authoring this
     yourself first.
     """
     request = "I keep getting 500 errors when I POST /login."

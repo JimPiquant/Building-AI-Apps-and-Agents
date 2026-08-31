@@ -114,8 +114,6 @@ first (or ask for help).
 labs/day3/
 ├── README.md                       # you're here
 ├── .env.example                    # copy to .env at this level
-├── solutions/
-│   └── part_a_session_response.py  # completed reference for Part A's authoring step (stream_typed_response()) — try it yourself first
 └── python/
     ├── pyproject.toml              # uv-managed
     ├── README.md                   # Python starter guide
@@ -126,6 +124,8 @@ labs/day3/
     ├── part_c_read_only.py         # Part C: read-only ADO MCP (X-MCP-Readonly: true)
     ├── part_d_approved_write.py    # Part D: approval-gated write, re-read to verify
     ├── part_e_evaluate.py          # Part E: evaluate_agent / ExpectedToolCall / LocalEvaluator / FoundryEvals
+    ├── solutions/
+    │   └── part_a_session_response.py  # completed reference for Part A's authoring step (stream_typed_response()) — try it yourself first; runs in the same uv venv as the lab files
     ├── tests/
     │   └── test_part_b_middleware.py   # Part B: isolation tests for guardrail/retry behavior
     └── evals/
@@ -165,7 +165,7 @@ Turn 4 yourself, `stream_typed_response()`).
    one. Once it's implemented, rerun the file: it should stream text live,
    then print a finalized `TriageResult`.
    - Stuck, or want to check your work?
-     [`labs/day3/solutions/part_a_session_response.py`](../solutions/part_a_session_response.py)
+     [`labs/day3/python/solutions/part_a_session_response.py`](python/solutions/part_a_session_response.py)
      has a completed reference — try it yourself first.
 4. Read through the rest of `part_a_session_response.py` — this is the
    pattern Part B's middleware wraps around, so understand it before
