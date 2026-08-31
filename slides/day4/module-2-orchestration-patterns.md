@@ -29,14 +29,16 @@ deck: module-2-orchestration-patterns.pptx
 | **Magentic** | A manager agent dynamically coordinates specialized agents — balances structure with flexibility |
 
 ## Sequential — a pipeline
-<!-- layout: list -->
+<!-- layout: list-image -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/sequential -->
-<!-- notes: Ideal for document review, data pipelines, multi-stage reasoning. By default each agent sees the full prior conversation; chain_only_agent_responses=True narrows that to just the previous agent's response — useful for translation pipelines and progressive refinement. -->
+<!-- notes: Ideal for document review, data pipelines, multi-stage reasoning. By default each agent sees the full prior conversation; chain_only_agent_responses=True narrows that to just the previous agent's response — useful for translation pipelines and progressive refinement. Diagram reproduced verbatim from the official Sequential orchestration Learn page. -->
 
 - Agents run one after another; each builds on the previous agent's output
 - By default, each agent consumes the **full prior conversation** (input + every response so far)
 - `chain_only_agent_responses=True` narrows this to just the previous agent's response — useful for translation pipelines and progressive refinement
 - **Order Matters**: agents execute strictly in the order given — there is no built-in way to route back to an earlier agent
+
+![Sequential orchestration — Input flows through Agent 1, Agent 2, and Agent 3 in order to produce the Result](assets/orchestration-sequential.png)
 
 ## Sequential in code
 <!-- layout: code -->
@@ -47,8 +49,7 @@ deck: module-2-orchestration-patterns.pptx
 from agent_framework.orchestrations import SequentialBuilder
 
 workflow = SequentialBuilder(
-    participants=[drafter, editor, finalizer],
-).build()
+    participants=[drafter, editor, finalizer]).build()
 
 result = await workflow.run("Write a brief introduction to artificial intelligence.")
 ```
@@ -56,14 +57,16 @@ result = await workflow.run("Write a brief introduction to artificial intelligen
 The terminal output is the **last** participant's response; pass `intermediate_output_from=[...]` to also surface earlier agents' output as observational events.
 
 ## Concurrent — parallel perspectives
-<!-- layout: list -->
+<!-- layout: list-image -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/concurrent -->
-<!-- notes: All agents run the same input independently and simultaneously — good for brainstorming, ensemble reasoning, voting. The superstep model (Module 3) is what actually runs them concurrently. -->
+<!-- notes: All agents run the same input independently and simultaneously — good for brainstorming, ensemble reasoning, voting. The superstep model (Module 3) is what actually runs them concurrently. Diagram reproduced verbatim from the official Concurrent orchestration Learn page. -->
 
 - Every agent processes the **same input independently**, at the same time
 - Well suited to diverse perspectives: brainstorming, ensemble reasoning, voting systems
 - The default aggregator returns one `AgentResponse` with one assistant message per participant — no synthesis, just collection
 - Override the aggregator when you need domain-specific synthesis of the parallel results
+
+![Concurrent orchestration — one input fans out to Agent 1, Agent 2, and Agent 3 running in parallel, then fans back in to a single Result](assets/orchestration-concurrent.png)
 
 ## Concurrent in code
 <!-- layout: code -->
@@ -93,6 +96,18 @@ for msg in outputs[0].messages:
   - No central orchestrator — agents connect directly in a mesh topology
   - Good for customer support, expert systems, dynamic routing
 
+## Handoff — a mesh, not a hierarchy
+<!-- layout: list-image -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/handoff -->
+<!-- notes: A dedicated shape slide, separate from the previous compare slide's agents-as-tools contrast — Handoff's mesh topology (every agent connects to every other, no central orchestrator) is easiest to see as a picture rather than another bullet. Diagram reproduced verbatim from the official Handoff orchestration Learn page. -->
+
+- Agents connect directly to each other — a mesh, not a star with a middle orchestrator
+- Any agent can hand the conversation fully to another agent it's configured to reach
+- Full conversation history travels with the handoff — the receiving agent has complete context
+- Interactive by default: control returns to the user whenever an agent responds without handing off
+
+![Handoff orchestration — agents connected directly to each other in a mesh, with control transferring between them](assets/orchestration-handoff.png)
+
 ## Handoff in code
 <!-- layout: code -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/handoff -->
@@ -116,14 +131,16 @@ workflow = (
 Handoff is **interactive by default** — when an agent responds without handing off, control returns to the user for the next input.
 
 ## Group Chat — a coordinated conversation
-<!-- layout: list -->
+<!-- layout: list-image -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/group-chat -->
-<!-- notes: Star topology with an orchestrator in the middle — the key contrast with Handoff's mesh, no-orchestrator design. Context Synchronization is worth stating precisely: agents do NOT share one AgentSession instance (different agent types may implement it differently); the orchestrator broadcasts each response so every agent's own session stays in sync before its next turn. -->
+<!-- notes: Star topology with an orchestrator in the middle — the key contrast with Handoff's mesh, no-orchestrator design. Context Synchronization is worth stating precisely: agents do NOT share one AgentSession instance (different agent types may implement it differently); the orchestrator broadcasts each response so every agent's own session stays in sync before its next turn. Diagram reproduced verbatim from the official Group Chat orchestration Learn page. -->
 
 - Star topology: an **orchestrator** in the middle selects who speaks next (round-robin, prompt-based, or custom logic)
 - Agents can review and build on each other's responses across **multiple rounds**
 - **Context Synchronization**: agents do NOT share one `AgentSession` instance — the orchestrator broadcasts each response so every agent's own session stays current before its next turn
 - Bounded by a maximum round/iteration count
+
+![Group Chat orchestration — an orchestrator at the center of a star topology selects which agent speaks next](assets/orchestration-groupchat.png)
 
 ## When to use Group Chat
 <!-- layout: compare -->
@@ -149,6 +166,13 @@ Handoff is **interactive by default** — when an agent responds without handing
 - Based on AutoGen's Magentic-One design; well suited to open-ended tasks where the solution path isn't known in advance
 - Framework's own caveat: *"it is untested how well the Magentic orchestration will perform outside of the original Magentic-One design"*
 - If your scenario doesn't need complex planning, the docs themselves recommend Group Chat instead
+
+## Magentic — task and progress ledgers
+<!-- layout: image -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/magentic -->
+<!-- notes: Full-width, not paired with bullets — this diagram (task ledger, progress ledger, stall-count decision, replan loop) has far more detail and smaller text than the other four patterns' diagrams, and would be illegible if squeezed into the same narrow list-image column. Reproduced verbatim from the official Magentic orchestration Learn page; note its visual style (flat decision-diamond flowchart) differs from the other four patterns' hand-drawn diagrams — it comes from the Magentic-One design, not the same source illustration set. -->
+
+![Magentic orchestration — the orchestrator maintains a task ledger and a progress ledger, checking task completion and stall count to decide whether to continue, replan, or report the final answer](assets/orchestration-magentic.png)
 
 ## Magentic's built-in guardrails
 <!-- layout: code -->
