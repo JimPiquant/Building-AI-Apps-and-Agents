@@ -7,11 +7,14 @@ before moving on to Part D.
 
 Story (one agent, two requests against the known work item in .env):
   1. A read request — should succeed and return the title/state.
-  2. A write ATTEMPT against the same work item — should be rejected
-     server-side, because ado_mcp.build_read_only_ado_mcp() sends
-     X-MCP-Readonly: true. The server enforces this, not the agent's own
-     judgment or instructions — proving the read-only boundary is a real
-     server-side filter, not just a suggestion.
+  2. A write REQUEST against the same work item — which the agent cannot
+     carry out, because ado_mcp.build_read_only_ado_mcp() sends
+     X-MCP-Readonly: true and the server responds by omitting every write
+     tool from the list it advertises. No write call is attempted and none
+     is rejected: the capability is withheld at tool discovery, so the
+     agent has nothing to call and reports that it cannot make the change.
+     The boundary is enforced by the server, not by the agent's
+     instructions or judgment.
 
 Same two-request pattern as
 demos/day3/module-6-demo-1-read-only-ado/main.py — this file wires the
@@ -20,9 +23,9 @@ module) into a plain agent instead of repeating the MCP connection setup
 inline.
 
 Definition of done (from labs/day3/README.md / Module 9's slide):
-  - Read succeeds; the read-only header is proven to hold; dedicated
-    project only — never point this at a shared/production Azure DevOps
-    organization
+  - Read succeeds; the write request completes with no write tool having
+    been offered; dedicated project only — never point this at a
+    shared/production Azure DevOps organization
 
 Prereqs:
   1. `uv run agent.py` prints a greeting (baseline works)
@@ -35,10 +38,13 @@ Prereqs:
 Run with:
     uv run part_c_read_only.py
 
-Tip: set a breakpoint after the write-attempt agent.run() call and
+Tip: set a breakpoint after the write-request agent.run() call and
 inspect write_result in the VS Code debugger (Run and Debug > Python
-File) — read its text to see exactly how the server communicates the
-rejection back through the agent, rather than the process crashing.
+File) — read its text to see how the agent reports a capability it was
+never offered, rather than the process crashing. Note that this text is
+the model's own explanation; the authoritative evidence is the tool list
+the server advertised, which is why Part D's identical request behaves
+differently.
 """
 from __future__ import annotations
 
@@ -80,7 +86,7 @@ async def main() -> None:
         )
         print(read_result, "\n")
 
-        print("--- Write attempt: should be rejected server-side ---")
+        print("--- Write request: no write tool is offered under X-MCP-Readonly: true ---")
         write_result = await agent.run(
             f"Update work item {work_item_id} in project {project}: add a comment saying 'reviewed'.",
             tools=mcp,

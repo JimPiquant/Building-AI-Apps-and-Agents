@@ -22,7 +22,8 @@ Entra-backed organization. Python only, per workshop policy.
 
 ## Prerequisites
 
-- Day 2 lab complete and working (baseline docs assistant, `FoundryChatClient`)
+- A working Foundry project and `az login` from Days 1-2 — each part here
+  builds its own `FoundryChatClient`; no code from the Day 2 lab is imported
 - Your own Entra-backed Azure DevOps Services organization, plus a dedicated
   workshop project within it — **not** a shared/production org
 - A known work item ID in that project (seed one; have a reset/cleanup plan
@@ -38,8 +39,8 @@ Entra-backed organization. Python only, per workshop policy.
 
 ### Azure DevOps setup
 
-This is **a personal instance, not a shared Publix sandbox** — the same
-requirement Day 3's Module 6 demo used. If you already have an
+This is **a shared test instance, not production organization** —
+the same requirement Day 3's Module 6 demonstration used. If you already have an
 Entra-backed Azure DevOps organization you can use for this lab, skip to
 [Fill in `.env`](#fill-in-env). Otherwise, one-time setup (~10 min):
 
@@ -193,9 +194,10 @@ guardrail, and a bounded retry around a flaky tool.
 
 ## Part C — Read-only Azure DevOps MCP
 
-**Goal:** prove that `X-MCP-Readonly: true` is a real server-side filter,
-enforced by the Azure DevOps MCP endpoint itself — not something the
-agent's own instructions merely promise.
+**Goal:** see that `X-MCP-Readonly: true` is a real server-side filter,
+enforced by the Azure DevOps MCP endpoint itself — the server withholds
+the write tools from discovery, rather than the agent's own instructions
+merely promising not to use them.
 
 **Time:** ~15 min (this file is provided complete; read and run it).
 
@@ -216,13 +218,17 @@ agent's own instructions merely promise.
    - **Read** — the agent gets the known work item and summarizes its
      title/state; verify this matches what's actually in your Azure
      DevOps project
-   - **Write attempt** — the agent tries to add a comment to the same
-     work item; the server rejects it because the MCP tool sent
-     `X-MCP-Readonly: true` — read the response text to see how the
-     rejection surfaces back through the agent (no exception, no crash)
+   - **Write request** — the agent is asked to add a comment to the same
+     work item and reports that it cannot. Because the MCP tool sent
+     `X-MCP-Readonly: true`, the server left every write tool out of the
+     list it advertised, so no write was attempted and none was rejected —
+     the capability was withheld before the model ever saw it (no
+     exception, no crash)
 4. Read through `ado_mcp.py`, then `part_c_read_only.py` — note how
-   `build_read_only_ado_mcp()` is the only place `X-MCP-Readonly` is set;
-   Part D reuses the same module with that flag flipped.
+   `_build_ado_mcp()` sets `X-MCP-Readonly` for both paths and
+   `build_read_only_ado_mcp()` is simply its `readonly=True` caller;
+   Part D reuses the same module with that flag flipped. The headers are
+   the only filtering in play — there is no client-side allow-list.
 
 **Definition of done:**
 - Read succeeds; dedicated project only
@@ -233,7 +239,7 @@ agent's own instructions merely promise.
 
 **Goal:** prove a write actually requires a human decision before it
 executes, and that once approved, the mutation is real — the same
-request Part C tried and had rejected now succeeds, but only after you
+request Part C could not carry out now succeeds, but only after you
 type `y`.
 
 **Time:** ~15 min (this file is provided complete; read and run it).
@@ -248,17 +254,22 @@ type `y`.
    cd labs/day3/python
    uv run part_d_approved_write.py
    ```
-3. When prompted `Approval requested for: wit_work_item_write` /
+3. When prompted `Approval requested for: wit_work_item_comment_write` /
    `Arguments: ...` / `Approve? (y/n):`, read the exact arguments before
    deciding — type `y` to see the write go through, or `n` to see it
-   rejected by your own decision instead of the server.
+   stopped by your own decision instead of by the server's filter. Note
+   the tool named in the prompt: adding a comment routes through
+   `wit_work_item_comment_write`, not `wit_work_item_write`.
 4. Read the "Read again" output — confirm the comment you approved is
    actually present on the work item now, both in the printed response
    and by checking the work item directly in Azure DevOps.
 5. Read through `part_d_approved_write.py`'s `run_with_approval()`
    function, then `ado_mcp.build_write_enabled_ado_mcp()`'s default
-   `approval_mode` — note that only `wit_work_item_write` is listed, so
-   the verify-read in step 4 never paused for approval.
+   `approval_mode` — note that both write tools are listed
+   (`wit_work_item_write` and `wit_work_item_comment_write`) while
+   `wit_work_item` is not, which is why the verify-read in step 4 never
+   paused for approval. Gating only `wit_work_item_write` would have let
+   this comment write through unreviewed.
 
 **Definition of done:**
 - Write requires approval; dedicated project only
@@ -269,14 +280,15 @@ type `y`.
 
 **Goal:** prove `evaluate_agent`/`LocalEvaluator` actually catch a
 regression, rather than trusting a single manual run — this is the same
-"eval → iterate → re-eval" muscle Day 2's lab built, now against Day 3's
-tool-selection contract.
+"evaluate → iterate → re-evaluate" muscle Day 2's lab built, now against
+Day 3's tool-selection contract.
 
 **Time:** ~15 min (this file is provided complete; read and run it).
 
 **Note:** only 3 of Module 9's 4 named golden cases are implemented here
 (read, approved write, no-tool) — the "rejected write" case was
-deliberately deferred; see `part_e_evaluate.py`'s module docstring for why.
+deliberately deferred; see the "On the missing 'rejected write' case"
+section of `part_e_evaluate.py`'s module docstring for why.
 
 ### Steps
 
@@ -316,13 +328,13 @@ deliberately deferred; see `part_e_evaluate.py`'s module docstring for why.
 
 | Part | Symptom | Check first |
 |---|---|---|
-| A | `session_payload.json` fails to reload / looks stale | Delete it and rerun from scratch — it's overwritten each run, so a file left over from an earlier interrupted attempt is the usual cause |
+| A | `part_a_session_payload.json` fails to reload / looks stale | Delete it and rerun from scratch — it's overwritten each run, so a file left over from an earlier interrupted attempt is the usual cause |
 | A, B | Auth error on the first Foundry call | `az login` session expired — rerun `az login` and select the correct subscription |
 | C, D | Sign-in or consent fails | Confirm the organization is Entra-backed (not an MSA org) and that your tenant's enterprise app consent policy allows the Azure DevOps MCP server — Module 6's own failure-modes table names this exact check first |
-| C, D | Expected tool is missing | Check `X-MCP-Readonly` / the tool allow-list in `ado_mcp.py` against what the server actually exposes |
+| C, D | Expected tool is missing | Check the `X-MCP-Readonly` and `X-MCP-Toolsets` headers in `ado_mcp.py` against what the server actually exposes — those two headers are the only filtering in play; there is no client-side allow-list |
 | C, D | Tool call returns forbidden | Your signed-in user needs membership and resource permissions on the specific project/work item, not just the organization |
 | D | Approval loop hangs or resubmits the original query | Confirm you're reusing one `agent.create_session()` across both `agent.run()` calls and sending only `Message("user", approval_responses)` on resume — not replaying the original query text |
-| D | A write you expected to require approval goes straight through | The tool name performing the write may not be the one you listed in `always_require_approval` — for example, adding a *comment* on a work item routes through `wit_work_item_comment_write`, a different tool from `wit_work_item_write` |
+| D | A write you expected to require approval goes straight through | The tool performing the write may not be one you listed in `always_require_approval`. This lab lists both `wit_work_item_write` and `wit_work_item_comment_write` for exactly that reason — a comment routes through the comment tool, not the field-update tool. If you extend the lab to other write tools, add each one by name |
 | E | A golden case's pass/fail flips between runs | Expected — this is the same model nondeterminism Module 7 names directly; `num_repetitions=3` exists so you see the distribution, not a single sample |
 | E | "Foundry evaluation unavailable" printed for every case | `run_foundry_evals()` is wrapped so this can't fail the lab — check `EVALUATION_MODEL` (or `FOUNDRY_MODEL` as its fallback) is a deployed model name your Foundry project can reach |
 
@@ -337,5 +349,3 @@ module named it the **evaluation anchor**: the habit you started today
 (golden cases, repeated runs, tool-call correctness) extends to
 trajectory evaluation, cost-per-successful-outcome, and a regression
 harness — now applied across multiple cooperating agents instead of one.
-Nothing here commits you to a specific Day 4 lab shape; that content
-hasn't been authored yet.

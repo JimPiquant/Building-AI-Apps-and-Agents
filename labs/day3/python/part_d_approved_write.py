@@ -6,9 +6,10 @@ approval, then verify the mutation actually took effect.
 
 Story (one agent, two requests against the known work item in .env):
   1. An approval-gated write — the SAME "add a comment saying 'reviewed'"
-     request Part C tried and had rejected server-side by
-     X-MCP-Readonly: true. Here ado_mcp.build_write_enabled_ado_mcp() sets
-     X-MCP-Readonly: false, so the server accepts the call — but only
+     request Part C could not carry out, because X-MCP-Readonly: true kept
+     every write tool out of the tool list the server advertised. Here
+     ado_mcp.build_write_enabled_ado_mcp() sets X-MCP-Readonly: false, so
+     the write tool is offered and the server accepts the call — but only
      after you approve it. agent.run() returns immediately with
      result.user_input_requests populated instead of executing the tool;
      the pause/resume loop below prints the exact tool name and arguments,
@@ -18,9 +19,10 @@ Story (one agent, two requests against the known work item in .env):
      tool instead.
   2. A read-again request on the same work item, to verify the mutation
      actually took effect. This read does NOT pause for approval —
-     ado_mcp.build_write_enabled_ado_mcp()'s default approval_mode only
-     names wit_work_item_write, so wit_work_item (the read tool) proceeds
-     automatically. This is the per-tool mapping Module 5's "approval_mode
+     ado_mcp.build_write_enabled_ado_mcp()'s default approval_mode names
+     both write tools (wit_work_item_write and
+     wit_work_item_comment_write) but not wit_work_item, so the read tool
+     proceeds automatically. This is the per-tool mapping Module 5's "approval_mode
      creates a human boundary" slide's table row describes: "Different
      rules by tool name — Read automatically; review writes."
 
@@ -32,7 +34,7 @@ Definition of done (from labs/day3/README.md / Module 9's slide):
 Prereqs:
   1. `uv run part_c_read_only.py` has run at least once (confirms your
      ADO connection and .env are correct, and shows what the SAME request
-     looks like when the server rejects it)
+     looks like when the server offers no write tool at all)
   2. Your own Entra-backed Azure DevOps org/project + a known work item ID
      are set in .env — see labs/day3/README.md's Prerequisites section
 
