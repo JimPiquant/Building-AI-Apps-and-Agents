@@ -129,7 +129,7 @@ def search_docs(
     matches = []
     for path in sorted(DOCS_DIR.glob("*.md")):
         text = path.read_text()
-        if all(needle in text.lower() for needle in needles):
+        if any(needle in text.lower() for needle in needles):
             matches.append(f"--- {path.name} ---\n{text}")
     if not matches:
         return f"No docs matched '{keyword}'."
