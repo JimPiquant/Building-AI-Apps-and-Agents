@@ -9,11 +9,16 @@ Test compute_next_step() — the guardrail's pure decision logic — WITHOUT
 running a full workflow against Foundry, and without constructing any
 real AgentExecutorResponse/WorkflowContext. Mirrors
 labs/day3/python/tests/test_part_b_middleware.py's "test the logic in
-isolation first" approach (Module 6). part_b_custom_graph.py deliberately
-separates compute_next_step() (plain function, no framework dependency)
-from revision_gate() (the @executor-decorated function that does the
-actual ctx.get_state/set_state/send_message/yield_output plumbing)
-specifically so these tests don't need to fake any of that machinery.
+isolation first" approach (Module 6). part_b_orchestrations.py
+deliberately separates compute_next_step() (plain function, no framework
+dependency) from revision_gate() (the @executor-decorated function that
+does the actual ctx.get_state/set_state/send_message/yield_output
+plumbing) specifically so these tests don't need to fake any of that
+machinery. This guardrail belongs to part_b_orchestrations.py's
+construction #2 (the custom WorkflowBuilder graph) specifically —
+construction #1 (Sequential) has no loop to guard, and construction #3
+(Group Chat) expresses its own guardrail differently (a message-count
+cap inside termination_condition, not a counter like this one).
 
 Covers both original TODO bullets:
   - the guardrail stops routing back to the Planner once the configured
@@ -29,7 +34,7 @@ from pathlib import Path
 # Make the project root importable
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from part_b_custom_graph import MAX_REVISIONS, GuardrailStop, compute_next_step  # noqa: E402
+from part_b_orchestrations import MAX_REVISIONS, GuardrailStop, compute_next_step  # noqa: E402
 from roles import CriticVerdict  # noqa: E402
 
 
