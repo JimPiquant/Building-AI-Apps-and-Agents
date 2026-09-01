@@ -23,9 +23,10 @@ demos/
 
 ## Days
 
+- [Day 1 demos](day1/README.md) — 4 demos across 4 modules
 - [Day 2 demos](day2/README.md) — 10 demos across all 8 modules
-- Day 1 demos — none yet (Day 1 lab is short enough that lecture flow doesn't need breaks)
-- Day 3+ demos — not authored yet
+- [Day 3 demos](day3/README.md) — 9 demos across 7 modules
+- [Day 4 demos](day4/README.md) — 5 demos across 5 modules (1, 2, 3, 5, 6)
 
 ## Presenter conventions
 
