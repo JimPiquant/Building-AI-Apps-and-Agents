@@ -56,7 +56,7 @@ resumed = AgentSession.from_dict(payload)
 
 Run the previous slide's exact code live: create a session, run two turns, serialize with `session.to_dict()`, simulate a fresh process, restore with `AgentSession.from_dict()`, and continue the same conversation — proving the session container, not the process, carries continuity.
 
-## Content Providers
+## Context Providers
 <!-- layout: list-code -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/session?tabs=python | https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers?tabs=python | https://learn.microsoft.com/en-us/agent-framework/hosting/self-hosting/ -->
 <!-- notes: Do not let these terms collapse into one. HistoryProvider is a specialized ContextProvider. SessionStore belongs to self-host request handling and is not the same as message history — the self-hosting doc draws this exact line: SessionStore persists session metadata/provider state, a separate HistoryProvider persists the conversation messages, and durable hosts keep them apart because appending messages beats rewriting a growing session object every turn. Converted from a table to a list because this specific 4-row comparison is a workshop synthesis across three Learn pages, not a literal table in any one of them — the individual facts below are still doc-sourced. -->
@@ -81,7 +81,7 @@ session = agent.create_session()
 await agent.run("Remember that I prefer vegetarian food.", session=session)
 ```
 
-## Custom Content Providers
+## Custom Context Providers
 <!-- layout: list-code -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/session?tabs=python | https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers?tabs=python | https://learn.microsoft.com/en-us/agent-framework/hosting/self-hosting/ -->
 <!-- notes: Do not let these terms collapse into one. HistoryProvider is a specialized ContextProvider. SessionStore belongs to self-host request handling and is not the same as message history — the self-hosting doc draws this exact line: SessionStore persists session metadata/provider state, a separate HistoryProvider persists the conversation messages, and durable hosts keep them apart because appending messages beats rewriting a growing session object every turn. Converted from a table to a list because this specific 4-row comparison is a workshop synthesis across three Learn pages, not a literal table in any one of them — the individual facts below are still doc-sourced. -->

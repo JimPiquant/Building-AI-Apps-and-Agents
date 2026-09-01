@@ -110,7 +110,7 @@ Total: about **2 hours** of lab work. If you're going long, ping an instructor �
 
 ## Preview: your capstone project
 
-The workshop ends with a **team capstone** — you'll be on a team of 2–3. Starts at Day 5 close; **demo day is 2–3 weeks later** — a shared session where all teams present to Pradeep + Jim (and each other). Each team gets about 15 minutes (10 min demo + 5 min Q&A and coaching). Coaching and feedback, not competitive scoring.
+The workshop ends with a **team capstone** — you'll be on a team of 2–3. Starts at Day 5 close; **demo day is 2–3 weeks later** — a shared session where all teams present to the workshop owners and participants. Each team gets about 15 minutes (10 min demo + 5 min Q&A and coaching). Coaching and feedback, not competitive scoring.
 
 **Required elements (each day of the workshop gives you a piece):**
 - An MAF agent — Prompt agent, Hosted agent, or your own code + Responses API
