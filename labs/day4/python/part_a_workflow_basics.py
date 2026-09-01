@@ -37,21 +37,6 @@ as "the" output (with `intermediate_output_from=[...]` available if you
 want the earlier ones surfaced too). Once you've seen `output_from` spelled
 out here, Part B's shortcut stops looking like magic.
 
-Grounding note — why the query is wrapped in AgentExecutorRequest, not
-passed as a plain string. Confirmed against Microsoft Learn's own
-"Conditional Edges" tutorial (its exact comment: "Since the start is an
-AgentExecutor, pass an AgentExecutorRequest") — a workflow whose
-start_executor is an EXPLICITLY user-constructed `AgentExecutor` (as
-`planner` is here) expects an `AgentExecutorRequest`, not a bare string.
-This is different from Part B's Sequential and Group Chat constructions,
-where `SequentialBuilder`/`GroupChatBuilder` accept plain participants
-list and wrap them internally — those builders' own confirmed samples
-pass a plain string directly to `workflow.run(...)`. The two situations
-look similar but aren't: whether a plain string works depends on whether
-you constructed the `AgentExecutor` yourself (this file, and Part B's
-custom-graph construction) or a prebuilt orchestration builder did it for
-you (Part B's Sequential/Group Chat constructions).
-
 --------------------------------------------------------------------------
 Definition of done for Part A (from labs/day4/README.md):
   - The graph runs end-to-end and prints the Critic's structured verdict
@@ -77,10 +62,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from agent_framework import AgentExecutor, AgentExecutorRequest, Message, WorkflowBuilder, WorkflowViz
+from agent_framework import AgentExecutor, WorkflowBuilder, WorkflowViz
 from azure.identity import AzureCliCredential
 
 from roles import build_critic, build_planner, build_retriever, extract_verdict
+from workflow_tracing import print_step_io
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
@@ -111,10 +97,11 @@ async def main() -> None:
     workflow = build_workflow(credential)
 
     print(f"Query: {SAMPLE_QUERY}\n")
-    request = AgentExecutorRequest(messages=[Message(role="user", contents=[SAMPLE_QUERY])], should_respond=True)
-    events = await workflow.run(request)
+    events = await workflow.run(SAMPLE_QUERY)
+    print_step_io(events)
+
     outputs = events.get_outputs()
-    print(f"{len(outputs)} designated output(s) — output_from=[critic] means exactly one.\n")
+    print(f"{len(outputs)} designated output(s) — 'output_from=[critic]' limits output.\n")
 
     verdict = extract_verdict(outputs[0])
     print(f"approved={verdict.approved}")

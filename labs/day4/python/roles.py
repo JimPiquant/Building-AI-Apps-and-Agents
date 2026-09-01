@@ -124,11 +124,12 @@ def search_docs(
     so it can be cited, or a plain "no matches" message if nothing is
     found. Local, in-process, and offline — no network call, no MCP, no
     Azure resource."""
-    needle = keyword.lower()
+    needles = keyword.lower().split()
+
     matches = []
     for path in sorted(DOCS_DIR.glob("*.md")):
         text = path.read_text()
-        if needle in text.lower():
+        if all(needle in text.lower() for needle in needles):
             matches.append(f"--- {path.name} ---\n{text}")
     if not matches:
         return f"No docs matched '{keyword}'."
