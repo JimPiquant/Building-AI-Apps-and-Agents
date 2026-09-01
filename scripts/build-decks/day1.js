@@ -2570,7 +2570,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       [
         "Teams of 2–3",
         "Starts at Day 5 close · demo day 2–3 weeks later",
-        "Shared demo day — teams present to Pradeep + Jim",
+        "Shared demo day — teams present to the workshop owners and participants",
         "~15 min per team (10 demo + 5 Q&A)",
         "Coaching and feedback — no scoring",
         "Your team's choice of scenario",
@@ -2606,7 +2606,7 @@ cp .env.example .env`, { y: 1.2, h: 1.5 });
       "Workshop timing: workshop ends wk of Oct 12; demo day lands wk of Nov 2 or Nov 9",
       "Format: shared demo day, not 1:1 reviews",
       "  ~15 min per team (10 demo + 5 Q&A / coaching)",
-      "  Pradeep + Jim attend; attendees also see each other's work",
+      "  The workshop owners and participants attend; attendees also see each other's work",
       "Character stays coaching + feedback — no ranking, no scoring",
       "Every required element maps to a day of the workshop:",
       "  MAF agent → Day 1",
