@@ -1,0 +1,29 @@
+{
+  "_comment": [
+    "stress_case.json — Part B2 (Bound the loop).",
+    "",
+    "This case is deliberately NOT in golden_set.jsonl. It is not a quality",
+    "test; it is a termination test.",
+    "",
+    "Nothing in data/docs/ answers this question, and nothing ever will. A",
+    "Critic doing its job correctly will refuse to approve the Answer, which",
+    "sends the graph back to the Planner, which produces another plan, which",
+    "the Critic again refuses. Without a bound, Part B's conditional edge",
+    "loops until something else stops it -- your patience, a token budget, or",
+    "a rate limit.",
+    "",
+    "The point of Part B2 is that this is a CORRECTNESS bug in the graph, not",
+    "a bad question. The graph has to stop on its own.",
+    "",
+    "Expected behavior once the guardrail is in place: the workflow stops at",
+    "MAX_REVISIONS and returns an Answer whose confidence is low and whose",
+    "summary says the corpus does not cover this -- a graceful, bounded",
+    "give-up, not an exception and not an infinite loop."
+  ],
+  "id": "stress1",
+  "question": "What is the certified maximum sustained throughput for quantum inference workloads in the Antarctic region, and which compliance regime governs it?",
+  "branch": "ungroundable",
+  "expected_citations": [],
+  "expected_actions": ["search_docs"],
+  "expected_behavior": "terminates at the revision cap and returns a low-confidence Answer that states the corpus does not cover this"
+}

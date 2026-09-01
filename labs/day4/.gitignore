@@ -68,4 +68,7 @@ coverage.*
 .env.*
 !.env.example
 
+# Day 4 lab — evaluate.py's generated output, not lab content
+python/results/
+
 .DS_Store

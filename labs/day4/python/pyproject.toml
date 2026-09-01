@@ -1,10 +1,16 @@
 [project]
 name = "day4-lab"
 version = "0.1.0"
-description = "Day 4 lab — multi-agent workflows (Sequential, custom graph, Group Chat) and evaluation."
+description = "Day 4 lab — multi-agent workflows, revision loops, and evaluation"
 requires-python = ">=3.11"
 dependencies = [
+    # Graph workflows (WorkflowBuilder, Executor, WorkflowContext, WorkflowViz)
+    # ship in agent-framework-core, pulled in by agent-framework.
     "agent-framework",
+    # SequentialBuilder and GroupChatBuilder are a SEPARATE package. Part A
+    # and Part C both fail at import without it.
+    "agent-framework-orchestrations",
+    # FoundryChatClient.
     "agent-framework-foundry",
     "azure-identity",
     "pydantic>=2.0",
@@ -13,9 +19,17 @@ dependencies = [
     "pytest-asyncio",
 ]
 
-[tool.uv]
-package = false
+# Deliberately NOT included:
+#   graphviz -- only needed for WorkflowViz.export(format="svg"). The lab uses
+#     .to_mermaid(), which is plain text and needs no extra dependency or
+#     system binary.
+#   azure-ai-evaluation -- Day 2's package. Day 4 uses local deterministic
+#     scoring plus Agent Framework's own Foundry evaluation, same call Day 3
+#     made.
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.uv]
+package = false

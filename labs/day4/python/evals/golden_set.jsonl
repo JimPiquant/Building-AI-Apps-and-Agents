@@ -1,43 +1,45 @@
-// golden_set.jsonl — shared golden set for Parts A, B, and C.
+// golden_set.jsonl — Day 4 lab evaluation set.
 //
 // Format: one JSON object per line. Lines starting with // are ignored by
-// the runner (each part's main() strips them before parsing). Built once
-// here — the same 15 questions run against all three parts, which is what
-// makes the eval deltas between parts mean something instead of being
-// noise from different test data.
+// the runner (evaluate.py strips them before parsing).
+//
+// EIGHT cases, deliberately small. Every case runs against Part A, Part B,
+// and Part C, so the set is a fixed measuring stick — the only thing that
+// changes between runs is the orchestration.
+//
+// Why eight and not fifteen: every case is a full multi-agent run, and the
+// final comparison runs each case three times against three orchestrations.
+// Eight cases x 3 repetitions x 3 parts is already ~72 workflow runs. Adding
+// cases costs wall-clock time in a fixed lab slot; it does not add a branch
+// that isn't already covered.
+//
+// The set covers four branches on purpose:
+//   grounded    (3) — answerable from one document, first pass
+//   revision    (3) — spans documents; the first plan usually misses part of
+//                     it, so a Critic that can loop should beat one that
+//                     can't. THIS is the group that separates Part A from B.
+//   no_retrieval(1) — general knowledge; a correct run cites nothing
+//   partial     (1) — the corpus answers half the question and says so; the
+//                     correct behavior is to answer what is grounded and
+//                     name the gap, NOT to invent the rest
 //
 // Schema (per row):
-//   {
-//     "query": "the user's question",
-//     "expected_citations": ["...zero or more expected doc filenames..."],
-//     "expects_revision": true | false   // true if this question is hard
-//                                        // enough that Part A's Critic
-//                                        // (no correction) is expected to
-//                                        // NOT approve it on the first pass
-//   }
+//   id                 stable identifier, used in results files
+//   question           the user's question
+//   branch             grounded | revision | no_retrieval | partial
+//   expected_citations document filenames that must appear in the Answer's
+//                      citations; [] means "cite nothing"
+//   expected_actions   ordered tool calls a known-good run makes — ground
+//                      truth for Task Navigation Efficiency (Module 5)
+//   must_mention       substrings a correct answer contains; the cheap
+//                      deterministic check that runs without a judge model
+//   notes              why this case is in the set
 //
-// Grounded against the real Day 2 knowledge base documents
-// (labs/day2/python/data/docs/) — reuse the SAME Foundry IQ knowledge
-// base, nothing new to provision.
-//
-// Reordered 2026-08-31 so the FIRST 5 rows are a representative mix (3
-// clean successes + 2 revision-triggering failures) for Part A's
-// GOLDEN_SET_LIMIT = 5 default run — otherwise the first 5 rows were all
-// clean questions and Part A's own "no correction" teaching point never
-// showed up in a quick run. The remaining 10 rows keep their original
-// relative order.
-{"query": "How do I generate an API key?", "expected_citations": ["authentication.md"], "expects_revision": false}
-{"query": "What roles can a user have on a Contoso developer account?", "expected_citations": ["account-management.md"], "expects_revision": false}
-{"query": "What is the base URL for the Contoso API?", "expected_citations": ["api-reference.md"], "expects_revision": false}
-{"query": "Compare the standard rate limits across all Contoso plan tiers and recommend which plan fits a bursty traffic pattern.", "expected_citations": ["rate-limits.md"], "expects_revision": true}
-{"query": "Walk me through diagnosing a 401 error end-to-end, from first symptom to final resolution, citing every relevant doc along the way.", "expected_citations": ["troubleshooting-login.md", "authentication.md", "error-codes.md"], "expects_revision": true}
-{"query": "What SDKs does Contoso officially support?", "expected_citations": ["faq.md"], "expects_revision": false}
-{"query": "What are the prerequisites before I make my first API call?", "expected_citations": ["getting-started.md"], "expects_revision": false}
-{"query": "When are Contoso invoices due after a statement generates?", "expected_citations": ["billing.md"], "expects_revision": false}
-{"query": "My API calls are failing to authenticate - what should I check first?", "expected_citations": ["troubleshooting-login.md"], "expects_revision": false}
-{"query": "What does a 429 response mean?", "expected_citations": ["error-codes.md", "rate-limits.md"], "expects_revision": false}
-{"query": "Why would my account enter payment_review status?", "expected_citations": ["payment-review.md"], "expects_revision": false}
-{"query": "What HTTP status code is returned when my request isn't authenticated, and exactly what should I do about it?", "expected_citations": ["authentication.md", "error-codes.md"], "expects_revision": false}
-{"query": "If my account enters payment_review and I don't resolve it before my next invoice is due, what exactly happens to my API access and my account status?", "expected_citations": ["payment-review.md", "billing.md"], "expects_revision": true}
-{"query": "What's the capital of France?", "expected_citations": [], "expects_revision": false}
-{"query": "Can Contoso support cancel a specific pending order for me right now?", "expected_citations": [], "expects_revision": true}
+{"id": "g1", "question": "What is the requests-per-minute rate limit for a Standard tier subscription?", "branch": "grounded", "expected_citations": ["rate-limits.md"], "expected_actions": ["search_docs"], "must_mention": ["1,200"], "notes": "Single document, single fact. Should pass in every part; if this fails, something is wrong with retrieval, not with orchestration."}
+{"id": "g2", "question": "How many total attempts does the client retry policy allow, and what is the backoff cap?", "branch": "grounded", "expected_citations": ["retry-policy.md"], "expected_actions": ["search_docs"], "must_mention": ["5", "20 seconds"], "notes": "Two facts, one document. Still a single-pass case."}
+{"id": "g3", "question": "How long is telemetry retained for a Premium subscription?", "branch": "grounded", "expected_citations": ["data-retention.md"], "expected_actions": ["search_docs"], "must_mention": ["90 days"], "notes": "Single lookup in a table. Baseline sanity."}
+{"id": "r1", "question": "A Premium customer has been receiving sustained 429 responses for the last 15 minutes. What incident severity does this get, and what should we tell them to change in their client?", "branch": "revision", "expected_citations": ["incident-severity.md", "retry-policy.md"], "expected_actions": ["search_docs", "search_docs"], "must_mention": ["Sev2", "Retry-After"], "notes": "Spans two documents. A plan that only searches for the severity rule answers half. The Critic should reject and ask for the client-side guidance."}
+{"id": "r2", "question": "It is 20 December. Can we deploy a hotfix that mitigates an active Sev2 in the West region, and who has to approve it?", "branch": "revision", "expected_citations": ["deployment-windows.md", "oncall-rotation.md"], "expected_actions": ["search_docs", "search_docs"], "must_mention": ["change freeze", "engineering manager"], "notes": "Date falls inside the change freeze. Needs the freeze exception AND the approval authority, which live in different documents."}
+{"id": "r3", "question": "A Standard customer exceeded their monthly request allowance by 300% for two consecutive months. What happens to their billing, their tier, and their stored data?", "branch": "revision", "expected_citations": ["cost-model.md", "service-tiers.md", "data-retention.md"], "expected_actions": ["search_docs", "search_docs"], "must_mention": ["0.40", "tier review"], "notes": "Three documents, three sub-questions. The data-retention part is the one first plans usually drop -- and the correct answer is that quota has NO effect on retention."}
+{"id": "n1", "question": "In general, what does the HTTP status code 429 mean?", "branch": "no_retrieval", "expected_citations": [], "expected_actions": [], "must_mention": ["Too Many Requests"], "notes": "General knowledge. A correct run makes NO tool call and cites nothing. Catches a workflow that retrieves reflexively regardless of the question."}
+{"id": "p1", "question": "What is the Premium availability commitment for the West region, and what service credit applies if it is missed?", "branch": "partial", "expected_citations": ["regions-and-sla.md"], "expected_actions": ["search_docs"], "must_mention": ["99.9%"], "notes": "The corpus gives the commitment but states plainly that service-credit remedies are not in platform documentation. Correct behavior is to answer the grounded half and name the gap. An answer that invents a credit percentage is a FAILURE even though it looks complete."}

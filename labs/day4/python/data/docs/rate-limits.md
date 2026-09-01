@@ -1,40 +1,32 @@
-# Rate Limits
+# Contoso Cloud Platform — Rate Limits
 
-The Contoso API enforces rate limits to protect infrastructure and ensure fair use.
+Rate limits are applied per subscription, per region, on a sliding one-minute
+window. They are independent of the monthly request allowance described in
+`service-tiers.md`.
 
-## Standard limits
+## Limits by tier
 
-| Plan | Requests per minute | Burst |
-|---|---|---|
-| Free | 60 | 100 |
-| Starter | 600 | 1,000 |
-| Pro | 6,000 | 10,000 |
-| Enterprise | Custom | Custom |
+| Tier | Requests per minute | Concurrent connections |
+|---|---:|---:|
+| Free | 60 | 4 |
+| Standard | 1,200 | 64 |
+| Premium | 12,000 | 512 |
 
-Limits are per API key. Multiple keys on the same account do not share a quota.
+## When a limit is exceeded
 
-## Rate limit headers
+The platform returns **HTTP 429 Too Many Requests** with these headers:
 
-Every response includes:
+- `Retry-After` — whole seconds to wait before retrying. Always present on
+  a 429 response.
+- `X-Contoso-RateLimit-Remaining` — requests left in the current window.
+- `X-Contoso-RateLimit-Reset` — Unix timestamp when the window resets.
 
-- `X-RateLimit-Limit` — your current plan's per-minute cap
-- `X-RateLimit-Remaining` — how many requests you can still make this minute
-- `X-RateLimit-Reset` — Unix timestamp when the window resets
+Clients **must** honor `Retry-After`. A client that ignores it and retries
+immediately may be throttled at the edge for up to 15 minutes, which returns
+HTTP 503 rather than 429 and does not include `Retry-After`.
 
-## When you hit a limit
+## Burst allowance
 
-A `429 too many requests` response includes a `Retry-After` header (seconds).
-
-We recommend exponential backoff starting at 1 second, doubling up to 32 seconds,
-then failing.
-
-## Requesting a limit increase
-
-Enterprise customers can request custom limits by opening a support ticket. Include:
-
-- Your account ID
-- Current plan
-- Peak requests per second observed
-- Business justification
-
-Turnaround is typically 2 business days.
+Standard and Premium subscriptions may exceed the per-minute limit by up to
+25% for a maximum of 10 seconds in any 5-minute period. Burst capacity is
+best-effort and is not covered by the SLA.

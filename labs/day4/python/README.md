@@ -1,37 +1,84 @@
 # Day 4 Lab — Python starter
 
-This directory holds the Python code for the Day 4 lab. Start here after you
-`cp labs/day4/.env.example labs/day4/.env` and fill in your values.
+Start with the main [lab README](../README.md). This page is a map of the
+directory.
 
-## Files (in the order you'll touch them)
+## Files, in the order you touch them
 
-| File | Part | What it does |
+| File | Part | Provided or authored |
 |---|---|---|
-| [`agent.py`](agent.py) | prereq | Baseline sanity check — plain MAF agent, no workflow |
-| [`roles.py`](roles.py) | A/B/C | Shared: Planner/Retriever/Critic agent factories, their structured-output models (`Plan`, `Evidence`, `RetrievalResult`, `Answer`, `CriticVerdict`), the local `search_docs` tool, `extract_verdict()`, and `load_golden_set()` |
-| [`data/docs/`](data/docs/) | prereq | Bundled local docs (copied from Day 2) the Retriever's `search_docs` tool grounds against — no live knowledge base needed |
-| [`evals/golden_set.jsonl`](evals/golden_set.jsonl) | prereq | ~15 questions, built once, reused by Parts A-C |
-| [`part_a_workflow_basics.py`](part_a_workflow_basics.py) | A | Raw `WorkflowBuilder` graph — executors, edges, `output_from` — no loop, no golden set |
-| [`part_b_orchestrations.py`](part_b_orchestrations.py) | B | Three constructions of the same roles: `SequentialBuilder`, a custom graph + guardrail (`revision_gate`, `finalize`), `GroupChatBuilder` + `orchestrator_agent` |
-| [`tests/test_part_b_guardrail.py`](tests/test_part_b_guardrail.py) | B | Isolation tests for construction #2's `compute_next_step()` decision logic — no live Foundry call |
-| [`part_c_evaluate.py`](part_c_evaluate.py) | C | Imports all three of Part B's `build_workflow_*()` functions; runs the golden set against each and reports a comparison |
+| [`retrieval.py`](retrieval.py) | 0 | **Provided** — corpus search; run it as your setup check |
+| [`agents.py`](agents.py) | 0 | **Provided** — Planner, Retriever, Critic + the shared types |
+| [`trace.py`](trace.py) | A | **Provided** — prints the workflow event stream |
+| [`part_a_sequential.py`](part_a_sequential.py) | A | **You write** — 2 TODOs |
+| [`workflow_nodes.py`](workflow_nodes.py) | B | **Provided**, except `RevisionGate.decide` (Part B2) |
+| [`part_b_graph.py`](part_b_graph.py) | B1 | **You write** — 3 TODOs |
+| [`tests/test_guardrail.py`](tests/test_guardrail.py) | B2 | **Provided, ships failing** — the spec |
+| [`part_c_group_chat.py`](part_c_group_chat.py) | C | **You write** — 1 TODO |
+| [`evaluate.py`](evaluate.py) | C | **Provided** — the evaluation harness |
 
-## Setup
+## Commands
 
 ```bash
 uv sync
-uv run python agent.py    # should print a greeting
+uv run retrieval.py                              # setup check, no model call
+
+uv run part_a_sequential.py                      # Part A
+uv run part_b_graph.py                           # Part B1
+uv run pytest tests/test_guardrail.py -v         # Part B2 — ships failing
+uv run part_c_group_chat.py                      # Part C
+
+uv run evaluate.py --part b --repetitions 3      # baseline
+uv run evaluate.py --part b --part c --repetitions 3   # the comparison
+uv run evaluate.py --part b --case r1            # one case, while debugging
 ```
 
-If that greeting doesn't appear, you're not ready to start Part A. Check the
-main [lab README](../README.md#prerequisites).
+## Which package is which
+
+Three separate distributions, and the split causes the most common import
+error in this lab:
+
+| You import | Comes from |
+|---|---|
+| `Executor`, `WorkflowBuilder`, `WorkflowContext`, `handler`, `executor`, `AgentExecutor`, `WorkflowViz`, `Agent`, `Message` | `agent-framework-core` (via `agent-framework`) |
+| `SequentialBuilder`, `GroupChatBuilder` | **`agent-framework-orchestrations`** |
+| `FoundryChatClient` | `agent-framework-foundry` |
+
+`from agent_framework.orchestrations import SequentialBuilder` failing means
+that middle package is missing. Re-run `uv sync`.
+
+## Two API details worth memorizing
+
+**State access is synchronous; message passing is not.**
+
+```python
+ctx.set_state("k", v)              # no await
+value = ctx.get_state("k", 0)      # no await
+await ctx.send_message(msg)        # await
+await ctx.yield_output(result)     # await
+```
+
+**There is one event class, discriminated by a string.** No
+`ExecutorInvokedEvent` — branch on `event.type`:
+
+```python
+async for event in workflow.run(message, stream=True):
+    if event.type == "executor_invoked":
+        print(event.executor_id)
+    elif event.type == "output":
+        answer = event.data
+```
+
+Note `workflow.run(msg, stream=True)` is async-iterable and is *not*
+awaited. The non-streaming form, `await workflow.run(msg)`, returns a
+`WorkflowRunResult` with `.get_outputs()`. There is no `run_stream` method.
 
 ## Reference
 
-- Module 1 slides — Agents vs. Workflows
-- Module 3 slides — MAF Workflows (executors, edges, state, visualization) — Part A
-- Module 2 slides — Orchestration Patterns (Sequential, Group Chat) — Part B
-- Module 6 slides — Multi-Agent Failure Modes & Mitigations (the guardrail requirement) — Part B
-- Module 4 slides — Memory Strategies for Multi-Agent Systems
-- Module 5 slides — Evaluating Multi-Agent Systems — Part C
-- Module 7 slides — Day 4 Lab Kickoff (the architecture this lab implements)
+- Day 4 Module 1 — Agents vs. Workflows
+- Day 4 Module 2 — Orchestration Patterns
+- Day 4 Module 3 — MAF Workflows (executors, edges, state, events)
+- Day 4 Module 4 — Memory Strategies for Multi-Agent Systems
+- Day 4 Module 5 — Evaluating Multi-Agent Systems
+- Day 4 Module 6 — Multi-Agent Failure Modes
+- Day 4 Module 7 — Day 4 Lab Kickoff
