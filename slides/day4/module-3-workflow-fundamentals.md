@@ -194,7 +194,8 @@ async for event in stream:
   - At the end of **every superstep**, after all its executors finish
 - Captures: executor state, pending messages for the next superstep, **pending requests and responses**, and shared state
 - Pending human-in-the-loop requests are re-emitted as `request_info` events when you restore — you never lose an outstanding approval
-- Use cases: long-running workflows, pause/resume across process restarts, audit/compliance snapshots, migrating a run across environments
+
+Use cases: long-running workflows, pause/resume across process restarts, audit/compliance snapshots, migrating a run across environments
 
 ## A note on the functional API
 <!-- layout: compare -->
@@ -210,23 +211,59 @@ async for event in stream:
   - Could simplify a custom revision loop to a plain `while` — worth revisiting once it's no longer experimental
   - Not used for today's lab while it remains experimental
 
-## A YAML alternative: declarative workflows
-<!-- layout: compare -->
-<!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/declarative -->
-<!-- notes: Flag this the same way Day 3 flagged Agent Hooks — real, documented, and deliberately out of scope for a code-first week. Mention only; do not teach YAML syntax or build any lab content on it. -->
+## Declarative workflows: describe what, not how
+<!-- layout: list -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/declarative?pivots=programming-language-python#overview -->
+<!-- notes: Supersedes this deck's earlier one-slide "mention only, out of scope" stub — the workshop now teaches this content directly rather than just flagging its existence, matching the doc's own Overview section (key-benefit labels are verbatim). Still not built into today's lab, which stays WorkflowBuilder-based. -->
 
-- **Programmatic (today's focus)**
-  - `WorkflowBuilder` in Python, C#, or Go
-  - Maximum flexibility; integrates directly with existing code
-  - What today's lab is built on
-- **Declarative — OUT OF SCOPE THIS WEEK**
-  - Define the graph in YAML instead of code
-  - Docs' own guidance: prefer it for standard patterns, frequently-changing workflows, or non-developer maintainers
-  - Real and documented — just not this workshop's focus, since the week is code-first
+- Declarative workflows define workflow logic in YAML instead of programmatic code — easier to read, modify, and share across teams
+- You describe what the workflow should do, not how to implement it — the framework converts the YAML into an executable workflow graph
+- Key benefits:
+  - Readable — YAML syntax is easy to understand, even for non-developers
+  - Portable — definitions can be shared, versioned, and modified without code changes
+  - Rapid iteration — modify workflow behavior by editing configuration files
+  - Consistent structure — predefined action types keep workflows following best practices
+
+## When to use declarative vs. programmatic workflows
+<!-- layout: table -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/declarative?pivots=programming-language-python#when-to-use-declarative-vs-programmatic-workflows -->
+<!-- notes: Verbatim table from the doc. Today's lab sits squarely in the Programmatic column ("integration with existing Python code," "complex custom logic") — worth naming explicitly when this table is on screen. -->
+
+| Scenario | Recommended Approach |
+|---|---|
+| Standard orchestration patterns | Declarative |
+| Workflows that change frequently | Declarative |
+| Non-developers need to modify workflows | Declarative |
+| Complex custom logic | Programmatic |
+| Maximum flexibility and control | Programmatic |
+| Integration with existing Python code | Programmatic |
+
+## Python YAML structure
+<!-- layout: code -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/declarative?pivots=programming-language-python#python-yaml-structure -->
+<!-- notes: Verbatim skeleton from the doc's Python zone. The doc's own follow-on Structure Elements table (name/description/inputs/actions, required or not) is compressed into the one-line caption below rather than reproduced as a second table. -->
+
+```yaml
+name: my-workflow
+description: A brief description of what this workflow does
+
+inputs:
+  parameterName:
+    type: string
+    description: Description of the parameter
+
+actions:
+  - kind: ActionType
+    id: unique_action_id
+    displayName: Human readable name
+    # Action-specific properties
+```
+
+Only `name` and `actions` are required — `description` and `inputs` are optional, and `actions` is the ordered list of steps the workflow actually runs.
 
 ## Takeaways
 <!-- layout: takeaways -->
-<!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/ | https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop | https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints | https://learn.microsoft.com/en-us/agent-framework/workflows/visualization | https://learn.microsoft.com/en-us/agent-framework/workflows/observability -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/ | https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop | https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints | https://learn.microsoft.com/en-us/agent-framework/workflows/visualization | https://learn.microsoft.com/en-us/agent-framework/workflows/observability | https://learn.microsoft.com/en-us/agent-framework/workflows/declarative -->
 <!-- notes: Ask attendees to name the two building blocks a Critic-to-Planner revision loop needs. Answer: a conditional edge (this module) plus a counter in workflow state (also this module) — no prebuilt orchestration pattern from Module 2 supports the loop-back directly. -->
 
 - You build executors from typed message handlers, and connect them with direct, conditional, switch-case, or fan-in/fan-out edges.
@@ -234,4 +271,4 @@ async for event in stream:
 - The superstep (Pregel/BSP) model is why parallel execution is real, checkpointing is reliable, and execution is deterministic.
 - Human-in-the-loop and tool approval share one request/response mechanism; checkpoints preserve pending requests across a restore.
 - You can render any graph you build with `WorkflowViz`, and diagnose a silent edge with `edge_group.delivery_status` — both work on the lab's own conditional edge.
-- `WorkflowBuilder` is today's tool; the functional `@workflow` API and declarative YAML workflows are both real alternatives worth a second look outside this week's scope.
+- `WorkflowBuilder` is today's lab tool; the functional `@workflow` API remains experimental and worth a second look later, while declarative YAML workflows — covered on the previous three slides — are a real production alternative once a graph settles into a standard, frequently-edited pattern.
