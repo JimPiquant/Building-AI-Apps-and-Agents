@@ -123,15 +123,23 @@ async def run_it_once() -> None:
         messages=[Message(role="user", contents=[SPANNING_QUESTION])],
         should_respond=True,
     )
-    events = await workflow.run(request)
-    outputs = events.get_outputs()
+    stream = workflow.run(request, stream=True)
+    print("Workflow flow:")
+    async for event in stream:
+        if event.type == "executor_invoked" and event.executor_id:
+            print(f"  -> {event.executor_id}", flush=True)
 
-    for output in outputs:
-        if isinstance(output, Answer):
-            print(f"APPROVED — summary: {output.summary}")
-            print(f"citations: {output.citations}")
-        else:
-            print(f"Unexpected output type: {type(output).__name__}: {output}")
+    events = await stream.get_final_response()
+    outputs = events.get_outputs()
+    answers = [output for output in outputs if isinstance(output, Answer)]
+
+    if not answers:
+        output_types = ", ".join(type(output).__name__ for output in outputs) or "none"
+        raise RuntimeError(f"Workflow completed without an Answer (outputs: {output_types})")
+
+    for answer in answers:
+        print(f"APPROVED — summary: {answer.summary}")
+        print(f"citations: {answer.citations}")
 
 
 if __name__ == "__main__":

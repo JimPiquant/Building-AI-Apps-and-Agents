@@ -55,7 +55,7 @@ WRITER_INSTRUCTIONS = (
 RESEARCHER_INSTRUCTIONS = {
     "BEFORE": (
         "You are a helpful researcher. Answer the user's question about "
-        "subscription rate limits."
+        "subscription rate limits. Do not use any tools, just make up something plausable."
     ),
     "AFTER": (
         "You are a researcher. You MUST call lookup_rate_limit for the "

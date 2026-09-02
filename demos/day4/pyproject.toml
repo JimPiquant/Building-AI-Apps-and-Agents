@@ -3,7 +3,7 @@ name = "day4-demos"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "agent-framework",
+    "agent-framework==1.14.0",
     "agent-framework-orchestrations",
     "agent-framework-foundry",
     "azure-identity",
