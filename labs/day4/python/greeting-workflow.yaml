@@ -1,0 +1,36 @@
+name: greeting-workflow
+description: A simple workflow that greets the user
+
+inputs:
+  name:
+    type: string
+    description: The name of the person to greet
+
+actions:
+  # Set a greeting prefix
+  - kind: SetVariable
+    id: set_greeting
+    displayName: Set greeting prefix
+    variable: Local.greeting
+    value: Hello
+
+  # Build the full message using an expression
+  - kind: SetVariable
+    id: build_message
+    displayName: Build greeting message
+    variable: Local.message
+    value: =Concat(Local.greeting, ", ", Workflow.Inputs.name, "!")
+
+  # Send the greeting to the user
+  - kind: SendActivity
+    id: send_greeting
+    displayName: Send greeting to user
+    activity:
+      text: =Local.message
+
+  # Store the result in outputs
+  - kind: SetVariable
+    id: set_output
+    displayName: Store result in outputs
+    variable: Workflow.Outputs.greeting
+    value: =Local.message

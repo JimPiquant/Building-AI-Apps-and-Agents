@@ -17,6 +17,7 @@ dependencies = [
     "python-dotenv",
     "pytest",
     "pytest-asyncio",
+    "agent-framework-declarative>=1.0.2",
 ]
 
 # Deliberately NOT included:
