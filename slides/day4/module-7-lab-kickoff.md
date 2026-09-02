@@ -11,7 +11,7 @@ deck: module-7-lab-kickoff.pptx
 ## Day 4 Lab Kickoff
 <!-- layout: title -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/ | https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/agent-evaluators -->
-<!-- notes: This lab composes every module from today: workflow primitives (3), orchestration patterns (2), memory contracts (4), and a trajectory evaluation with a cost metric (5), plus the guardrail from Module 6 — now a required deliverable, not a stretch goal. Note for presenters: the lab's own part order (basics, then orchestrations, then eval) deliberately runs opposite to today's lecture order (orchestration patterns in Module 2, before workflow fundamentals in Module 3) — build it by hand first, then appreciate the shortcut, is the lab's own teaching sequence. Part naming matches labs/day4/README.md exactly: A, B1, B2, C — not the three-part A/B/C shape an earlier lab draft used. -->
+<!-- notes: This lab composes every module from today: workflow primitives (3), orchestration patterns (2), memory contracts (4), and a trajectory evaluation with a cost metric (5), plus the guardrail from Module 6 — now a required deliverable, not a stretch goal. Note for presenters: the lab's own part order (basics, then orchestrations, then eval) deliberately runs opposite to today's lecture order (orchestration patterns in Module 2, before workflow fundamentals in Module 3) — build it by hand first, then appreciate the shortcut, is the lab's own teaching sequence. Part naming matches labs/day4/README.md exactly: A, B1, B2, C, plus an optional Part D (declarative workflows, added later, provided complete) — not the three-part A/B/C shape an earlier lab draft used. -->
 
 - Turn the Day 3 single agent into a multi-agent research workflow — four parts, escalating sophistication, one shared evaluation
 
@@ -25,7 +25,7 @@ deck: module-7-lab-kickoff.pptx
   - **Part B1** — a custom `WorkflowBuilder` graph with a conditional edge that fixes it
   - **Part B2** — bound that loop, test-driven: a failing spec is the requirement, not a TODO comment
   - **Part C** — the same roles a third way, `GroupChatBuilder`, then measure all three constructions against one golden set
-- **Optional stretch** — a Ticket agent that files a real Azure DevOps work item (Day 3's MCP path) when the Critic flags a documentation gap
+- **Optional stretch — Part D**: the same Agent Framework engine running a workflow authored as YAML instead of code, no TODOs, provided complete (needs Python 3.13)
 
 ## Part A — Sequential, and its ceiling
 <!-- layout: list -->
@@ -108,17 +108,17 @@ Same three roles, same shape — one new edge. When the Critic doesn't approve, 
 ## Prerequisites
 <!-- layout: cards -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/evaluation -->
-<!-- notes: Mirrors Day 3 Module 9's prerequisites-card style. Matches labs/day4/README.md's own prerequisites list, including the Foundry judge model being for the optional --foundry cloud pass only — the core comparison (pass rate, cost/success, revisions) is local and deterministic, no judge model required. The ADO MCP path is only needed for the optional Ticket agent stretch, not the core lab. -->
+<!-- notes: Mirrors Day 3 Module 9's prerequisites-card style. Matches labs/day4/README.md's own prerequisites list, including the Foundry judge model being for the optional --foundry cloud pass only — the core comparison (pass rate, cost/success, revisions) is local and deterministic, no judge model required. Card 4 corrects an earlier stretch-goal claim about an Azure DevOps Ticket agent that was never built into this lab; there is no ADO-related lab content. Part D is real and optional -- provided complete, not authored. -->
 
 1. **Day 3 lab complete** — a working single agent with memory, streaming, structured outputs, and MCP
 2. **Bundled reference docs** — included in the repo (`labs/day4/python/data/docs/`); nothing to provision, no live knowledge base required
 3. **A Foundry judge model deployment** — optional: only for `evaluate.py --foundry`'s cloud evaluator pass; the core comparison is local and deterministic
-4. **(Optional stretch only)** — Day 3's Azure DevOps MCP path, for the Ticket agent
+4. **(Optional) Python 3.13** — only for Part D's declarative workflow; `agent-framework-declarative` doesn't yet support 3.14. Parts A-C need whatever Python 3.11+ you're already using
 
 ## Definition of done
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/evaluation | https://learn.microsoft.com/en-us/agent-framework/agents/looping -->
-<!-- notes: Reworded for the A/B1/B2/C structure — each row now matches labs/day4/README.md's own per-part "Definition of done" bullets almost verbatim, rather than paraphrasing a since-superseded 3-part (A/B/C) shape. The Part B2 guardrail is a required deliverable, not a stretch goal. -->
+<!-- notes: Reworded for the A/B1/B2/C structure — each row now matches labs/day4/README.md's own per-part "Definition of done" bullets almost verbatim, rather than paraphrasing a since-superseded 3-part (A/B/C) shape. The Part B2 guardrail is a required deliverable, not a stretch goal. The last row replaces an earlier "Ticket agent files a real ADO work item" stretch claim that was never built into this lab -- there is no ADO-related lab content -- with Part D, which is real, optional, and provided complete. -->
 
 | Area | Done when |
 |---|---|
@@ -127,7 +127,7 @@ Same three roles, same shape — one new edge. When the Critic doesn't approve, 
 | Part B2 | All of `tests/test_guardrail.py` passes — **required**, not stretch |
 | Part C | The `GroupChatBuilder` construction runs end-to-end with a working termination bound; you've run the 3-repetition comparison |
 | Reflection | Which construction you'd actually ship, and why — committed to the repo |
-| Stretch | Ticket agent files a real ADO work item when the Critic flags a gap |
+| Part D (optional) | `uv run --python 3.13 part_d_declarative.py` prints `Hello, Alice!` |
 
 ## Takeaways
 <!-- layout: takeaways -->
