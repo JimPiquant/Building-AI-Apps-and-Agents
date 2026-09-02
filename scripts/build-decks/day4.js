@@ -300,6 +300,18 @@ function bodySlide(pres, meta, title) {
   return slide;
 }
 
+// How many lines a card title needs at `fontSize` wrapped to `widthIn` —
+// same character-width heuristic as estimateProseHeight/estimateBulletsHeight
+// below, but with a much lower per-line floor: a card's title column is only
+// ~1.4-2in wide (a fraction of the 8.8in prose width those estimators tune
+// for), so reusing their floor would badly undercount how many lines a title
+// of more than a couple of words actually wraps to.
+function estimateCardTitleLines(title, fontSize, widthIn) {
+  const charWidthIn = (fontSize * 0.52) / 72;
+  const charsPerLine = Math.max(6, widthIn / charWidthIn);
+  return Math.max(1, Math.ceil(title.length / charsPerLine));
+}
+
 function addCard(slide, item, x, y, w, h, index, accent = false) {
   slide.addShape("roundRect", {
     x, y, w, h,
@@ -322,15 +334,30 @@ function addCard(slide, item, x, y, w, h, index, accent = false) {
   const textW = index !== undefined ? w - 0.72 : w - 0.32;
   const title = item.title || item.text;
   const body = item.title ? item.text : "";
+
+  // Title box height scales with how many lines the title actually needs
+  // (title font 15pt, 1.25x line height, same factor used throughout this
+  // file) instead of the fixed 0.34in a one-line title happens to need. A
+  // fixed height silently overflowed into the body text below for any title
+  // longer than a couple of words — this was a real bug, not just a content
+  // issue, since it affects every "cards"/"flow" slide with a longer title.
+  const titleFontSize = 15;
+  const titleLineH = (titleFontSize * 1.25) / 72;
+  const titleLines = body ? estimateCardTitleLines(title, titleFontSize, textW) : 1;
+  const titleH = body ? Math.max(0.34, titleLines * titleLineH + 0.08) : h - 0.24;
+
   slide.addText(title, {
-    x: textX, y: y + 0.13, w: textW, h: body ? 0.34 : h - 0.24,
-    fontFace: T.FONTS.title, fontSize: 15, bold: true,
+    x: textX, y: y + 0.13, w: textW, h: titleH,
+    fontFace: T.FONTS.title, fontSize: titleFontSize, bold: true,
     color: T.COLORS.navy, margin: 0, fit: "shrink",
-    valign: body ? "mid" : "middle",
+    valign: body ? "top" : "middle",
   });
   if (body) {
+    // Body starts below wherever the title actually ended, not a fixed
+    // offset — the other half of the same fix.
+    const bodyY = y + 0.13 + titleH + 0.06;
     slide.addText(body, {
-      x: x + 0.16, y: y + 0.55, w: w - 0.32, h: h - 0.68,
+      x: x + 0.16, y: bodyY, w: w - 0.32, h: Math.max(0.2, y + h - 0.1 - bodyY),
       fontFace: T.FONTS.body, fontSize: 11.5, color: T.COLORS.ink,
       margin: 0, fit: "shrink", valign: "top",
     });
