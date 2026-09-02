@@ -85,11 +85,11 @@ deck: module-5-evaluation.pptx
 ## Building a golden set for a workflow
 <!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/evaluation -->
-<!-- notes: Extends Day 3 Part E's 3-case golden set to workflow scale. The lab's own spec calls for ~15 realistic questions with expected citations/answers — enough to see a real pass-rate distribution, not just single pass/fail examples. -->
+<!-- notes: Extends Day 3 Part E's 3-case golden set to workflow scale. Matches the lab's own current golden_set.jsonl and README exactly (8 cases across 4 branches) — updated from an earlier ~15-question, 3-branch spec after the lab's restructure; evaluate.py's own comment explains the 8-case count (8 cases x 3 repetitions x 3 parts is already ~72 workflow runs). -->
 
 - Same discipline as Day 3 Part E, at workflow scale: real queries, expected outcomes, not synthetic passes
-- The lab's own target: ~15 realistic questions, each with expected citations/answers as ground truth
-- Cover the workflow's real branches: a question the Retriever grounds cleanly, one that needs a Critic-triggered revision loop, and a general-knowledge question needing no tools at all
+- The lab's own golden set: 8 cases across 4 branches — small on purpose, since every case runs against all 3 parts × 3 repetitions (~72 workflow runs already)
+- Cover the workflow's real branches: grounded (clean single-document lookup), revision (spans documents, needs a Critic-triggered loop), no_retrieval (general knowledge, no tools), and partial (the corpus answers half — naming the gap is correct, inventing the rest is a failure)
 
 ## Cost per successful outcome
 <!-- layout: list -->
