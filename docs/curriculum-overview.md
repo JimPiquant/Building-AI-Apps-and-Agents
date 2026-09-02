@@ -27,7 +27,7 @@ Each day maps onto this stack:
 - **Day 5** — Ops.
 
 ## Reference domain
-Every day builds on the same reference project: a **technical documentation assistant**. It's intentionally general-purpose so what you learn transfers to any real production scenario. Days 3–4 introduce real integrations (Azure DevOps work items via the official Azure DevOps MCP server) so the pattern is production-shaped by the end of the week.
+Every day builds on the same reference project: a **technical documentation assistant**. It's intentionally general-purpose so what you learn transfers to any real production scenario. Day 3 introduces a real integration (Azure DevOps work items via the official Azure DevOps MCP server) so the pattern is production-shaped by the end of the week.
 
 ## Out of scope
 The following are intentionally **not covered**:
@@ -36,4 +36,4 @@ The following are intentionally **not covered**:
 - **AutoGen** — research-lineage predecessor to MAF.
 
 ## Post-workshop capstone
-The workshop ends with a **capstone project** (solo or teams of 2–3, ~4–6 weeks) reviewed 1:1 with the instructor. See the Day 5 materials for the required-elements checklist and charter template.
+The workshop ends with a **capstone project** (teams of 2–3, no solo path, ~2–3 weeks). It closes with a shared demo day — all teams present live (~15 min per team: demo, Q&A, and coaching) — rather than separate 1:1 reviews, though ad-hoc 1:1 follow-up remains available on request. See the Day 5 materials for the required-elements checklist and charter template.

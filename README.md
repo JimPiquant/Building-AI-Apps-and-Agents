@@ -16,10 +16,10 @@ Professional developers, senior engineers, and solution architects with working 
 | 1 | Foundations: Foundry + MAF + Toolbox + Foundry IQ | A Prompt agent, your own code calling the Responses API, and a Hosted agent — the three ways to run an agent with Foundry |
 | 2 | Grounding & Tools | A grounded, tool-using docs assistant with a Foundry IQ knowledge source |
 | 3 | MAF Single Agent Deep Dive + MCP | The same agent, production-shaped, using the official Azure DevOps MCP server against real ADO work items |
-| 4 | Multi-Agent Patterns + Evaluation | A planner + retriever + critic workflow (with optional ticket-agent stretch) with a trajectory eval |
+| 4 | Multi-Agent Patterns + Evaluation | A planner + retriever + critic workflow with a trajectory eval |
 | 5 | Production + Capstone Kickoff | Observability, identity, RAI, cost, deployment; capstone scoping |
 
-A **post-workshop capstone project** (solo or teams of 2–3, ~4–6 weeks) closes the program with a 1:1 architecture review.
+A **post-workshop capstone project** (teams of 2–3, no solo path, ~2–3 weeks) closes the program with a shared demo day — all teams present live (~15 min per team), with ad-hoc 1:1 follow-up available on request.
 
 ## Repository layout
 ```
