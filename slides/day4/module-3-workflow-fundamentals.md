@@ -21,9 +21,12 @@ deck: module-3-workflow-fundamentals.pptx
 <!-- notes: An executor can be custom logic or an agent — Module 1's "workflow with agent executors" row on the intelligence spectrum. Handlers are type-annotated; the workflow validates the graph against those declared types. -->
 
 - Executors receive typed messages, do work, and produce output messages or events
-- Two kinds: custom logic components, or AI agents (Module 1's "workflow with agent executors")
+- Two kinds: 
+  - Custom logic components
+  - AI agents (Module 1's "workflow with agent executors")
 - Each handler's type annotations declare what it can send and yield — the workflow validates the graph against these at build time
-- `WorkflowContext.send_message(...)` forwards to connected executors; `ctx.yield_output(...)` produces a workflow output
+  - `WorkflowContext.send_message(...)` forwards to connected executors
+  - `ctx.yield_output(...)` produces a workflow output
 
 ## A minimal executor
 <!-- layout: code -->
@@ -93,7 +96,7 @@ Conditional edges render as dashed arrows labeled "conditional" — the lab's Cr
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/visualization -->
 <!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Graph-building code is copied (not imported) from labs/day4/python/solutions/part_b_graph.py, the worked answer to this afternoon's Part B1 exercise, with the Part B2 guardrail fix already applied so the optional live run is safe. -->
 
-Render the EXACT three-executor, conditional-loop graph attendees are about to build by hand this afternoon — Planner → Retriever → Critic, with a conditional edge back to the Planner when the Critic doesn't approve. Paste the printed Mermaid into mermaid.live live, then optionally run it for real on a question that usually needs a revision pass, so the loop-back edge fires in an actual trace, not just on the diagram.
+Render the same three-executor, conditional-loop graph attendees are about to build by hand this afternoon — Planner → Retriever → Critic, with a conditional edge back to the Planner when the Critic doesn't approve. Paste the printed Mermaid into mermaid.live live, then optionally run it for real on a question that usually needs a revision pass, so the loop-back edge fires in an actual trace, not just on the diagram.
 
 ## The superstep execution model
 <!-- layout: flow -->
@@ -114,7 +117,8 @@ Render the EXACT three-executor, conditional-loop graph attendees are about to b
 - **Deterministic execution** — the same input always executes in the same order
 - **Reliable checkpointing** — state can be saved at superstep boundaries with no ambiguity
 - **Simpler reasoning** — no race conditions between supersteps; every executor sees a consistent view
-- Caveat: the barrier means one slow executor blocks the whole superstep — consolidate sequential logic into one executor if independent branches need independent timing
+
+**Caveat**: the barrier means one slow executor blocks the whole superstep — consolidate sequential logic into one executor if independent branches need independent timing
 
 ## Events give you observability
 <!-- layout: table -->
@@ -142,15 +146,16 @@ Render the EXACT three-executor, conditional-loop graph attendees are about to b
 
 Every edge decision in the graph — including the lab's own Critic → Planner condition — shows up here, on a span you can inspect with the same OpenTelemetry tooling from Day 3's observability content.
 
-## State: per-executor by default, shared on request
+## State: access and share common data
 <!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/state -->
 <!-- notes: This is the mechanism Module 4 builds its "per-agent vs. shared memory" content on top of. State isolation matters: reusing one workflow-builder/executor instance across unrelated runs leaks state between them — wrap construction in a helper function so each run gets fresh instances. -->
 
-- `ctx.set_state(key, value)` / `ctx.get_state(key)` — private to the writing executor by default
-- Use a consistent key (or shared scope) across executors to exchange state that isn't a direct message
+- `ctx.set_state(key, value)` / `ctx.get_state(key)` — state that is available to downstream executors
+- Use a consistent key across executors to exchange state that isn't a direct message
 - Writes are visible to the writer immediately; other executors see them starting the **next** superstep
-- **Isolation risk**: reusing one workflow/executor instance across unrelated runs leaks state between them — build fresh instances per run
+- **Isolation risk**: reusing one workflow/executor instance across unrelated runs leaks state between them
+  - Build fresh instances per run
 
 ## Human-in-the-loop: request and response
 <!-- layout: list -->
@@ -184,19 +189,12 @@ async for event in stream:
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints -->
 <!-- notes: Created at the end of every superstep — this is exactly why the superstep model matters. A checkpoint captures everything needed to resume, including in-flight human-in-the-loop requests. -->
 
-- A checkpoint is created at the end of **every superstep**, after all its executors finish
+- A checkpoint is created:
+  - At the start of the first **superstep**
+  - At the end of **every superstep**, after all its executors finish
 - Captures: executor state, pending messages for the next superstep, **pending requests and responses**, and shared state
 - Pending human-in-the-loop requests are re-emitted as `request_info` events when you restore — you never lose an outstanding approval
 - Use cases: long-running workflows, pause/resume across process restarts, audit/compliance snapshots, migrating a run across environments
-
-## Replay: Python 1.13+
-<!-- layout: list -->
-<!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints -->
-<!-- notes: Flag the version-specific behavior clearly since it changes what "replayable" means in earlier Python releases — worth a note if attendees are on an older version. -->
-
-- Python workflows (1.13.0+) also create an **entry checkpoint** before the first superstep, recording the original input
-- Another entry checkpoint is created when responses to a `request_info` event are delivered
-- Together, these make a complete workflow run replayable from the start — not just resumable from the last superstep
 
 ## A note on the functional API
 <!-- layout: compare -->
