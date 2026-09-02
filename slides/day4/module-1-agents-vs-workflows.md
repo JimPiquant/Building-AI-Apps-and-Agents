@@ -116,6 +116,15 @@ response = await workflow_agent.run("Write an article about AI trends")
 
 A caller — another agent, an A2A client, your own code — can't tell it's talking to a workflow instead of a single agent.
 
+## DEMO 1.1 — Wrap a workflow, call it like any other agent
+<!-- layout: demo -->
+<!-- demo-time: ~4 min -->
+<!-- demo-reference: Runbook: demos/day4/module-1-demo-1-workflow-as-agent.md -->
+<!-- source: https://github.com/microsoft/agent-framework/blob/main/python/samples/03-workflows/agents/sequential_workflow_as_agent.py -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Step 1 runs the official sequential_workflow_as_agent.py sample as-is; Step 2 is a minimal, clearly-noted comparison script (with/without intermediate_output_from). -->
+
+Run the official `sequential_workflow_as_agent.py` sample live: a two-agent writer→reviewer pipeline wrapped as an agent returns exactly one message, matching the previous slide's code. Then run a comparison script that builds the SAME workflow with and without `intermediate_output_from=[writer]` — proving `.as_agent()` exposes only whatever output designation the workflow already had, nothing more.
+
 ## The composition circle
 <!-- layout: flow -->
 <!-- source: https://learn.microsoft.com/agent-framework/journey/workflows -->

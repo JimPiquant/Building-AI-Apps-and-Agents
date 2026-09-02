@@ -24,6 +24,15 @@ deck: module-6-failure-modes.pptx
 - `AgentLoopMiddleware(predicate, max_iterations=N)` bounds a **single agent** re-invoking itself until a completion condition is met (default max: 10 runs)
 - `AgentLoopMiddleware.with_judge(judge_client, criteria=[...], max_iterations=N)` is a judge-driven variant — structurally the closest built-in primitive to the lab's own Critic role (default max: 5 iterations)
 
+## DEMO 6.1 — Bound the loop (Option A: predicate + max_iterations, no judge)
+<!-- layout: demo -->
+<!-- demo-time: ~4 min -->
+<!-- demo-reference: Runbook: demos/day4/module-6-demo-1-bound-the-loop.md -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/looping -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Adapted from the official agent_loop_middleware_refinement.py SDK sample: same agent and should_continue/record_feedback/fresh_context mechanics, run as two cases (BOUNDED vs RUNAWAY) instead of one so the safety cap catching a failed completion condition is observed live. -->
+
+The SAME agent and instructions run through two `should_continue` predicates. BOUNDED checks the marker the agent was actually told to emit — the loop stops on its own, under the cap. RUNAWAY checks a one-word typo of that marker (`COMPLETED` vs `COMPLETE`) that can never appear verbatim — a real bug shape where `should_continue` can never return `False` on its own, so `max_iterations` is the only thing that stops it. That's this slide's quoted warning, reproduced as code: "a completion condition can fail."
+
 ## Bounding a workflow-level loop
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/looping | https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/state -->

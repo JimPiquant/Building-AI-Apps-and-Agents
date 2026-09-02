@@ -111,6 +111,15 @@ deck: module-5-evaluation.pptx
 4. **Quantify the delta** — did the pass rate change? Did cost per successful outcome change?
 5. **Repeat** — run this discipline every time the workflow changes, and it becomes your regression harness
 
+## DEMO 5.1 — Trajectory, cost, and the eval → change → re-eval loop
+<!-- layout: demo -->
+<!-- demo-time: ~4 min -->
+<!-- demo-reference: Runbook: demos/day4/module-5-demo-1-trajectory-and-cost.md -->
+<!-- source: https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/agent-evaluators -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Self-contained, deliberately small (a tiny 2-agent researcher -> writer workflow via SequentialBuilder, one local dict-backed tool) — same spirit as Day 3 Module 7's evaluation demo, not the full lab harness. -->
+
+Run the SAME 2-agent workflow twice: BEFORE, the researcher's instructions are vague and it may skip its one tool — process eval and system eval both at risk of failing. AFTER, one sentence is added requiring the tool call — nothing else changes. Compare trajectory (process eval), the final answer (system eval), and total tokens (cost) across the two runs: this IS the loop the slide just named, run live.
+
 ## Repetitions still matter at workflow scale
 <!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/agents/evaluation -->

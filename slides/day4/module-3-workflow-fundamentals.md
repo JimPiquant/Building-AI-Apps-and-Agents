@@ -86,6 +86,15 @@ viz.save_svg("workflow.svg")
 
 Conditional edges render as dashed arrows labeled "conditional" — the lab's Critic → Planner loop-back is visually obvious, not just implied by the code.
 
+## DEMO 3.1 — Visualize the graph you're about to build yourself
+<!-- layout: demo -->
+<!-- demo-time: ~5 min -->
+<!-- demo-reference: Runbook: demos/day4/module-3-demo-1-visualize-graph.md -->
+<!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/visualization -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Graph-building code is copied (not imported) from labs/day4/python/solutions/part_b_graph.py, the worked answer to this afternoon's Part B1 exercise, with the Part B2 guardrail fix already applied so the optional live run is safe. -->
+
+Render the EXACT three-executor, conditional-loop graph attendees are about to build by hand this afternoon — Planner → Retriever → Critic, with a conditional edge back to the Planner when the Critic doesn't approve. Paste the printed Mermaid into mermaid.live live, then optionally run it for real on a question that usually needs a revision pass, so the loop-back edge fires in an actual trace, not just on the diagram.
+
 ## The superstep execution model
 <!-- layout: flow -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution -->

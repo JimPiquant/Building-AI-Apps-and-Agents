@@ -83,6 +83,15 @@ for msg in outputs[0].messages:
     print(f"[{msg.author_name}]: {msg.text}")
 ```
 
+## DEMO 2.1 — ConcurrentBuilder proves it, wall-clock
+<!-- layout: demo -->
+<!-- demo-time: ~5 min -->
+<!-- demo-reference: Runbook: demos/day4/module-2-demo-1-concurrent-parallelism.md -->
+<!-- source: https://github.com/microsoft/agent-framework/blob/main/python/samples/03-workflows/orchestrations/concurrent_agents.py -->
+<!-- notes: Placeholder marker slide — the runbook has full narration, setup, and fallback plan. Grounded in the official concurrent_agents.py sample (same researcher/marketer/legal agents and eBike prompt), adapted with a timing middleware and a sequential comparison to prove the overlap live instead of asserting it. -->
+
+The previous slide's code prints three agents' responses one after another, which LOOKS sequential on the page. This demo times it for real: a small `AgentMiddleware` timestamps each agent's start/finish under `ConcurrentBuilder` and draws an ASCII overlap timeline, then the SAME three agents run again with plain sequential `await agent.run(...)` calls. Concurrent's total wall-clock lands close to one agent's own time; sequential lands close to the sum of all three — that gap is the proof.
+
 ## Handoff — control transfers, not delegation
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/handoff -->
