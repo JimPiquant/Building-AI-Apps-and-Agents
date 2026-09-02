@@ -17,6 +17,10 @@ dependencies = [
     "python-dotenv",
     "pytest",
     "pytest-asyncio",
+    # WorkflowFactory, for Part D's declarative (YAML) workflow. Optional --
+    # not needed for Parts A-C. Doesn't yet support Python 3.14; Part D's
+    # docstring has the `uv run --python 3.13 ...` command that works
+    # around it.
     "agent-framework-declarative>=1.0.2",
 ]
 

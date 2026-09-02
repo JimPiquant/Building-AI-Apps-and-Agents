@@ -11,14 +11,18 @@ shared golden set to find out which one actually performs best.
 | **B1** | The graph that fixes it — a custom `WorkflowBuilder` graph with a revision loop | 3 |
 | **B2** | Bound the loop — a required guardrail, test-driven | 6 |
 | **C** | Change one thing, measure it — swap in `GroupChatBuilder`, then evaluate all three | 2, 5 |
+| **D** | *(optional)* The same idea, authored as YAML instead of code — declarative workflows | 3 |
 
 Parts A, B1, and C are **authoring exercises** — you complete TODOs in a
 starter file. Part B2 is **test-driven** — a failing test is the
-specification, and you edit one method until it passes. Worked answers for
-every part live in `python/solutions/`; try each part yourself first.
+specification, and you edit one method until it passes. Part D is
+**provided complete** — no TODOs, nothing to author, just run it and read
+the YAML. Worked answers for every authored part live in
+`python/solutions/`; try each part yourself first.
 
 Estimated time: ~2 hours (Part A ~20 min, Part B1 ~45 min, Part B2 ~20 min,
-Part C ~35 min). Python only, per workshop policy.
+Part C ~35 min). Python only, per workshop policy. Part D is optional and
+not included in this estimate (~10 min to read and run).
 
 ## Prerequisites
 
@@ -59,7 +63,7 @@ labs/day4/
 ├── README.md                     # you're here
 ├── .env.example                  # copy to .env at this level
 └── python/
-    ├── pyproject.toml            # uv-managed — agent-framework, agent-framework-orchestrations, agent-framework-foundry
+    ├── pyproject.toml            # uv-managed — agent-framework, agent-framework-orchestrations, agent-framework-foundry, agent-framework-declarative (Part D)
     ├── README.md                 # Python starter guide — package map, API quick reference
     ├── retrieval.py              # provided — corpus search; run as your setup check
     ├── agents.py                 # provided — Planner/Retriever/Critic factories + shared types (Plan, Findings, Answer, CriticResult)
@@ -69,6 +73,8 @@ labs/day4/
     ├── part_b_graph.py           # Part B1 — you write, 3 TODOs
     ├── part_c_group_chat.py      # Part C — you write, 1 TODO
     ├── evaluate.py               # provided — the evaluation harness
+    ├── part_d_declarative.py     # Part D (optional) — provided complete, needs Python 3.13
+    ├── greeting-workflow.yaml    # Part D's workflow, authored as YAML instead of code
     ├── data/
     │   └── docs/                 # bundled Contoso Cloud Platform docs the Retriever's search_docs tool grounds against
     ├── evals/
@@ -231,6 +237,40 @@ evaluation harness.
 
 ---
 
+## Part D — Declarative workflows (optional)
+
+**Goal:** see the same execution engine run a workflow authored as data
+(YAML) instead of code, for contrast with Parts A-C.
+
+**Time:** ~10 min. Provided complete — no TODOs.
+
+### Steps
+
+1. This part needs Python 3.13 — `agent-framework-declarative` doesn't yet
+   support 3.14. Run it with the interpreter pinned explicitly:
+   ```bash
+   uv run --python 3.13 part_d_declarative.py
+   ```
+   This rebuilds `.venv` against 3.13, and every later bare `uv run` in this
+   folder keeps using that environment. If you want the rest of the lab
+   back on 3.14 afterward, rebuild the venv the same way against any other
+   lab file: `uv run --python 3.14 part_a_sequential.py`.
+2. Read `greeting-workflow.yaml` alongside the output. `WorkflowFactory`
+   parses the YAML's four actions (`SetVariable`, `SetVariable`,
+   `SendActivity`, `SetVariable`) into the same kind of `Workflow` object
+   Part A and B1 build in code.
+3. Read `part_d_declarative.py`'s own docstring for what a more interesting
+   declarative workflow could look like — it names several of the
+   schema's other action kinds (`InvokeAzureAgent`, `ConditionGroup`/`If`,
+   `Foreach`, `RequestExternalInput`/`WaitForHumanInput`) as optional
+   stretch ideas.
+
+Part D is not evaluated by `evaluate.py` and isn't part of the Part A/B/C
+comparison — it's a separate, self-contained demonstration of an
+alternative authoring surface for the same execution engine.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Check first |
@@ -241,6 +281,7 @@ evaluation harness.
 | `search_docs` returns "No docs matched" for everything | Confirm you're running from `labs/day4/python/` — `data/docs/` is resolved relative to `retrieval.py`'s own location, not your shell's cwd |
 | Part B1 or Part C hangs, or runs much longer than expected | Expected for the revision-branch golden-set cases — a bounded loop can still take `MAX_REVISIONS` full rounds. Use `--case` to isolate one question while debugging |
 | A golden-set result flips between runs | Expected — model nondeterminism. `evaluate.py --repetitions 3` exists precisely so you don't trust a single run |
+| Import or runtime error running `part_d_declarative.py` | Check the Python version — `agent-framework-declarative` doesn't yet support 3.14. Rebuild the venv with `uv run --python 3.13 part_d_declarative.py` |
 
 ---
 

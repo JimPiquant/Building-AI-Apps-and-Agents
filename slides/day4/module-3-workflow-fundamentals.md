@@ -214,7 +214,7 @@ Use cases: long-running workflows, pause/resume across process restarts, audit/c
 ## Declarative workflows: describe what, not how
 <!-- layout: list -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/declarative?pivots=programming-language-python#overview -->
-<!-- notes: Supersedes this deck's earlier one-slide "mention only, out of scope" stub — the workshop now teaches this content directly rather than just flagging its existence, matching the doc's own Overview section (key-benefit labels are verbatim). Still not built into today's lab, which stays WorkflowBuilder-based. -->
+<!-- notes: Supersedes this deck's earlier one-slide "mention only, out of scope" stub — the workshop now teaches this content directly rather than just flagging its existence, matching the doc's own Overview section (key-benefit labels are verbatim). The required Parts A-C of today's lab stay WorkflowBuilder-based; an optional, provided-complete Part D was later added that loads a declarative YAML workflow via WorkflowFactory, for direct contrast. -->
 
 - Declarative workflows define workflow logic in YAML instead of programmatic code — easier to read, modify, and share across teams
 - You describe what the workflow should do, not how to implement it — the framework converts the YAML into an executable workflow graph
@@ -227,7 +227,7 @@ Use cases: long-running workflows, pause/resume across process restarts, audit/c
 ## When to use declarative vs. programmatic workflows
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/en-us/agent-framework/workflows/declarative?pivots=programming-language-python#when-to-use-declarative-vs-programmatic-workflows -->
-<!-- notes: Verbatim table from the doc. Today's lab sits squarely in the Programmatic column ("integration with existing Python code," "complex custom logic") — worth naming explicitly when this table is on screen. -->
+<!-- notes: Verbatim table from the doc. The required Parts A-C of today's lab sit squarely in the Programmatic column ("integration with existing Python code," "complex custom logic") — worth naming explicitly when this table is on screen. The optional Part D is the Declarative counter-example. -->
 
 | Scenario | Recommended Approach |
 |---|---|

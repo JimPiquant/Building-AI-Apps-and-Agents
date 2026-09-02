@@ -16,6 +16,8 @@ directory.
 | [`tests/test_guardrail.py`](tests/test_guardrail.py) | B2 | **Provided, ships failing** — the spec |
 | [`part_c_group_chat.py`](part_c_group_chat.py) | C | **You write** — 1 TODO |
 | [`evaluate.py`](evaluate.py) | C | **Provided** — the evaluation harness |
+| [`greeting-workflow.yaml`](greeting-workflow.yaml) | D | **Provided** — the workflow Part D loads, authored as YAML |
+| [`part_d_declarative.py`](part_d_declarative.py) | D | **Provided, optional** — no TODOs; needs Python 3.13, see the file's docstring |
 
 ## Commands
 
@@ -31,11 +33,13 @@ uv run part_c_group_chat.py                      # Part C
 uv run evaluate.py --part b --repetitions 3      # baseline
 uv run evaluate.py --part b --part c --repetitions 3   # the comparison
 uv run evaluate.py --part b --case r1            # one case, while debugging
+
+uv run --python 3.13 part_d_declarative.py       # Part D (optional) — needs 3.13, see file docstring
 ```
 
 ## Which package is which
 
-Three separate distributions, and the split causes the most common import
+Four separate distributions, and the split causes the most common import
 error in this lab:
 
 | You import | Comes from |
@@ -43,9 +47,13 @@ error in this lab:
 | `Executor`, `WorkflowBuilder`, `WorkflowContext`, `handler`, `executor`, `AgentExecutor`, `WorkflowViz`, `Agent`, `Message` | `agent-framework-core` (via `agent-framework`) |
 | `SequentialBuilder`, `GroupChatBuilder` | **`agent-framework-orchestrations`** |
 | `FoundryChatClient` | `agent-framework-foundry` |
+| `WorkflowFactory` | **`agent-framework-declarative`** (Part D, optional) |
 
 `from agent_framework.orchestrations import SequentialBuilder` failing means
 that middle package is missing. Re-run `uv sync`.
+
+`agent-framework-declarative` doesn't yet support Python 3.14 — Part D's
+docstring has the `uv run --python 3.13 ...` command that works around it.
 
 ## Two API details worth memorizing
 
