@@ -490,15 +490,15 @@ function buildModule1() {
       ["2", "Grounding (Foundry IQ + custom RAG) and tools in depth"],
       ["3", "Single-agent depth: memory, streaming, structured outputs, MCP"],
       ["4", "Multi-agent patterns + evaluation as a first-class activity"],
-      ["5", "Production concerns; capstone project kickoff"],
+      ["5", "Production readiness, Foundry Toolkit, and capstone kickoff"],
     ], { colW: [0.8, 8.4], rowH: 0.5, y: contentTop });
     T.notes(slide, [
       "Preview the 5-day arc in 60 seconds",
       "Days 1–3 build on the same 'docs assistant' reference project",
       "Day 4 turns the single agent into a multi-agent workflow",
-      "Day 5 covers production + capstone kickoff",
+      "Day 5 covers production evidence, Foundry Toolkit, and capstone kickoff",
       "Every day maps to the four-layer stack (Module 5)",
-      "Post-workshop: capstone project reviewed 1:1",
+      "Post-workshop: teams present at a shared capstone demo day",
     ]);
   }
 
@@ -883,7 +883,7 @@ function buildModule2() {
       "SDK = for programmatic operations from your code (creating agents, indexes, etc.)",
       "Terraform is a common default for IaC-first teams — out of scope for this workshop's content",
       "In today's lab: Part A creates the Prompt agent with the SDK, not the portal",
-      "Day 5 deployment: az / azd paths lead, not portal deploy",
+      "Day 5 assesses production readiness and does not add a deployment exercise",
     ]);
   }
 
@@ -1648,13 +1648,13 @@ function buildModule5() {
       "Which region?",
     ], { y: 1.8, h: 2.0 });
     T.addProse(slide,
-      "Day 5 covers model routing — small model first, escalate on low confidence.",
+      "Day 5 distinguishes managed model routing from application-owned, quality-checked escalation.",
       { y: 4.3, h: 0.6, fontSize: 14, italic: true });
     T.notes(slide, [
       "Keep this slide short — attendees already saw model deployments in Module 2",
       "Three decisions at this layer:",
       "  which model, what capacity, which region",
-      "Day 5 revisits: model routing (small first, escalate on low confidence)",
+      "Day 5 revisits managed routing and application-owned escalation as distinct strategies",
       "One tip: name deployments by (model, role) not just model",
     ]);
   }
@@ -1733,7 +1733,7 @@ function buildModule5() {
       "Cost & latency — model tiers, caching, batching, routing",
       "Deployment — Container Apps, Functions, AKS",
     ], { y: 1.8, h: 2.8 });
-    T.addProse(slide, "Day 5 owns most of this — but evaluation is threaded through every day.",
+    T.addProse(slide, "Day 5 revisits production-readiness evidence; deployment instruction remains out of scope.",
       { y: 4.75, h: 0.5, fontSize: 14, italic: true });
     T.notes(slide, [
       "Ops = the unglamorous layer that makes agents production-worthy",
@@ -1741,7 +1741,7 @@ function buildModule5() {
       "Emphasize: evaluation is NOT a Day-5 topic",
       "Eval appears through the rest of the workshop (Days 2, 3, 4, 5)",
       "Day 4 is the eval anchor module",
-      "Day 5 covers the rest of Ops (identity, tracing, cost, deployment)",
+      "Day 5 covers identity, tracing, cost, and production evaluation; it does not add deployment instruction",
     ]);
   }
 

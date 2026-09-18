@@ -174,7 +174,7 @@ The portal is a great teacher and a great debugger. For creating resources and s
 - Deploying Hosted agents (zip + portal is a shortcut; `azd` / `az` is the norm)
 - Anything that needs a repeatable, reviewable change
 
-*Operating norm for IaC-first teams: resource creation and programmatic operations live in code. Every lab in this workshop reflects that — Day 1's Part A creates the Prompt agent from the SDK; Day 5's deployment content leads with `az` / `azd`.*
+*Operating norm for IaC-first teams: resource creation and programmatic operations live in code. Day 1's Part A creates the Prompt agent from the SDK. Day 5 assesses production readiness and does not add a deployment exercise.*
 
 ---
 

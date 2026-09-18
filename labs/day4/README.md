@@ -287,12 +287,11 @@ alternative authoring surface for the same execution engine.
 
 ## What you'll build tomorrow (Day 5)
 
-Day 5 traces directly back to today's work:
-- Module 1 traces multi-agent hand-offs by name — the same Planner→
-  Retriever→Critic pattern you built two ways today.
-- Module 4 revisits budget guardrails — today's required `MAX_REVISIONS`
-  cap and Part C's termination condition are the concrete anchor.
-- Module 5's CI regression harness is the same eval→change→re-eval
-  discipline Part C practiced today, now wired into a pipeline.
-- The capstone requires a golden set + a captured eval score — Part C's
-  comparison output is your model for what that looks like.
+Day 5 traces directly back to today's reference workflow, whether or not you completed this lab:
+- Module 1 traces Planner→Retriever→Critic hand-offs using a presenter-prepared completed run.
+- Module 5 revisits budget guardrails using the provided `MAX_REVISIONS`
+  pattern and captured comparison evidence.
+- Module 6 turns the eval→change→re-eval discipline into a production
+  feedback loop and an application-owned acceptance gate.
+- The capstone requires a golden set plus captured initial and final
+  evaluation evidence; the provided Day 5 evidence pack shows the expected shape.

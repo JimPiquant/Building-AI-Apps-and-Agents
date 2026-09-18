@@ -24,7 +24,7 @@ Each day maps onto this stack:
 - **Day 2** — Knowledge and Actions in depth.
 - **Day 3** — Runtime deep dive (memory, streaming, structured outputs, MCP).
 - **Day 4** — Multiple agents working together, and how to evaluate them.
-- **Day 5** — Ops, Foundry Toolkit for VS Code, and capstone scoping. See the [draft Day 5 plan](day5-plan.md). Deployment-target comparisons and deployment exercises are not part of Day 5; Day 1's hosting material remains part of the workshop.
+- **Day 5** — Ops, Foundry Toolkit for VS Code, and capstone scoping. See the [approved Day 5 plan](day5-plan.md), [slide sources](../slides/day5/), and [attendee materials](../labs/day5/). Deployment-target comparisons and deployment exercises are not part of Day 5; Day 1's hosting material remains part of the workshop.
 
 ## Reference domain
 Every day builds on the same reference project: a **technical documentation assistant**. It's intentionally general-purpose so what you learn transfers to any real production scenario. Day 3 introduces a real integration (Azure DevOps work items via the official Azure DevOps MCP server) so the pattern is production-shaped by the end of the week.
@@ -36,4 +36,4 @@ The following are intentionally **not covered**:
 - **AutoGen** — research-lineage predecessor to MAF.
 
 ## Post-workshop capstone
-The workshop ends with a **capstone project** (teams of 2–3, no solo path, ~2–3 weeks). It closes with a shared demo day — all teams present live (~15 min per team: demo, Q&A, and coaching) — rather than separate 1:1 reviews, though ad-hoc 1:1 follow-up remains available on request. Kickoff is September 21, 2026; the demo-day date is TBD. The [Day 5 plan](day5-plan.md#capstone-deliverables) specifies the required elements and the templates to author after approval.
+The workshop ends with a **capstone project** (teams of 2–3, no solo path, ~2–3 weeks). It closes with a shared demo day — all teams present live (~15 min per team: demo, Q&A, and coaching) — rather than separate 1:1 reviews, though ad-hoc 1:1 follow-up remains available on request. Kickoff is September 21, 2026; the demo-day date is TBD. The [Day 5 plan](day5-plan.md#capstone-deliverables) defines the requirements, and the [Day 5 attendee materials](../labs/day5/) provide the working templates and evidence pack.

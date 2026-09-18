@@ -33,7 +33,7 @@ Decisions at this layer:
 - What deployment capacity? (tokens per minute)
 - Which region?
 
-We'll come back to model routing on Day 5 (small first, escalate on low confidence).
+Day 5 distinguishes managed model routing from an application-owned strategy that evaluates an outcome before escalating.
 
 ---
 
@@ -83,7 +83,7 @@ The unglamorous layer that makes agents production-worthy:
 - **Cost & latency** — model tiers, caching, batching, routing
 - **Deployment** — Container Apps vs. Functions vs. AKS
 
-**Day 5** owns most of this — but **evaluation is threaded through every day**.
+**Day 5** revisits identity, tracing, evaluation, and cost/latency as production-readiness evidence. Deployment remains part of the Ops layer, but Day 5 adds no deployment instruction or exercise.
 
 ---
 

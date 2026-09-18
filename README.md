@@ -20,7 +20,7 @@ Professional developers, senior engineers, and solution architects with working 
 | 4 | Multi-Agent Patterns + Evaluation | A planner + retriever + critic workflow with a trajectory eval |
 | 5 | Production + Capstone Kickoff | Observability, Foundry Toolkit for VS Code, identity, RAI, cost, production evaluation; capstone scoping |
 
-**Day 5 — September 21, 2026:** the [detailed plan](docs/day5-plan.md) is a draft for approval. Day 5 slide decks, demos, and exercise materials have not yet been authored.
+**Day 5 — September 21, 2026:** see the [approved plan](docs/day5-plan.md), [slide sources](slides/day5/), [delivered decks](decks/day5/), [presenter demonstrations](demos/day5/), and [optional checklist and capstone materials](labs/day5/). Completion of prior labs is not required to participate in Day 5.
 
 A **post-workshop capstone project** (teams of 2–3, no solo path, ~2–3 weeks) closes the program with a shared demo day — all teams present live (~15 min per team), with ad-hoc 1:1 follow-up available on request.
 

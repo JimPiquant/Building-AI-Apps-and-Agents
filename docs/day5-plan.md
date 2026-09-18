@@ -2,6 +2,8 @@
 
 **Status: Approved September 18, 2026 - concepts review completed September 17, 2026.** This is the approved delivery and authoring plan for the Day 5 artifact set.
 
+**Post-approval delivery direction:** on September 18, the owner requested that the Markdown sources be retained but the PPTX files be delivered directly, without adding `scripts/build-decks/day5.js`. That direction supersedes the generator-specific row and wording below while retaining the source, notes, parity, and visual-review requirements.
+
 | Item | Planning baseline |
 | --- | --- |
 | Delivery | Monday, September 21, 2026 |
@@ -377,8 +379,8 @@ Paths below are proposed locations, not links to files that already exist.
 | Artifact | Proposed location and scope |
 | --- | --- |
 | Day overview and module sources | `slides/day5/README.md` and eight `module-N-*.md` files using the names/order above |
-| Delivery decks | Eight module decks under `decks/day5/`, generated from the Markdown content and notes |
-| Deck generator | `scripts/build-decks/day5.js`, reusing the Day 4 Markdown-driven approach and shared `theme.js` |
+| Delivery decks | Eight module decks under `decks/day5/`, assembled directly from the approved Markdown content and notes |
+| Deck assembly | No persistent Day 5 generator; preserve the Day 4 theme, source footers, notes, and demo markers in the directly delivered PPTX files |
 | Demonstrations | `demos/day5/README.md`, six runbooks, and only the small presenter implementations/evidence needed for those runbooks |
 | Optional exercise | `labs/day5/README.md` and `production-readiness-checklist.md`, with a provided evidence pack; no student starter TODOs |
 | Capstone materials | `labs/day5/capstone-charter-template.md`, `capstone-checklist.md`, `demo-day-guide.md`, and `30-day-next-steps-template.md` |
@@ -395,10 +397,10 @@ Use approximately 7-9 concise content/demo slides per substantive technical modu
 4. **Respect surface and version boundaries.** Prefer current Foundry documentation, not classic portal/API instructions unless explicitly labeled. Follow the Python MAF examples for Python behavior. Do not borrow a .NET-only API or visualization recipe and claim Python support.
 5. **Ground examples and diagrams.** Use official documentation and its linked Microsoft SDK samples. Record the exact sample/version and explain adaptations. Attribute source diagrams, and label workshop-authored architecture sketches as illustrative.
 6. **Make limitations visible.** Call out preview, model, region, permission, and runtime requirements where they affect the lesson or demo. Recheck volatile features before September 21.
-7. **Keep one source of content.** Follow Day 4's Markdown-driven generator and existing theme, preserving notes, source footers, and demo markers. Avoid separately maintained copies of slide prose.
+7. **Keep Markdown as the editable content record.** The owner directed direct PPTX delivery for this release rather than a repository generator. Preserve the Day 4 theme, notes, source footers, and demo markers, and check Markdown-to-deck parity after every deck update.
 8. **Accept artifacts only after content and presentation review.** Inspect reference coverage, module/demo timing, source-to-deck parity, runnable presenter paths, and rendered slides for truncation, overlap, and unreadable citations.
 
-The current Day 4 generator already rejects slides without sources/notes and emits source footers plus grounding notes. Reuse that discipline for Day 5, while treating workshop-policy slides honestly as policy rather than technical documentation.
+The current Day 4 generator demonstrates the required discipline: reject missing sources/notes and emit source footers plus grounding notes. Apply the same checks to the directly assembled Day 5 files, while treating workshop-policy slides honestly as policy rather than technical documentation.
 
 ## Dependencies and delivery risks
 

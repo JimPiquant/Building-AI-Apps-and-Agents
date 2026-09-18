@@ -164,7 +164,7 @@ If you need any of those, the workshop coordinator can point you to separate con
 - **Day 2** — grounding (Foundry IQ, custom RAG) and tools in depth
 - **Day 3** — single-agent depth: memory, streaming, structured outputs, MCP
 - **Day 4** — multi-agent patterns + evaluation as a first-class activity
-- **Day 5** — production: observability, security, cost, deployment; capstone kickoff
+- **Day 5** — production readiness: observability, Toolkit, identity, safety, cost, continuous evaluation; capstone kickoff
 
 Every day extends the same reference project — a **technical documentation assistant**.
 
