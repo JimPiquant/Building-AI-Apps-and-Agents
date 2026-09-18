@@ -7,7 +7,7 @@
 - Attach Toolbox tools, custom function tools, and MCP servers.
 - Evaluate agents at retrieval, single-agent, and multi-agent layers.
 - Coordinate multi-agent workflows and reason about cost, latency, and failure modes.
-- Ship an agent to Azure with observability, identity, safety, and eval in production.
+- Assess agent production readiness: observability, identity, safety, cost controls, and continuous evaluation.
 
 ## The mental model we use all week
 
@@ -24,7 +24,7 @@ Each day maps onto this stack:
 - **Day 2** — Knowledge and Actions in depth.
 - **Day 3** — Runtime deep dive (memory, streaming, structured outputs, MCP).
 - **Day 4** — Multiple agents working together, and how to evaluate them.
-- **Day 5** — Ops.
+- **Day 5** — Ops, Foundry Toolkit for VS Code, and capstone scoping. See the [draft Day 5 plan](day5-plan.md). Deployment-target comparisons and deployment exercises are not part of Day 5; Day 1's hosting material remains part of the workshop.
 
 ## Reference domain
 Every day builds on the same reference project: a **technical documentation assistant**. It's intentionally general-purpose so what you learn transfers to any real production scenario. Day 3 introduces a real integration (Azure DevOps work items via the official Azure DevOps MCP server) so the pattern is production-shaped by the end of the week.
@@ -36,4 +36,4 @@ The following are intentionally **not covered**:
 - **AutoGen** — research-lineage predecessor to MAF.
 
 ## Post-workshop capstone
-The workshop ends with a **capstone project** (teams of 2–3, no solo path, ~2–3 weeks). It closes with a shared demo day — all teams present live (~15 min per team: demo, Q&A, and coaching) — rather than separate 1:1 reviews, though ad-hoc 1:1 follow-up remains available on request. See the Day 5 materials for the required-elements checklist and charter template.
+The workshop ends with a **capstone project** (teams of 2–3, no solo path, ~2–3 weeks). It closes with a shared demo day — all teams present live (~15 min per team: demo, Q&A, and coaching) — rather than separate 1:1 reviews, though ad-hoc 1:1 follow-up remains available on request. Kickoff is September 21, 2026; the demo-day date is TBD. The [Day 5 plan](day5-plan.md#capstone-deliverables) specifies the required elements and the templates to author after approval.
