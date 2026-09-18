@@ -67,7 +67,7 @@ The caller is the identity on **that connection**, not necessarily the person in
 | Retrieve restricted content | Agent/application plus user context | Index access **and** query-time document permission |
 | Read traces | Operator | **Log Analytics Reader** at connected Application Insights; protected tables also need **Privileged Monitoring Data Reader** |
 
-## Approval, OAuth consent, and permission are three checks
+## Approval, OAuth consent, and authorization are three checks
 <!-- layout: flow -->
 <!-- source: https://learn.microsoft.com/azure/foundry/agents/how-to/mcp-authentication | https://learn.microsoft.com/azure/foundry/agents/concepts/agent-identity -->
 <!-- notes: Approval answers whether this proposed tool call may proceed. OAuth consent grants the application's requested delegated scopes for this user. The downstream service still authenticates and authorizes the token it receives. Shared key, agent-identity, or project-managed-identity connections do not preserve user context; OAuth identity passthrough is the documented individual-authentication option, with tenant and audience constraints. Never place a personal credential in a shared project connection. -->

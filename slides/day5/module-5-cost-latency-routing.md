@@ -94,7 +94,7 @@ deck: module-5-cost-latency-routing.pptx
 <!-- source: https://learn.microsoft.com/agent-framework/agents/observability | https://learn.microsoft.com/agent-framework/workflows/observability | https://learn.microsoft.com/agent-framework/agents/evaluation | https://learn.microsoft.com/azure/foundry/openai/how-to/evaluate-model-router -->
 <!-- notes: Use only the runbook's presenter-prepared synthetic evidence: two bounded runs of the same case, one draft-only and one with a single revision. Read first-visible and completion time, input/output/cache usage, the explicit illustrative rate card, the outcome check, and the stop reason. Do not launch a router, deploy a model, wait on a cloud evaluation, or imply that this one case guarantees savings. -->
 
-Compare the same synthetic request with zero versus one allowed revision. The extra pass consumes more tokens and finishes later, but it supplies the missing required fact. Decide from quality, timing, estimated cost, and stop reason together—not from one number.
+Compare one synthetic request with zero and one allowed revision. The extra pass costs more time and tokens but supplies the missing fact. Choose from quality, time, estimated cost, and stop reason—not one metric.
 
 ## A budget is a policy—not a promise
 <!-- layout: flow -->

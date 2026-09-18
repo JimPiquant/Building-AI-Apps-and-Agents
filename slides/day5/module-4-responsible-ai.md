@@ -66,7 +66,7 @@ deck: module-4-responsible-ai.pptx
 | `detected=true, filtered=false` | Risk was reported but not blocked | “The filter prevented it” |
 | `detected=true, filtered=true` | This configured filter blocked at this boundary | “Every agent/tool boundary is protected” |
 
-**Application response contract:** block a disallowed action, state when evidence is insufficient, or route to an application-owned human review.
+**Application response contract:** block disallowed action, state insufficient evidence, or route to application-owned review.
 
 ## Grounding, groundedness, and authorization answer different questions
 <!-- layout: flow -->

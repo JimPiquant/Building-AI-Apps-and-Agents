@@ -24,9 +24,9 @@ deck: module-8-capstone-scoping.pptx
 - **Bound one task** — what begins and ends inside the capstone?
 - **State the outcome** — what observable change would make it useful?
 - **Write non-goals** — what will this version deliberately not do?
-- **Own the dependencies** — data, permissions, skills, environment, quota; do not hide unknowns
+- **Own the dependencies** — data, permissions, skills, environment, quota; assign an owner and next action
 
-Output: a one-sentence problem statement, in-scope task, and explicit non-goals.
+Output: a one-sentence problem statement, in-scope task, explicit non-goals, and owned dependencies.
 
 ## 10:00–22:00 · Sketch the five-layer workshop lens
 <!-- layout: table -->
@@ -55,8 +55,8 @@ Label actual resources and trust boundaries. Do **not** draw five boxes and call
   - Describes work, not proof
 - **Success criterion**
   - “For GS-04, the trace identifies the failed retrieval span”
-  - “On the same ≥10 cases, record initial and final Foundry evaluator results”
-  - “The restricted-document case is denied at the named boundary”
+  - “Across the same ≥10 cases, the final Foundry evaluator result meets the team-defined threshold and does not regress from the recorded initial result”
+  - “The named boundary denies the restricted-document case”
   - Names the evidence and acceptance rule
 
 ## 32:00–42:00 · Define baseline and candidate

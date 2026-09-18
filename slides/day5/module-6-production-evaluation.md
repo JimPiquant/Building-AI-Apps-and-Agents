@@ -34,10 +34,10 @@ deck: module-6-production-evaluation.pptx
 
 - **Deterministic checks**
   - Exact fields, required facts, schemas, and expected actions
-  - Repeatable and inexpensive; only test what was encoded
+  - Repeatable and inexpensive; checks encoded behavior
   - Fail clearly when required data is absent
 - **Judge-based checks**
-  - Nuanced relevance, completeness, adherence, or satisfaction
+  - Nuanced relevance, completeness, adherence, and satisfaction
   - Model-assisted; record judge, prompt/rubric, scale, and threshold
   - Different evaluators can use binary, 1–5, 0–1, or custom scales
 
@@ -82,7 +82,7 @@ deck: module-6-production-evaluation.pptx
 <!-- source: https://learn.microsoft.com/agent-framework/agents/evaluation | https://learn.microsoft.com/azure/foundry/observability/how-to/cloud-evaluation | https://learn.microsoft.com/azure/foundry/observability/how-to/evaluation-datasets -->
 <!-- notes: Run the self-contained local workshop gate over the runbook's presenter-prepared synthetic snapshot; there is no cloud wait and no Day 4 dependency. First show a candidate whose tools succeed but one required answer fact regresses, then show missing/error/unsupported evidence blocking a second candidate. State plainly that the wrapper is workshop logic interpreting evaluation outputs, not a built-in certification gate. -->
 
-Inspect a ten-case synthetic baseline and candidate, then run a local acceptance rule. A required-fact regression blocks the first candidate even though its process checks pass; missing, errored, and unsupported required results block the second.
+Apply a local acceptance rule to a ten-case synthetic baseline and candidate. A required-fact regression blocks one candidate despite passing process checks. Missing, errored, or unsupported required evidence blocks the other.
 
 ## Close the loop with compatible evidence
 <!-- layout: takeaways -->
