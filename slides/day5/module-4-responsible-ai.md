@@ -15,6 +15,29 @@ deck: module-4-responsible-ai.pptx
 
 - Safety comes from configured controls **and** enforced permissions—not from instructions alone
 
+## A guardrail is a named collection of controls
+<!-- layout: list -->
+<!-- source: https://learn.microsoft.com/en-us/azure/foundry/guardrails/guardrails-overview -->
+<!-- notes: Agent guardrails are in preview. A guardrail is a named collection of controls. Each control defines the risk to detect, the intervention points where that risk is scanned, and the response action taken when the risk is detected. Treat this as configuration of specific controls, not as a universal safety guarantee. -->
+
+- **Agent guardrails are in preview**
+- Each control defines:
+  - **Risk** — what harmful content to detect
+  - **Intervention points** — where to scan for that risk
+  - **Response action** — what the model or agent does when the risk is detected
+
+## Four intervention points define where scanning occurs
+<!-- layout: flow -->
+<!-- source: https://learn.microsoft.com/en-us/azure/foundry/guardrails/guardrails-overview -->
+<!-- notes: Risks are flagged by classification models designed to detect harmful content. Walk left to right through the four supported intervention points. User input and output apply to models and agents. Tool call and tool response are agent-only preview intervention points. Applicability still depends on the configured risk and control; naming an intervention point does not mean every control runs there. -->
+
+Risks are flagged by classification models designed to detect harmful content.
+
+1. **User input** — the prompt sent to a model or agent
+2. **Tool call (Preview)** — the action and data an agent proposes to send to a tool; agents only
+3. **Tool response (Preview)** — the content returned from a tool to the agent; agents only
+4. **Output** — the final completion returned to the user
+
 ## Instructions and configured controls do different jobs
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/azure/foundry/guardrails/guardrails-overview | https://learn.microsoft.com/azure/foundry/guardrails/intervention-points -->
@@ -29,7 +52,7 @@ deck: module-4-responsible-ai.pptx
   - Can scan user input, output, and supported agent tool boundaries
   - Still require application-owned authorization and safe fallback behavior
 
-## Say the coverage limits out loud
+## Limits of coverage
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/azure/foundry/guardrails/guardrails-overview | https://learn.microsoft.com/azure/foundry/guardrails/intervention-points | https://learn.microsoft.com/azure/foundry/openai/concepts/content-filter-prompt-shields -->
 <!-- notes: These limits prevent four common overclaims. Agent guardrails are preview and currently apply to Foundry Agent Service agents, not automatically to an external MAF application. Tool intervention works only for the documented moderation-capable tools; generic MCP isn't universally listed. Runtime Groundedness and Spotlighting are model controls, not agent controls. Models can annotate, but agent guardrails support only annotate-and-block. Spotlighting is also preview and Chat Completions-only. -->
@@ -38,7 +61,7 @@ deck: module-4-responsible-ai.pptx
 |---|---|---|
 | Model guardrail | User input and model output | Does not automatically cover an external MAF app's tool path |
 | Agent guardrail **(Preview)** | Foundry Agent Service input, output, and supported tool points | No annotate-only action; use **annotate and block** |
-| Tool call/response **(Preview)** | Azure AI Search, Azure Functions, OpenAPI, SharePoint Grounding, Fabric Data Agent, Bing Grounding/Custom Search, Browser Automation | Moderation support is tool-specific; generic MCP isn't universally listed |
+| Tool call/response **(Preview)** | Azure AI Search, Azure Functions, OpenAPI, SharePoint Grounding, Fabric Data Agent, Bing Grounding/Custom Search, Browser Automation | Tool-call and tool-response controls apply only to supported tools |
 | Runtime Groundedness / Spotlighting **(Preview)** | Model controls | Not agent controls; Spotlighting is Chat Completions-only |
 
 ## Direct and indirect injection enter differently
