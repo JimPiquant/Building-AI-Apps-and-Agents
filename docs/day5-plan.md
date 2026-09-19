@@ -9,7 +9,7 @@
 | Delivery | Monday, September 21, 2026 |
 | Audience | Solution architects comfortable with Azure; mixed Microsoft Foundry and Microsoft Agent Framework (MAF) experience |
 | Starting point | Everyone has been exposed to Days 1-4; completion of **any** prior lab is not assumed |
-| Format | Four-hour live block, including a 60-minute capstone working session; short optional checklist exercise afterward |
+| Format | 246-minute live block, including a 60-minute capstone working session; short optional checklist exercise afterward |
 | Curriculum authority | Owner-supplied `Publix_Building_AI_Apps_and_Agents_Curriculum_v0.7.docx`, with the explicit decisions below superseding it |
 | Review | Jim reviews this draft; Pradeep remains the curriculum approver identified in v0.7 |
 | Technical authority | Official Microsoft Foundry, MAF, and Foundry Toolkit documentation; conceptual grounding reviewed September 17, 2026 |
@@ -18,7 +18,7 @@
 ## Decisions already settled
 
 - Keep observability, identity/security, Responsible AI, cost/latency/routing, production evaluation, and capstone kickoff.
-- Give **Foundry Toolkit for VS Code its own 15-minute Module 2**, immediately after observability. Observability becomes 30 minutes; Toolkit is not an embedded extra demo.
+- Give **Foundry Toolkit for VS Code its own 21-minute Module 2**, immediately after observability. Observability becomes 30 minutes; Toolkit includes separate Agent Inspector and local Tracing Monitor demonstrations.
 - Honor the struck-through deployment module in v0.7. **No deployment-target comparison, deployment walkthrough, deployment lab, or deployment deliverable for Day 5.** Earlier days' hosting instruction remains valid.
 - Replace the standard two-hour lab with a **short optional guided checklist**, covering instrumentation/evaluation, identity/safety, and cost controls. No new student coding assignment.
 - Capstones use teams of 2-3, with no solo path, and close with a shared demo day **2-3 weeks after September 21; exact date TBD**.
@@ -53,18 +53,18 @@ Offsets are cumulative content time, not a promised clock-time start. Demonstrat
 | # | Module | Minutes | Content offset |
 | --- | --- | ---: | --- |
 | 1 | Observability and tracing | 30 | 00:00-00:30 |
-| 2 | Foundry Toolkit for VS Code | 15 | 00:30-00:45 |
-| 3 | Identity and security | 30 | 00:45-01:15 |
-| 4 | Responsible AI | 25 | 01:15-01:40 |
-| 5 | Cost, latency, and model routing | 30 | 01:40-02:10 |
-| 6 | Evaluation in production | 20 | 02:10-02:30 |
-| 7 | Capstone briefing | 25 | 02:30-02:55 |
-| 8 | Capstone scoping working session | 60 | 02:55-03:55 |
-|  | **Scheduled content** | **235** |  |
+| 2 | Foundry Toolkit for VS Code | 21 | 00:30-00:51 |
+| 3 | Identity and security | 30 | 00:51-01:21 |
+| 4 | Responsible AI | 25 | 01:21-01:46 |
+| 5 | Cost, latency, and model routing | 30 | 01:46-02:16 |
+| 6 | Evaluation in production | 20 | 02:16-02:36 |
+| 7 | Capstone briefing | 25 | 02:36-03:01 |
+| 8 | Capstone scoping working session | 60 | 03:01-04:01 |
+|  | **Scheduled content** | **241** |  |
 |  | Flexible transition/overrun allowance | 5 | Unallocated |
-|  | **Live budget** | **240** |  |
+|  | **Live budget** | **246** |  |
 
-**Approved pacing:** 235 minutes of scheduled content plus five minutes of flexible transition/overrun allowance. There is no formal break in the four-hour block. If delivery logistics later require a 10-minute break, revise the agenda explicitly rather than silently compressing modules or taking time from the capstone working session.
+**Approved pacing:** 241 minutes of scheduled content plus five minutes of flexible transition/overrun allowance. There is no formal break in the 246-minute block. If delivery logistics later require a 10-minute break, revise the agenda explicitly rather than silently compressing modules or taking time from the capstone working session.
 
 The flow is intentional: understand telemetry, inspect it in the developer environment, secure the identity and data boundaries, apply safety controls, manage resource use, then connect the evidence to ongoing evaluation and capstone success criteria.
 
@@ -111,23 +111,25 @@ The flow is intentional: understand telemetry, inspect it in the developer envir
 | Local versus saved Foundry configuration | "Local" can mean the prompt is stored locally while inference still calls a cloud model. A saved Foundry agent version and a local prompt have different tool, structured-output, history, and evaluation options. | [T6], "Choose where to save" and "Work with local prompts" |
 | Draft, version, and diagnostic evidence | A draft is an experiment; a saved version identifies a configuration. Save before relying on version-linked conversations or generated client code, and check what a generated evaluation actually targets. Local Inspector is not the cloud agent endpoint. | [F4], "Save changes as versions"; [T6], evaluation/client-code sections; [T3] |
 | Skills versus tools | A Foundry coding skill supplies reusable guidance for development tasks; MCP tools perform operations. Skills in Copilot's development environment are not automatically skills attached to the customer-facing agent. | [T2], official explanatory guide; [F3], "Skills (preview)" |
+| Agent Inspector versus local tracing | Agent Inspector exposes live HTTP/SSE protocol activity. Toolkit Tracing receives OpenTelemetry spans from instrumented code through a local OTLP collector and keeps separate local trace history. Neither surface proves local inference or cloud trace export. | [T3]; [T7], "Collect local traces" |
 
-**Example/checkpoint:** show the Local badge on a prompt that uses an existing cloud model. Ask whether its data necessarily stays on the laptop and whether its evaluation view is identical to a saved Foundry agent's. Expected answer: neither follows from local storage; inspect the model endpoint and the configuration type.
+**Example/checkpoint:** show a locally stored prompt that uses an existing cloud model. Ask whether its data necessarily stays on the laptop and whether its evaluation view is identical to a saved Foundry agent's. Expected answer: neither follows from local storage; inspect the model endpoint and the configuration type.
 
 ### Teaching sequence
 
 | Teaching beat | Minutes | Proposed content and grounding |
 | --- | ---: | --- |
-| Orient and select context | 1 | My Resources, Developer Tools, the active Foundry project, and Local/Foundry badges. Toolkit is distinct from Foundry Toolbox. [T1], [T6], [F3] |
+| Orient and select context | 1 | My Resources, Developer Tools, the active Foundry project, and local versus Foundry resource location. Toolkit is distinct from Foundry Toolbox. [T1], [T6], [F3] |
 | Discover and compare models | 2 | Model Catalog and Model Playground: where to compare a prompt, model, and parameters. Use existing resources; do not deploy models. [T1] |
 | Configure an agent and discover tools | 2 | Agent Builder's model, instructions, and tools; distinguish local prompt options from saved Foundry agent options. Identify Tool Catalog/MCP/toolboxes without rebuilding Day 2. [T1], [T6], [F3] |
 | **Demo 2.1: Inspect the familiar workflow locally** | 6 | Use Agent Inspector for streaming responses and tool activity; show workflow visualization where supported by the prepared configuration. [T1], [T3], [T4] |
-| Find evaluation and diagnostic resources | 2 | Locate evaluations, conversations, logs, and traces for existing resources. Explain the boundary between local inspection and cloud telemetry. [T1], [O3] |
-| Copilot skills and surface selection | 2 | Explain Foundry-specific coding skills and review a proposed action; use the Local-badge checkpoint above to confirm the surface distinction. [T2], [T6] |
+| Orient to tracing resources | 2 | Locate local Tracing under Developer Tools > Monitor and distinguish it from Agent Inspector and cloud telemetry. [T1], [T3], [T7] |
+| **Demo 2.2: Trace local code in Toolkit** | 6 | Start the local OTLP collector, run the prepared Agent Framework WeatherAgent code, refresh the trace list, and inspect automatic/custom spans. [T7], [O1] |
+| Copilot skills and surface selection | 2 | Explain Foundry-specific coding skills and review a proposed action; use the storage-versus-inference checkpoint above to confirm the surface distinction. [T2], [T6] |
 
-**Demo design:** a preconfigured, local HTTP/SSE agent wrapper is required; Agent Inspector cannot simply attach to an arbitrary terminal script. Reuse Module 1's scenario and stable run identifiers. Cloud trace export and correlation are separate configuration, not an automatic side effect of opening Inspector. A captured, labeled walkthrough is the fallback.
+**Demo design:** Demo 2.1 requires a preconfigured local HTTP/SSE agent wrapper; Agent Inspector cannot simply attach to an arbitrary terminal script. Demo 2.2 starts Toolkit's local OTLP collector, runs `demos/day5/assets/module-2-demo/foundry_tracing_toolkit.py`, and inspects its local trace. The local collector does not instrument code automatically, does not upload its database to Application Insights, and does not make the Foundry model local. Use only synthetic prompts when content capture is enabled. Keep separate captured, labeled walkthroughs as fallbacks.
 
-**Scope discipline:** the live centerpiece is inspection. Catalog, Agent Builder, Tool Catalog, and skills are brief orientation stops, not separate end-to-end demos. The detailed workflow-visualization instructions vary by language and installed Toolkit version; Python parity must be established before a live graph is promised.
+**Scope discipline:** the live centerpieces are local protocol inspection and local OpenTelemetry trace inspection. Catalog, Agent Builder, Tool Catalog, and skills are brief orientation stops, not separate end-to-end demos. Detailed workflow visualization and emitted trace content vary by language, instrumentation, and installed Toolkit version; rehearse the exact Python environment before promising either view.
 
 **Documentation correction:** do not present local prompt structured-output controls or dataset evaluation as universal Agent Builder features for saved Foundry agents. The latter's Evaluation tab scaffolds evaluation code or links to Foundry; the generated scaffold must be checked for version selection. Toolbox attachment to prompt agents is a separate preview opt-in. Keep these distinctions brief and use preconfigured resources rather than demonstrate opt-in/setup live. [T6]
 
@@ -330,12 +332,13 @@ All demonstrations have presenter runbooks. Their times are already included abo
 | --- | ---: | --- | --- |
 | 1.1 - Compare client-side and server-side traces | 8 | WeatherAgent client-side automatic/custom spans plus a Prompt-agent server-side trace in Foundry | Live run/inspect; separate dated captures if export or ingestion is delayed |
 | 2.1 - Inspect locally | 6 | Local agent traffic, tool calls, and a supported workflow view | Live Toolkit; recording from the pinned extension/runtime if the UI or graph is unavailable |
+| 2.2 - Trace local code in Toolkit | 6 | Toolkit local OTLP trace with custom and automatic Agent Framework spans | Live local collection; dated capture from the same script and pinned Toolkit version if collection fails |
 | 3.1 - Identity boundary | 7 | Principal/permission matrix, user-scoped retrieval results, and a denied approved action | Prepared access evidence; official tables and labeled expected outcomes if captures are unavailable |
 | 4.1 - Safety boundary | 6 | Model-level detection/filter annotation versus offline groundedness evaluation | Prepared results or Microsoft's published examples; no live adversarial scan |
 | 5.1 - Another revision | 5 | Side-by-side outcome, usage, duration, and stop reason | Captured comparison; no new model/router deployment |
 | 6.1 - Regression gate | 5 | Baseline/candidate case results, gate outcome, and evidence | Local/saved results; captured pipeline walkthrough instead of waiting for cloud jobs |
 
-Total demonstration/walkthrough time: **37 minutes within the 150-minute technical block** (Modules 1-6).
+Total demonstration/walkthrough time: **43 minutes within the 156-minute technical block** (Modules 1-6).
 
 Each future runbook must include placement, time box, source URLs, setup, narration, expected observations, failure/fallback path, and teaching payoff, matching the existing `demos/day4/` convention. Never present recorded data, a simulated denial, or a local check as a live cloud result.
 
@@ -449,7 +452,7 @@ Do not modify the supplied approval document or rewrite unrelated Days 1-4 lesso
 
 These links support the **technical** plan. Conceptual pages and the cited explanatory sections were reviewed on September 17, 2026; the original how-to/setup references remain implementation references and still require pre-delivery validation against the presenter environment. Capstone logistics and timing derive from the supplied v0.7 curriculum and the owner's subsequent decisions. Related Microsoft documentation is supplementary where the Foundry/MAF documentation directs readers to it.
 
-The module-level concept tables connect explanations to specific pages and relevant topics, not just a product homepage. Toolkit has an official overview rather than a separate conceptual taxonomy; [T1] and [T6] are labeled accordingly. [S1] is a guardrails overview, not a Concepts-section article. [C1], [C2], [C7], and [E5] contain conceptual explanations within how-to paths. [I1], [I3], and [I5] supplement the identity Concepts pages for MCP, session ownership, and document permissions. Do not treat every link below as a page from a documentation **Concepts** section.
+The module-level concept tables connect explanations to specific pages and relevant topics, not just a product homepage. Toolkit has official overview and tracing guidance rather than a separate conceptual taxonomy; [T1], [T6], and [T7] are labeled accordingly. [S1] is a guardrails overview, not a Concepts-section article. [C1], [C2], [C7], and [E5] contain conceptual explanations within how-to paths. [I1], [I3], and [I5] supplement the identity Concepts pages for MCP, session ownership, and document permissions. Do not treat every link below as a page from a documentation **Concepts** section.
 
 | ID | Official documentation | Use in this plan |
 | --- | --- | --- |
@@ -474,6 +477,7 @@ The module-level concept tables connect explanations to specific pages and relev
 | T4 | [Create hosted agent workflows in Toolkit][T4] | Local run/debug and workflow visualization sections only; deployment sections excluded |
 | T5 | [Install Foundry Toolkit][T5] | Extension and .NET Runtime prerequisites; installed-version feature discovery |
 | T6 | [Prompt agents and local prompts in Toolkit][T6] | Explanatory how-to: storage badges, drafts/versions, distinct structured-output/evaluation paths |
+| T7 | [Tracing in Foundry Toolkit][T7] | Local OTLP collector, instrumentation boundary, local trace inspection, storage, and cleanup |
 | I1 | [Authentication for MCP tools][I1] | Workload versus user access, approval versus consent, shared credentials and OAuth constraints |
 | I2 | [New agent endpoint and identity transition][I2] | Current versus legacy agent identities; qualifies older identity/publishing descriptions |
 | I3 | [MAF application/session security][I3] | Authenticated session ownership and runtime-specific isolation responsibilities; not deployment instruction |
@@ -524,6 +528,7 @@ The module-level concept tables connect explanations to specific pages and relev
 [T4]: https://learn.microsoft.com/azure/foundry/agents/how-to/vs-code-agents-workflow-pro-code
 [T5]: https://learn.microsoft.com/azure/foundry/how-to/develop/install-foundry-toolkit-visual-studio-code
 [T6]: https://learn.microsoft.com/azure/foundry/how-to/develop/create-prompt-agent-visual-studio-code
+[T7]: https://code.visualstudio.com/docs/intelligentapps/tracing
 [I1]: https://learn.microsoft.com/azure/foundry/agents/how-to/mcp-authentication
 [I2]: https://learn.microsoft.com/azure/foundry/agents/how-to/migrate-agent-applications
 [I3]: https://learn.microsoft.com/agent-framework/hosting/self-hosting/#secure-session-continuation

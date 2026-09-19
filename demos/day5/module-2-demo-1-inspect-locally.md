@@ -25,8 +25,12 @@ modify a Foundry resource.
 
 Complete these before the session:
 
+- The .NET Runtime required by Foundry Toolkit is installed.
 - The installed Foundry Toolkit and `azd` Foundry extensions match the
   versions used in rehearsal. Record both versions.
+- If the prepared wrapper uses a local model through Foundry Local, validate
+  the local environment prerequisites before rehearsal. This module does not
+  require a local model.
 - `azd auth login` is complete for the presenter account if the prepared
   wrapper calls an existing cloud model.
 - A presenter-prepared local agent wrapper implements the HTTP/SSE contract
@@ -166,10 +170,11 @@ not claim that a call was skipped or reused unless the Inspector shows it.
 
 Ask:
 
-> If Agent Builder shows a Local badge while this configuration uses a
-> cloud model, does the badge prove local inference?
+> If this prompt is stored locally while its configuration uses a cloud
+> model, does local storage prove local inference?
 
-Expected response: no; it identifies storage, so inspect the model endpoint.
+Expected response: no; inspect the model endpoint to determine where inference
+runs.
 
 Then ask:
 
@@ -238,6 +243,7 @@ stream and name the limitation; do not substitute an invented graph.
 
 ## Official sources
 
+- [Foundry Toolkit for Visual Studio Code](https://code.visualstudio.com/docs/intelligentapps/overview)
 - [Microsoft Foundry Toolkit for Visual Studio Code overview](https://learn.microsoft.com/azure/foundry/how-to/develop/get-started-projects-visual-studio-code)
 - [Inspect a local agent with Agent Inspector](https://learn.microsoft.com/azure/foundry/agents/how-to/agent-inspector)
 - [Create hosted agent workflows in Toolkit](https://learn.microsoft.com/azure/foundry/agents/how-to/vs-code-agents-workflow-pro-code)

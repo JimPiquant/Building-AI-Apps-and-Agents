@@ -3,7 +3,7 @@
 Day 5 has **no coding lab and no deployment exercise**. The live 60-minute
 capstone session uses the charter and scoping artifacts below. A separate
 30-minute production-readiness checklist is optional and occurs **outside the
-235-minute live agenda**.
+241-minute live agenda**.
 
 You can use every artifact without completing a prior lab, installing a local
 environment, owning Azure resources, or bringing a working agent. When you do

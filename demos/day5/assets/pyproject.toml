@@ -7,6 +7,7 @@ dependencies = [
     "azure-monitor-opentelemetry",
     "agent-framework-orchestrations",
     "agent-framework-foundry",
+    "opentelemetry-exporter-otlp-proto-grpc",
     "azure-identity",
     "pydantic>=2.0",
     "python-dotenv",

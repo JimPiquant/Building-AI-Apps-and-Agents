@@ -1,21 +1,21 @@
 # Day 5 — Production readiness + Capstone kickoff
 
-Eight modules provide **235 minutes of scheduled content** inside a 240-minute
+Eight modules provide **241 minutes of scheduled content** inside a 246-minute
 live block. The remaining five minutes are a flexible transition/overrun
 allowance, not a hidden break or extra activity.
 
 | # | Module | Time | Scheduled offset | Source |
 |---|---|---:|---|---|
 | 1 | Observability and tracing | 30m | 00:00–00:30 | [`module-1-observability-tracing.md`](module-1-observability-tracing.md) |
-| 2 | Foundry Toolkit for VS Code | 15m | 00:30–00:45 | [`module-2-foundry-toolkit-vscode.md`](module-2-foundry-toolkit-vscode.md) |
-| 3 | Identity and security | 30m | 00:45–01:15 | [`module-3-identity-security.md`](module-3-identity-security.md) |
-| 4 | Responsible AI | 25m | 01:15–01:40 | [`module-4-responsible-ai.md`](module-4-responsible-ai.md) |
-| 5 | Cost, latency, and model routing | 30m | 01:40–02:10 | [`module-5-cost-latency-routing.md`](module-5-cost-latency-routing.md) |
-| 6 | Evaluation in production | 20m | 02:10–02:30 | [`module-6-production-evaluation.md`](module-6-production-evaluation.md) |
-| 7 | Capstone briefing | 25m | 02:30–02:55 | [`module-7-capstone-briefing.md`](module-7-capstone-briefing.md) |
-| 8 | Capstone scoping working session | 60m | 02:55–03:55 | [`module-8-capstone-scoping.md`](module-8-capstone-scoping.md) |
-|  | **Scheduled content** | **235m** |  |  |
-|  | Flexible transition/overrun allowance | 5m | 03:55–04:00 |  |
+| 2 | Foundry Toolkit for VS Code | 21m | 00:30–00:51 | [`module-2-foundry-toolkit-vscode.md`](module-2-foundry-toolkit-vscode.md) |
+| 3 | Identity and security | 30m | 00:51–01:21 | [`module-3-identity-security.md`](module-3-identity-security.md) |
+| 4 | Responsible AI | 25m | 01:21–01:46 | [`module-4-responsible-ai.md`](module-4-responsible-ai.md) |
+| 5 | Cost, latency, and model routing | 30m | 01:46–02:16 | [`module-5-cost-latency-routing.md`](module-5-cost-latency-routing.md) |
+| 6 | Evaluation in production | 20m | 02:16–02:36 | [`module-6-production-evaluation.md`](module-6-production-evaluation.md) |
+| 7 | Capstone briefing | 25m | 02:36–03:01 | [`module-7-capstone-briefing.md`](module-7-capstone-briefing.md) |
+| 8 | Capstone scoping working session | 60m | 03:01–04:01 | [`module-8-capstone-scoping.md`](module-8-capstone-scoping.md) |
+|  | **Scheduled content** | **241m** |  |  |
+|  | Flexible transition/overrun allowance | 5m | 04:01–04:06 |  |
 
 The approved agenda, pacing, technical boundaries, and workshop-policy
 decisions are in [`docs/day5-plan.md`](../../docs/day5-plan.md).
