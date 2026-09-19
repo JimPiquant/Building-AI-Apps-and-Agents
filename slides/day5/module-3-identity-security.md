@@ -26,7 +26,6 @@ deck: module-3-identity-security.pptx
 - **Authorization — what may it do here?**
   - **Control plane:** RBAC actions manage resources, projects, and role assignments
   - **Data plane:** RBAC dataActions invoke models, agents, evaluations, and runtime capabilities
-  - A valid identity can still receive a correct denial
 
 ## Follow the identity at every connection
 <!-- layout: flow -->
@@ -55,17 +54,18 @@ The caller is the identity on **that connection**, not necessarily the person in
   - “Shared until published” describes the legacy Agent Application model
   - Re-create a legacy agent to obtain a unique identity; role assignments do not transfer
 
-## Least privilege is role × scope × data rule
+## Least privilege has three authorization layers
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/azure/foundry/concepts/rbac-foundry | https://learn.microsoft.com/azure/search/search-document-level-access-overview | https://learn.microsoft.com/azure/foundry/observability/how-to/trace-agent-setup -->
-<!-- notes: A role is the allowed action set; scope is where that assignment applies. This table is a workshop decision aid synthesized from the cited role and permission pages, not one universal role recipe. Point out that a single request can pass endpoint RBAC, index RBAC, and still fail document authorization. Use Foundry Agent Consumer—not a developer role—for invocation-only callers. -->
+<!-- notes: Teach this as three cumulative layers, not as one Azure RBAC formula. A role defines the allowed actions; resource scope defines where the role assignment applies; data-level permission is the workshop umbrella for record-level authorization such as a document ACL or query-time security filter. A request can pass endpoint and index RBAC and still fail document authorization. Use Foundry Agent Consumer at project or agent-endpoint scope for invocation-only callers; Foundry User at project scope for builders; and Log Analytics Reader at the connected Application Insights resource for trace readers. Protected tables also require Privileged Monitoring Data Reader. -->
 
-| Need | Principal | Boundary to check |
+| Layer | Question | Example |
 |---|---|---|
-| Invoke the reference agent | End user or calling app | **Foundry Agent Consumer** at project or agent endpoint |
-| Build and test agents | Developer | **Foundry User** at project scope |
-| Retrieve restricted content | Agent/application plus user context | Index access **and** query-time document permission |
-| Read traces | Operator | **Log Analytics Reader** at connected Application Insights; protected tables also need **Privileged Monitoring Data Reader** |
+| **Role** | What actions may the principal perform? | **Foundry Agent Consumer** permits invocation |
+| **Resource scope** | Where does the role assignment apply? | One project or agent endpoint |
+| **Data-level permission** | Which records may this user receive? | Document ACL or query-time security filter |
+
+**All three must pass:** action allowed + resource in scope + record permitted.
 
 ## Approval, OAuth consent, and authorization are three checks
 <!-- layout: flow -->
@@ -107,6 +107,6 @@ Trace Alice and Bob through the same reference documentation agent. Both can inv
 <!-- notes: Run the closing checkpoint: “OAuth consent and tool approval succeeded, but Bob's retrieval was denied. What do we inspect?” Expected answer: the principal actually presented downstream, its role and scope, and Bob's document permission. Reinforce that this conclusion comes from the reference agent we examined; attendees need no previous lab result. -->
 
 - Follow the actual principal at every connection; authenticate and authorize again at each resource.
-- Least privilege combines role, scope, and data rules. Invocation-only callers usually need Foundry Agent Consumer—not a developer role.
+- Least privilege combines role, resource scope, and data-level permissions. Invocation-only callers usually need Foundry Agent Consumer—not a developer role.
 - Tool approval, OAuth consent, and downstream authorization are independent decisions.
 - A unique agent identity does not isolate end users; session IDs and index access do not prove ownership or document permission.
