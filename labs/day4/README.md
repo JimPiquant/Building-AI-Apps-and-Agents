@@ -287,8 +287,9 @@ alternative authoring surface for the same execution engine.
 
 ## What you'll build tomorrow (Day 5)
 
-Day 5 traces directly back to today's reference workflow, whether or not you completed this lab:
-- Module 1 traces Planner→Retriever→Critic hand-offs using a presenter-prepared completed run.
+Day 5 builds on today's observability and orchestration concepts whether or not you completed this lab:
+- Module 1 uses Microsoft's official WeatherAgent sample to compare automatic and custom spans.
+- Module 2 can revisit the Planner→Retriever→Critic scenario using a presenter-prepared completed run.
 - Module 5 revisits budget guardrails using the provided `MAX_REVISIONS`
   pattern and captured comparison evidence.
 - Module 6 turns the eval→change→re-eval discipline into a production

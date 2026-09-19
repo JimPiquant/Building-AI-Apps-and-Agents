@@ -1,6 +1,6 @@
 # Day 5 demonstrations
 
-Six presenter demonstrations support Modules 1–6. Their **35 minutes are
+Six presenter demonstrations support Modules 1–6. Their **37 minutes are
 already inside** the 150-minute technical block; none adds time to the agenda.
 They use presenter-prepared examples so attendees need no completed lab,
 working agent, local environment, Azure resource, trace, or evaluator result.
@@ -11,7 +11,7 @@ All six presenter runbooks are included at the paths below.
 
 | ID | Approved runbook name | Approved path | Time | Planned evidence and fallback |
 |---|---|---|---:|---|
-| 1.1 | **Follow one request** | [`demos/day5/module-1-demo-1-follow-one-request.md`](module-1-demo-1-follow-one-request.md) | 6m | Inspect matched MAF workflow and Foundry/Application Insights telemetry; use a dated trace capture if export or ingestion is delayed |
+| 1.1 | **Compare client-side and server-side traces** | [`demos/day5/module-1-demo-1-standard-custom-traces.md`](module-1-demo-1-standard-custom-traces.md) | 8m | Run the official WeatherAgent sample and inspect its client-side automatic/custom spans, then run a Prompt agent in the Foundry playground and inspect its server-side trace; use separate dated captures if export or ingestion is delayed |
 | 2.1 | **Inspect the reference workflow locally** | [`demos/day5/module-2-demo-1-inspect-locally.md`](module-2-demo-1-inspect-locally.md) | 6m | Inspect local traffic, streaming, tool activity, and only a supported workflow view; use a recording from the pinned Toolkit/runtime if the UI or graph is unavailable |
 | 3.1 | **Identity boundary: an approved action can still be denied** | [`demos/day5/module-3-demo-1-identity-boundary.md`](module-3-demo-1-identity-boundary.md) | 7m | Read prepared principal/permission and denied-action evidence; use official permission tables plus clearly labeled expected outcomes if authentic captures are unavailable |
 | 4.1 | **Safety boundary: detection, filtering, and evidence** | [`demos/day5/module-4-demo-1-safety-boundary.md`](module-4-demo-1-safety-boundary.md) | 6m | Compare model detection/filtering with a separate offline groundedness result; use prepared results or Microsoft's published examples, never a live adversarial scan |

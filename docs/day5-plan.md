@@ -30,7 +30,7 @@
 
 Days 1-4 introduced the agent, its knowledge and tools, its runtime, and its orchestration/evaluation. Exposure does not imply implementation proficiency. Day 5 asks: **what evidence and controls would let an architect operate this system responsibly?**
 
-Use the technical-documentation assistant and Planner/Retriever/Critic workflow as the shared reference, with a brief recap of the roles, retrieved evidence, and bounded revision loop. Say "the reference agent we examined," not "the agent you built." Provide a completed example and captured evidence so someone who completed none of the labs can participate without first running code.
+Use the technical-documentation assistant and Planner/Retriever/Critic workflow as the shared reference where continuity helps. Module 1's tracing demo uses Microsoft's official WeatherAgent sample for a client-side trace, then runs the presenter-controlled `docs-assistant` Prompt agent for a Foundry-managed server-side trace. Neither path depends on a completed Day 4 lab. Say "the reference agent we examined," not "the agent you built." Provide completed examples and captured evidence so someone who completed none of the labs can participate without first running code.
 
 Keep the shared vocabulary explicit in that recap: **Foundry resource/project** identifies the Azure service and development context; **MAF** is the application framework, not another name for the managed Foundry runtime; an **agent** combines model-driven behavior with instructions/tools; a **workflow** connects execution steps. Do not assume a local MAF object is a saved Foundry agent or that every workflow step is an agent. [F1], [F2], [F5], [F6]
 
@@ -87,14 +87,14 @@ The flow is intentional: understand telemetry, inspect it in the developer envir
 
 | Teaching beat | Minutes | Proposed content and grounding |
 | --- | ---: | --- |
-| From a console event stream to operational evidence | 5 | Recap the reference workflow and explain a supplied trace; distinguish logs, metrics, distributed traces, and evaluation. No attendee-generated trace is required. [O5], [O1], [E1] |
-| Instrumentation and export | 6 | MAF instrumentation, exporters, project/Application Insights connection, and service/request correlation. Separate local application instrumentation from Foundry-managed server-side tracing. [O1], [O3], [O4] |
-| Workflow and streaming boundaries | 5 | Follow executor/message spans and causal links; distinguish first response from completion. Do not promise one span per streamed token. [O2], [C1] |
-| **Demo 1.1: Follow one request** | 6 | Inspect a completed Planner/Retriever/Critic run; identify a retrieval step, revision or stop, and a delay. Compare its identifiers with exported telemetry. [O1], [O2], [O3], [O4] |
+| From agent execution to operational evidence | 5 | Introduce the official WeatherAgent sample and distinguish logs, metrics, distributed traces, and evaluation. No attendee-generated trace is required. [O5], [O1], [E1] |
+| Instrumentation and export | 5 | MAF instrumentation, exporters, project/Application Insights connection, and service/request correlation. Separate local application instrumentation from Foundry-managed server-side tracing. [O1], [O3], [O4] |
+| Workflow and streaming boundaries | 4 | Follow executor/message spans and causal links; distinguish first response from completion. Do not promise one span per streamed token. [O2], [C1] |
+| **Demo 1.1: Compare client-side and server-side traces** | 8 | Run or replay Microsoft's WeatherAgent sample and inspect its client-side automatic/custom spans. Then run the prepared `docs-assistant` Prompt agent in the Foundry playground and inspect its server-side trace in **Agents** > **Traces**. Keep identifiers and fallback captures separate. [O1], [O3], [O4], [O6] |
 | Telemetry is another data store | 5 | Sensitive-content capture, access, retention, sampling, and ingestion cost. Prefer minimized metadata; use only synthetic demo content when payload capture is needed. [O1], [O3], [O4] |
 | Architect checkpoint | 3 | Use the delay-versus-quality question above. Transition from the telemetry contract to the Toolkit experience. [O5], [O2], [E1] |
 
-**Demo design:** prepare a self-contained completed workflow, including the worked Day 4 revision guardrail. The existing `labs/day4/python/trace.py` prints workflow events; it is not, by itself, an Application Insights integration. The future demo must add and demonstrate actual instrumentation/export.
+**Demo design:** prepare both authentic trace paths before class. The WeatherAgent path uses the official Agent Framework sample and its printed trace ID. The Prompt-agent path uses the existing presenter-controlled `docs-assistant`, a synthetic playground prompt, and the matching Foundry server-side trace. Prompt-agent ingestion can take a few minutes, so keep a labeled capture from the rehearsed run and never imply that it belongs to a different live response.
 
 **Boundary:** no generic Azure Monitor administration course and no application hosting exercise. Label Foundry workflow/external-agent tracing as preview where the documentation does; do not label every tracing surface either preview or GA indiscriminately. GenAI semantic conventions are evolving; the concept overview's illustrative span names are not a guarantee of the exact Python MAF spans. Use the pinned framework's observability documentation for those names. [O5], [O2]
 
@@ -324,18 +324,18 @@ Use only a few facilitator slides: instructions, timing, charter prompts, and th
 
 ## Proposed demonstration roster
 
-All demonstrations are **planned, not yet implemented or rehearsed**. Their times are already included above.
+All demonstrations have presenter runbooks. Their times are already included above; each path still requires rehearsal and an authentic fallback capture before delivery.
 
 | ID | Minutes | Planned evidence | Mode and fallback |
 | --- | ---: | --- | --- |
-| 1.1 - Follow one request | 6 | MAF workflow telemetry and matching Foundry/Application Insights evidence | Live read/inspect; dated trace capture if export or ingestion is delayed |
+| 1.1 - Compare client-side and server-side traces | 8 | WeatherAgent client-side automatic/custom spans plus a Prompt-agent server-side trace in Foundry | Live run/inspect; separate dated captures if export or ingestion is delayed |
 | 2.1 - Inspect locally | 6 | Local agent traffic, tool calls, and a supported workflow view | Live Toolkit; recording from the pinned extension/runtime if the UI or graph is unavailable |
 | 3.1 - Identity boundary | 7 | Principal/permission matrix, user-scoped retrieval results, and a denied approved action | Prepared access evidence; official tables and labeled expected outcomes if captures are unavailable |
 | 4.1 - Safety boundary | 6 | Model-level detection/filter annotation versus offline groundedness evaluation | Prepared results or Microsoft's published examples; no live adversarial scan |
 | 5.1 - Another revision | 5 | Side-by-side outcome, usage, duration, and stop reason | Captured comparison; no new model/router deployment |
 | 6.1 - Regression gate | 5 | Baseline/candidate case results, gate outcome, and evidence | Local/saved results; captured pipeline walkthrough instead of waiting for cloud jobs |
 
-Total demonstration/walkthrough time: **35 minutes within the 150-minute technical block** (Modules 1-6).
+Total demonstration/walkthrough time: **37 minutes within the 150-minute technical block** (Modules 1-6).
 
 Each future runbook must include placement, time box, source URLs, setup, narration, expected observations, failure/fallback path, and teaching payoff, matching the existing `demos/day4/` convention. Never present recorded data, a simulated denial, or a local check as a live cloud result.
 
@@ -467,6 +467,7 @@ The module-level concept tables connect explanations to specific pages and relev
 | O3 | [Set up tracing in Foundry][O3] | Project/Application Insights connection; server-side versus client-side tracing; visibility and privacy |
 | O4 | [Configure tracing for AI agent frameworks][O4] | External MAF instrumentation and the documented GA/preview boundaries |
 | O5 | [Agent tracing overview][O5] | Concept: traces, spans, attributes, exporters, semantic conventions, and correlation |
+| O6 | [Quickstart: Create a prompt agent][O6] | Prompt-agent definition and invocation in Foundry |
 | T1 | [Foundry Toolkit overview][T1] | Resources, model tools, Agent Builder, Tool Catalog, Inspector, evaluation and diagnostics |
 | T2 | [Use the Microsoft Foundry Skill in coding agents][T2] | Core Foundry skill versus Toolkit-specific skills; review proposed actions |
 | T3 | [Inspect a local agent with Agent Inspector][T3] | Local HTTP/SSE requirements and the local-versus-deployed boundary |
@@ -516,6 +517,7 @@ The module-level concept tables connect explanations to specific pages and relev
 [O3]: https://learn.microsoft.com/azure/foundry/observability/how-to/trace-agent-setup
 [O4]: https://learn.microsoft.com/azure/foundry/observability/how-to/trace-agent-framework
 [O5]: https://learn.microsoft.com/azure/foundry/observability/concepts/trace-agent-concept
+[O6]: https://learn.microsoft.com/azure/foundry/agents/quickstarts/prompt-agent
 [T1]: https://learn.microsoft.com/azure/foundry/how-to/develop/get-started-projects-visual-studio-code
 [T2]: https://learn.microsoft.com/azure/foundry/how-to/develop/use-microsoft-foundry-skill
 [T3]: https://learn.microsoft.com/azure/foundry/agents/how-to/agent-inspector

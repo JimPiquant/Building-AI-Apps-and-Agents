@@ -1,0 +1,13 @@
+[project]
+name = "day5-demos"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "agent-framework",
+    "azure-monitor-opentelemetry",
+    "agent-framework-orchestrations",
+    "agent-framework-foundry",
+    "azure-identity",
+    "pydantic>=2.0",
+    "python-dotenv",
+]

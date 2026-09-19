@@ -7,6 +7,7 @@ Links were reviewed for the Day 5 concepts pass on September 17, 2026. Preview s
 ## Foundry and Agent Framework foundations
 
 - **Microsoft Foundry architecture** — https://learn.microsoft.com/azure/foundry/concepts/architecture
+- **Create a Prompt agent** — https://learn.microsoft.com/azure/foundry/agents/quickstarts/prompt-agent
 - **Microsoft Agent Framework overview** — https://learn.microsoft.com/agent-framework/overview/
 - **Agent concepts** — https://learn.microsoft.com/agent-framework/concepts/agents/
 - **Workflow concepts** — https://learn.microsoft.com/agent-framework/concepts/workflows/
@@ -18,6 +19,7 @@ Links were reviewed for the Day 5 concepts pass on September 17, 2026. Preview s
 
 - **Observability in generative AI** — https://learn.microsoft.com/azure/foundry/concepts/observability
 - **Agent tracing concepts** — https://learn.microsoft.com/azure/foundry/observability/concepts/trace-agent-concept
+- **Set up tracing in Microsoft Foundry** — https://learn.microsoft.com/azure/foundry/observability/how-to/trace-agent-setup
 - **Agent Framework observability** — https://learn.microsoft.com/agent-framework/agents/observability
 - **Agent Framework workflow observability** — https://learn.microsoft.com/agent-framework/workflows/observability
 - **Agent Framework evaluation** — https://learn.microsoft.com/agent-framework/agents/evaluation
