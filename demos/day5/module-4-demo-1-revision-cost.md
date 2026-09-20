@@ -1,4 +1,4 @@
-# Module 5 · Demo 1 — Read the cost of another revision
+# Module 4 · Demo 1 — Read the cost of another revision
 
 ## Objective
 
@@ -23,6 +23,7 @@ submit a batch job, wait for a cloud evaluation, or depend on Day 4 lab output.
 ## Prerequisites
 
 - A terminal with `python3` available; no packages are required.
+- A local checkout of this repository.
 - This runbook open beside the terminal at a readable zoom.
 - No Azure subscription, credentials, network access, attendee files, or prior
   workshop lab completion.
@@ -31,62 +32,13 @@ submit a batch job, wait for a cloud evaluation, or depend on Day 4 lab output.
 
 ## Exact setup
 
-1. Open a terminal at any working directory. The command writes no files.
+1. Open a terminal at the repository root. The script writes no files.
 2. Increase the terminal font until one result line remains readable.
-3. Copy the complete command below, but do not run it until the demo marker.
+3. Stage the command below, but do not run it until the demo marker.
 4. Keep the "Provided synthetic evidence" table visible as the fallback.
 
 ```bash
-python3 - <<'PY'
-rates = {
-    "uncached_input_usd_per_1m": 2.00,
-    "cached_input_usd_per_1m": 1.00,
-    "output_usd_per_1m": 8.00,
-}
-runs = [
-    {
-        "name": "draft_only",
-        "input_tokens": 2000,
-        "cached_input_tokens": 0,
-        "output_tokens": 300,
-        "first_visible_seconds": 1.1,
-        "completion_seconds": 4.6,
-        "successes": 0,
-    },
-    {
-        "name": "one_revision",
-        "input_tokens": 3400,
-        "cached_input_tokens": 600,
-        "output_tokens": 550,
-        "first_visible_seconds": 1.2,
-        "completion_seconds": 8.9,
-        "successes": 1,
-    },
-]
-
-print("ILLUSTRATIVE WORKSHOP FIGURES — NOT AZURE PRICING OR OBSERVED TELEMETRY")
-for run in runs:
-    uncached = run["input_tokens"] - run["cached_input_tokens"]
-    estimated_usd = (
-        uncached * rates["uncached_input_usd_per_1m"]
-        + run["cached_input_tokens"] * rates["cached_input_usd_per_1m"]
-        + run["output_tokens"] * rates["output_usd_per_1m"]
-    ) / 1_000_000
-    tokens = run["input_tokens"] + run["output_tokens"]
-    outcome = "PASS" if run["successes"] else "FAIL"
-    per_success = (
-        f"USD {estimated_usd:.4f}"
-        if run["successes"]
-        else "undefined (0 successes)"
-    )
-    print(
-        f"{run['name']:12} | outcome={outcome} | "
-        f"first_visible={run['first_visible_seconds']:.1f} s | "
-        f"complete={run['completion_seconds']:.1f} s | "
-        f"tokens={tokens} | estimated_cost=USD {estimated_usd:.4f} | "
-        f"cost/success={per_success}"
-    )
-PY
+python3 demos/day5/assets/module-4-demo/revision_cost.py
 ```
 
 ## Provided synthetic evidence

@@ -1,12 +1,12 @@
 ---
 title: Identity and Security
 subtitle: Follow the caller, then enforce least privilege at every boundary
-eyebrow: DAY 5 · MODULE 3 · 30 MIN
-tag: Day 5 · Module 3
-deck: module-3-identity-security.pptx
+eyebrow: DAY 5 · MODULE 2 · 30 MIN
+tag: Day 5 · Module 2
+deck: module-2-identity-security.pptx
 ---
 
-# Module 3 — Identity and Security
+# Module 2 — Identity and Security
 
 ## Identity and Security
 <!-- layout: title -->
@@ -92,10 +92,10 @@ An approved, consented call can still be **correctly denied**.
   - Carry user/group permissions into query-time filtering and projected chunks
   - Choose security filters or supported native ACL/RBAC enforcement (preview)
 
-## DEMO 3.1 — An approved action can still be denied
+## DEMO 2.1 — An approved action can still be denied
 <!-- layout: demo -->
 <!-- demo-time: ~7 min -->
-<!-- demo-reference: Runbook: demos/day5/module-3-demo-1-identity-boundary.md -->
+<!-- demo-reference: Runbook: demos/day5/module-2-demo-1-identity-boundary.md -->
 <!-- source: https://learn.microsoft.com/azure/foundry/agents/how-to/mcp-authentication | https://learn.microsoft.com/agent-framework/hosting/self-hosting/#secure-session-continuation | https://learn.microsoft.com/azure/foundry/agents/how-to/foundry-iq-connect | https://learn.microsoft.com/azure/search/search-document-level-access-overview -->
 <!-- notes: Use only the runbook's presenter-prepared, synthetic access map and explicitly labeled expected outcomes. Alice and Bob may both invoke and approve a lookup, but only Alice's user permission allows the restricted document; Bob also cannot reuse Alice's continuation ID. Do not make live RBAC or consent changes, display tokens, or imply the expected table is a captured cloud result. Close with the phrase “the reference agent we examined.” -->
 

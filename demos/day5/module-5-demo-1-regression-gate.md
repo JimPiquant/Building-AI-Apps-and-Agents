@@ -1,4 +1,4 @@
-# Module 6 · Demo 1 — A regression blocks acceptance
+# Module 5 · Demo 1 — A regression blocks acceptance
 
 ## Objective
 

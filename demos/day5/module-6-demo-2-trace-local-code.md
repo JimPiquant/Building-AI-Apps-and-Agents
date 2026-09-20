@@ -1,4 +1,4 @@
-# Module 2 · Demo 2 — Trace local code in Toolkit
+# Module 6 · Demo 2 — Trace local code in Toolkit
 
 ## Objective
 
@@ -13,7 +13,7 @@ The demo does not connect or modify Application Insights.
 
 ## Placement and time box
 
-- **Placement:** After Demo 2.1, “Inspect the reference workflow locally”
+- **Placement:** After Demo 6.1, “Inspect the reference workflow locally”
 - **Time:** 6 minutes total
   - 45 seconds: open Tracing and start the collector
   - 1 minute: inspect the local export configuration
@@ -33,7 +33,7 @@ Complete these before the session:
   source control. Never display their values.
 - Ports `4317` and `4318` are available for the Toolkit collector.
 - The prepared sample exists at
-  `demos/day5/assets/module-2-demo/foundry_tracing_toolkit.py`.
+  `demos/day5/assets/module-6-demo/foundry_tracing_toolkit.py`.
 - The sample and pinned Agent Framework version have been rehearsed against
   the installed Toolkit version.
 - A dated capture of a successful local trace is available as fallback.
@@ -60,7 +60,7 @@ Leave it unset or set it to `false` for normal use.
 5. From the repository root, run:
 
    ```bash
-   uv run demos/day5/assets/module-2-demo/foundry_tracing_toolkit.py
+   uv run demos/day5/assets/module-6-demo/foundry_tracing_toolkit.py
    ```
 
 6. Let all three synthetic questions complete so the exporter can send its

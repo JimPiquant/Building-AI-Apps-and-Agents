@@ -1,4 +1,4 @@
-# Module 4 · Demo 1 — Safety boundary: detection, filtering, and evidence
+# Module 3 · Demo 1 — Safety boundary: detection, filtering, and evidence
 
 ## Objective
 
@@ -19,7 +19,7 @@ result.
 ## Placement and time
 
 **Placement:** After **slide 6 — "Grounding, groundedness, and authorization
-answer different questions"** (Module 4).
+answer different questions"** (Module 3).
 
 **Time:** ~6 minutes total.
 
@@ -33,7 +33,7 @@ answer different questions"** (Module 4).
 
 ## Prerequisites
 
-- Module 4 slides open at slide 6.
+- Module 3 slides open at slide 6.
 - This runbook open at **Prepared inputs**.
 - No Azure portal, API client, terminal, customer document, or production
   endpoint is required or permitted for this walkthrough.
@@ -46,7 +46,7 @@ answer different questions"** (Module 4).
 
 ## Exact setup
 
-1. Put the Module 4 deck on the presentation display and this runbook on the
+1. Put the Module 3 deck on the presentation display and this runbook on the
    presenter display.
 2. Rehearse Inputs A–D in order. They are the complete no-network demo path.
 3. Keep this label visible on Inputs A–D:

@@ -1,21 +1,45 @@
 ---
 title: Cost, Latency, and Model Routing
 subtitle: Measure the workload, choose the route, and define when work stops
-eyebrow: DAY 5 · MODULE 5 · 30 MIN
-tag: Day 5 · Module 5
-deck: module-5-cost-latency-routing.pptx
+eyebrow: DAY 5 · MODULE 4 · 30 MIN
+tag: Day 5 · Module 4
+deck: module-4-cost-latency-routing.pptx
 ---
 
-# Module 5 — Cost, Latency, and Model Routing
+# Module 4 — Cost, Latency, and Model Routing
 
 ## Cost, Latency, and Model Routing
 <!-- layout: title -->
 <!-- source: https://learn.microsoft.com/azure/foundry/openai/how-to/latency | https://learn.microsoft.com/azure/foundry/openai/how-to/evaluate-model-router -->
 <!-- notes: Frame the module around one architecture decision: meet an explicit quality floor while measuring latency and cost in their own units. Use the presenter-prepared reference-agent evidence; nobody needs a Day 4 lab result or an attendee-owned deployment. There is no promised saving or universally best route. -->
 
-- A cheaper request is not cheaper per successful outcome when it misses the requirement
+- A cheaper request is not cheaper than a successful outcome when it misses the requirement
 
-## Measure the signal you mean
+## Size throughput and latency separately
+<!-- layout: compare -->
+<!-- source: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency#understanding-throughput-vs-latency -->
+<!-- notes: Introduce the two sizing questions before discussing individual metrics. System-level throughput is deployment capacity across the workload and is measured with request volume and tokens per minute. Per-call latency is the response time for one model call. Optimizing one does not automatically optimize the other, so define both requirements explicitly. -->
+
+- **System-level throughput**
+  - Overall capacity of the deployment
+  - Measure requests per minute and total tokens per minute
+  - Use it to ask how much workload the system can sustain
+- **Per-call response time**
+  - Latency for one model request
+  - Influenced by model, prompt size, generated tokens, and system load
+  - Use it to ask how quickly an individual caller receives a response
+
+## Throughput follows workload shape—not quota alone
+<!-- layout: flow -->
+<!-- source: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency#system-level-throughput -->
+<!-- notes: This is a sizing estimate, not a throughput guarantee. For representative requests, estimate input TPM as prompt tokens per request times requests per minute and output TPM as completion tokens per request times requests per minute. Add them for total TPM. Azure Monitor can provide Processed Prompt Tokens and Generated Completion Tokens over one-minute windows; analyze minimum, average, and maximum values over multiple weeks. Prompt caching makes that monitor-based estimate conservative. Standard quota governs admission but does not directly guarantee achieved throughput. Provisioned throughput also depends on input tokens, output tokens, call rate, and cache match rate. -->
+
+1. **Observe workload shape** — input tokens, generated tokens, requests per minute, and cache match rate
+2. **Estimate input and output TPM** — representative tokens per request × requests per minute
+3. **Validate with Azure Monitor** — compare processed prompt and generated completion tokens over one-minute windows
+4. **Size the deployment** — combine input and output TPM for Standard, or estimate required PTUs for Provisioned
+
+## Choose the metric that answers your question
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/azure/foundry/openai/how-to/latency | https://learn.microsoft.com/agent-framework/workflows/observability -->
 <!-- notes: Spend about four minutes separating the signals. TTFT describes responsiveness and TTLT describes model completion; neither automatically includes retrieval, tools, queues, retries, or later model calls in a workflow. Streaming can improve perceived responsiveness without shortening completion, while throughput answers a capacity question rather than a single-request timing question. -->
@@ -46,11 +70,12 @@ deck: module-5-cost-latency-routing.pptx
 - **Prompt caching**
   - Reuses computation for matching input prefixes
   - Still generates a new model response
-  - Observe cache-token fields; support and charges vary
-- **Application response caching**
+  - Confirm cache hits with `cached_tokens`; feature support and read/write pricing depend on the model and deployment
+- **Application response caching (not a Foundry or Agent Framework feature)**
   - Reuses a previously stored final answer
   - Must enforce freshness, tenant/user access, and invalidation
   - Is an application architecture choice—not prompt caching
+  - See https://learn.microsoft.com/en-us/azure/redis/tutorial-semantic-cache
 
 ## Three model choices, three control points
 <!-- layout: cards -->
@@ -59,10 +84,10 @@ deck: module-5-cost-latency-routing.pptx
 
 - **Fixed deployment** — One known model handles every request; simplest baseline
 - **Managed model router** — Selects an eligible model at request time before generation
-- **Application escalation** — Evaluates an outcome, then may retry through application logic
+- **Application-controlled escalation** — Evaluates an outcome, then may retry through application logic
 - **Adoption decision** — Compare representative quality, cost, latency, and policy evidence
 
-## History determines portability
+## Model switching depends on who owns the conversation history
 <!-- layout: table -->
 <!-- source: https://learn.microsoft.com/agent-framework/concepts/agents/runtime-model-routing | https://learn.microsoft.com/azure/foundry/openai/concepts/model-router-how-it-works -->
 <!-- notes: A model switch is not a history transfer. Caller-managed messages can be replayed when the destination supports their roles, content, tool calls, and results; a service-owned conversation or response ID refers to state at its originating service and scope. The documented MAF routing helper is experimental .NET; Python support is unavailable, so this is architecture guidance rather than a Python demo. -->
@@ -71,9 +96,8 @@ deck: module-5-cost-latency-routing.pptx
 |---|---|---|
 | Caller-managed | Relevant messages in application-controlled storage | Can replay them to a compatible destination |
 | Service-managed | A service-specific conversation or response ID | ID does not carry history to another service |
-| MAF routing helper | Experimental `.NET` routing client | Python support is currently unavailable |
 
-## Batch is a separate lane
+## Batch - 50% Discount for 24-hour target
 <!-- layout: compare -->
 <!-- source: https://learn.microsoft.com/azure/foundry/openai/how-to/batch | https://learn.microsoft.com/azure/foundry/concepts/architecture -->
 <!-- notes: Batch processing accepts asynchronous groups of requests and returns results later; it is suitable when a user is not waiting. It does not reduce the interactive request's first-token latency. Before choosing it, verify supported models, data location, quota, turnaround, and current pricing for the exact deployment rather than repeating a generic savings claim. -->
@@ -85,12 +109,12 @@ deck: module-5-cost-latency-routing.pptx
 - **Batch path**
   - Queue asynchronous work and retrieve results later
   - Use separate workload, quota, and turnaround assumptions
-  - Not a technique for lower interactive latency
+  - Supported in selected regions
 
-## DEMO 5.1 — Read the cost of another revision
+## DEMO 4.1 — Read the cost of another revision
 <!-- layout: demo -->
 <!-- demo-time: ~5 min -->
-<!-- demo-reference: Runbook: demos/day5/module-5-demo-1-revision-cost.md -->
+<!-- demo-reference: Runbook: demos/day5/module-4-demo-1-revision-cost.md -->
 <!-- source: https://learn.microsoft.com/agent-framework/agents/observability | https://learn.microsoft.com/agent-framework/workflows/observability | https://learn.microsoft.com/agent-framework/agents/evaluation | https://learn.microsoft.com/azure/foundry/openai/how-to/evaluate-model-router -->
 <!-- notes: Use only the runbook's presenter-prepared synthetic evidence: two bounded runs of the same case, one draft-only and one with a single revision. Read first-visible and completion time, input/output/cache usage, the explicit illustrative rate card, the outcome check, and the stop reason. Do not launch a router, deploy a model, wait on a cloud evaluation, or imply that this one case guarantees savings. -->
 

@@ -1,6 +1,6 @@
 # Day 5 plan - Production readiness + Capstone kickoff
 
-**Status: Approved September 18, 2026 - concepts review completed September 17, 2026.** This is the approved delivery and authoring plan for the Day 5 artifact set.
+**Status: Approved September 18, 2026 - concepts review completed September 17, 2026; amended September 20, 2026 to consolidate the capstone content into a customer-timed scoping session and move Foundry Toolkit immediately before it.** This is the approved delivery and authoring plan for the Day 5 artifact set.
 
 **Post-approval delivery direction:** on September 18, the owner requested that the Markdown sources be retained but the PPTX files be delivered directly, without adding `scripts/build-decks/day5.js`. That direction supersedes the generator-specific row and wording below while retaining the source, notes, parity, and visual-review requirements.
 
@@ -9,7 +9,7 @@
 | Delivery | Monday, September 21, 2026 |
 | Audience | Solution architects comfortable with Azure; mixed Microsoft Foundry and Microsoft Agent Framework (MAF) experience |
 | Starting point | Everyone has been exposed to Days 1-4; completion of **any** prior lab is not assumed |
-| Format | 246-minute live block, including a 60-minute capstone working session; short optional checklist exercise afterward |
+| Format | 156-minute instructor-led technical block, followed by a customer-run capstone working session with customer-controlled timing; short optional checklist exercise afterward |
 | Curriculum authority | Owner-supplied `Publix_Building_AI_Apps_and_Agents_Curriculum_v0.7.docx`, with the explicit decisions below superseding it |
 | Review | Jim reviews this draft; Pradeep remains the curriculum approver identified in v0.7 |
 | Technical authority | Official Microsoft Foundry, MAF, and Foundry Toolkit documentation; conceptual grounding reviewed September 17, 2026 |
@@ -17,13 +17,13 @@
 
 ## Decisions already settled
 
-- Keep observability, identity/security, Responsible AI, cost/latency/routing, production evaluation, and capstone kickoff.
-- Give **Foundry Toolkit for VS Code its own 21-minute Module 2**, immediately after observability. Observability becomes 30 minutes; Toolkit includes separate Agent Inspector and local Tracing Monitor demonstrations.
+- Keep observability, identity/security, Responsible AI, cost/latency/routing, production evaluation, and customer-run capstone scoping.
+- Give **Foundry Toolkit for VS Code its own 21-minute Module 6**, immediately before the customer-run capstone session. Toolkit includes separate Agent Inspector and local Tracing Monitor demonstrations.
 - Honor the struck-through deployment module in v0.7. **No deployment-target comparison, deployment walkthrough, deployment lab, or deployment deliverable for Day 5.** Earlier days' hosting instruction remains valid.
 - Replace the standard two-hour lab with a **short optional guided checklist**, covering instrumentation/evaluation, identity/safety, and cost controls. No new student coding assignment.
 - Capstones use teams of 2-3, with no solo path, and close with a shared demo day **2-3 weeks after September 21; exact date TBD**.
 - Internal/proprietary data may be used without an additional workshop-specific restriction or approval gate. Existing organizational data-handling obligations still apply.
-- All technical slide content must have supporting official documentation, with reference links in source Markdown and the generated slides/presenter notes.
+- All technical slide content must have supporting official documentation. Authored workshop decks keep links in source Markdown and slides/presenter notes; the owner-supplied Module 5 replacement is retained as a PPTX-only delivery artifact without modifying its slides.
 - Day 5 requires conceptual exposure, not completed labs, a working personal agent, or attendee-owned Azure resources. Demonstrations use presenter-prepared examples; the optional exercise can use provided evidence.
 
 ## Learning arc and outcomes
@@ -39,34 +39,34 @@ Each module now includes **Concepts to establish**: plain-language definitions g
 | By the end, attendees can... | Evidence produced or interpreted |
 | --- | --- |
 | Follow a request through agent, model, tool, and workflow telemetry | Annotated trace: bottleneck, failed or skipped step, and relevant identifiers |
-| Use Toolkit's main development surfaces without confusing them with production controls | Choose Agent Inspector, project resources, evaluation views, or Foundry/Application Insights for a specific task |
 | Identify which identity needs permission at each boundary | Identity-to-resource access map, including a denied-access case |
 | Choose layered safety controls and a deliberate failure response | A control/outcome table covering unsafe input, untrusted retrieved content, and unsupported answers |
 | Reason about quality, latency, and cost together | A budget/routing decision tied to measured usage and task success |
 | Distinguish offline regression from production monitoring | Sampling, evaluation, alert ownership, and regression-gate outline |
+| Use Toolkit's main development surfaces without confusing them with production controls | Choose Agent Inspector, project resources, evaluation views, or Foundry/Application Insights for a specific task |
 | Scope an achievable capstone | Team charter, architecture sketch, golden-set outline, milestones, and individual 30-day next steps |
 
-## Live agenda
+## Delivery sequence
 
-Offsets are cumulative content time, not a promised clock-time start. Demonstrations and discussions are **inside**, not additional to, each module's budget.
+Offsets are cumulative content time for Modules 1-6, not promised clock-time
+starts. Their demonstrations and discussions are **inside**, not additional
+to, the listed budgets. Module 7 follows that technical block with timing
+controlled by the customer.
 
 | # | Module | Minutes | Content offset |
 | --- | --- | ---: | --- |
 | 1 | Observability and tracing | 30 | 00:00-00:30 |
-| 2 | Foundry Toolkit for VS Code | 21 | 00:30-00:51 |
-| 3 | Identity and security | 30 | 00:51-01:21 |
-| 4 | Responsible AI | 25 | 01:21-01:46 |
-| 5 | Cost, latency, and model routing | 30 | 01:46-02:16 |
-| 6 | Evaluation in production | 20 | 02:16-02:36 |
-| 7 | Capstone briefing | 25 | 02:36-03:01 |
-| 8 | Capstone scoping working session | 60 | 03:01-04:01 |
-|  | **Scheduled content** | **241** |  |
-|  | Flexible transition/overrun allowance | 5 | Unallocated |
-|  | **Live budget** | **246** |  |
+| 2 | Identity and security | 30 | 00:30-01:00 |
+| 3 | Responsible AI | 25 | 01:00-01:25 |
+| 4 | Cost, latency, and model routing | 30 | 01:25-01:55 |
+| 5 | AI evaluations for agentic systems | 20 | 01:55-02:15 |
+| 6 | Foundry Toolkit for VS Code | 21 | 02:15-02:36 |
+| 7 | Capstone scoping working session | Customer controlled | Follows Module 6 |
+|  | **Instructor-led content (Modules 1-6)** | **156** |  |
 
-**Approved pacing:** 241 minutes of scheduled content plus five minutes of flexible transition/overrun allowance. There is no formal break in the 246-minute block. If delivery logistics later require a 10-minute break, revise the agenda explicitly rather than silently compressing modules or taking time from the capstone working session.
+**Approved pacing:** Modules 1-6 contain 156 minutes of scheduled instructor-led content. The customer owns the duration, breaks, and internal pacing of Module 7, so this plan assigns it no fixed minutes or cumulative offset.
 
-The flow is intentional: understand telemetry, inspect it in the developer environment, secure the identity and data boundaries, apply safety controls, manage resource use, then connect the evidence to ongoing evaluation and capstone success criteria.
+The flow is intentional: understand telemetry, secure identity and data boundaries, apply safety controls, manage resource use, connect the evidence to ongoing evaluation, then finish the technical block by inspecting the relevant developer surfaces in Toolkit. The customer-run session applies those concepts to capstone scope and evidence.
 
 ## Module 1 - Observability and tracing
 
@@ -92,50 +92,13 @@ The flow is intentional: understand telemetry, inspect it in the developer envir
 | Workflow and streaming boundaries | 4 | Follow executor/message spans and causal links; distinguish first response from completion. Do not promise one span per streamed token. [O2], [C1] |
 | **Demo 1.1: Compare client-side and server-side traces** | 8 | Run or replay Microsoft's WeatherAgent sample and inspect its client-side automatic/custom spans. Then run the prepared `docs-assistant` Prompt agent in the Foundry playground and inspect its server-side trace in **Agents** > **Traces**. Keep identifiers and fallback captures separate. [O1], [O3], [O4], [O6] |
 | Telemetry is another data store | 5 | Sensitive-content capture, access, retention, sampling, and ingestion cost. Prefer minimized metadata; use only synthetic demo content when payload capture is needed. [O1], [O3], [O4] |
-| Architect checkpoint | 3 | Use the delay-versus-quality question above. Transition from the telemetry contract to the Toolkit experience. [O5], [O2], [E1] |
+| Architect checkpoint | 3 | Use the delay-versus-quality question above. Transition from the telemetry contract to identity and access boundaries. [O5], [O2], [E1] |
 
 **Demo design:** prepare both authentic trace paths before class. The WeatherAgent path uses the official Agent Framework sample and its printed trace ID. The Prompt-agent path uses the existing presenter-controlled `docs-assistant`, a synthetic playground prompt, and the matching Foundry server-side trace. Prompt-agent ingestion can take a few minutes, so keep a labeled capture from the rehearsed run and never imply that it belongs to a different live response.
 
 **Boundary:** no generic Azure Monitor administration course and no application hosting exercise. Label Foundry workflow/external-agent tracing as preview where the documentation does; do not label every tracing surface either preview or GA indiscriminately. GenAI semantic conventions are evolving; the concept overview's illustrative span names are not a guarantee of the exact Python MAF spans. Use the pinned framework's observability documentation for those names. [O5], [O2]
 
-## Module 2 - Foundry Toolkit for VS Code
-
-**Outcome:** recognize the important Toolkit features and use the right surface for a short agent-development investigation.
-
-### Concepts to establish
-
-| Concept | Explanation to teach | Conceptual grounding |
-| --- | --- | --- |
-| Toolkit versus Toolbox | Toolkit is the VS Code development extension. A Toolbox is a reusable Foundry tool collection exposed through a managed MCP endpoint. Browsing a tool does not attach it or authorize its use. | [T1], official overview; [F3], "The tool lifecycle" |
-| Model, agent, and conversation | A model performs inference; an agent adds reusable behavior and tools; a conversation supplies history. Model Playground tests model interactions; agent inspection also needs to show tool/runtime behavior. | [F2], runtime component model; [T1], "Work with models" |
-| Local versus saved Foundry configuration | "Local" can mean the prompt is stored locally while inference still calls a cloud model. A saved Foundry agent version and a local prompt have different tool, structured-output, history, and evaluation options. | [T6], "Choose where to save" and "Work with local prompts" |
-| Draft, version, and diagnostic evidence | A draft is an experiment; a saved version identifies a configuration. Save before relying on version-linked conversations or generated client code, and check what a generated evaluation actually targets. Local Inspector is not the cloud agent endpoint. | [F4], "Save changes as versions"; [T6], evaluation/client-code sections; [T3] |
-| Skills versus tools | A Foundry coding skill supplies reusable guidance for development tasks; MCP tools perform operations. Skills in Copilot's development environment are not automatically skills attached to the customer-facing agent. | [T2], official explanatory guide; [F3], "Skills (preview)" |
-| Agent Inspector versus local tracing | Agent Inspector exposes live HTTP/SSE protocol activity. Toolkit Tracing receives OpenTelemetry spans from instrumented code through a local OTLP collector and keeps separate local trace history. Neither surface proves local inference or cloud trace export. | [T3]; [T7], "Collect local traces" |
-
-**Example/checkpoint:** show a locally stored prompt that uses an existing cloud model. Ask whether its data necessarily stays on the laptop and whether its evaluation view is identical to a saved Foundry agent's. Expected answer: neither follows from local storage; inspect the model endpoint and the configuration type.
-
-### Teaching sequence
-
-| Teaching beat | Minutes | Proposed content and grounding |
-| --- | ---: | --- |
-| Orient and select context | 1 | My Resources, Developer Tools, the active Foundry project, and local versus Foundry resource location. Toolkit is distinct from Foundry Toolbox. [T1], [T6], [F3] |
-| Discover and compare models | 2 | Model Catalog and Model Playground: where to compare a prompt, model, and parameters. Use existing resources; do not deploy models. [T1] |
-| Configure an agent and discover tools | 2 | Agent Builder's model, instructions, and tools; distinguish local prompt options from saved Foundry agent options. Identify Tool Catalog/MCP/toolboxes without rebuilding Day 2. [T1], [T6], [F3] |
-| **Demo 2.1: Inspect the familiar workflow locally** | 6 | Use Agent Inspector for streaming responses and tool activity; show workflow visualization where supported by the prepared configuration. [T1], [T3], [T4] |
-| Orient to tracing resources | 2 | Locate local Tracing under Developer Tools > Monitor and distinguish it from Agent Inspector and cloud telemetry. [T1], [T3], [T7] |
-| **Demo 2.2: Trace local code in Toolkit** | 6 | Start the local OTLP collector, run the prepared Agent Framework WeatherAgent code, refresh the trace list, and inspect automatic/custom spans. [T7], [O1] |
-| Copilot skills and surface selection | 2 | Explain Foundry-specific coding skills and review a proposed action; use the storage-versus-inference checkpoint above to confirm the surface distinction. [T2], [T6] |
-
-**Demo design:** Demo 2.1 requires a preconfigured local HTTP/SSE agent wrapper; Agent Inspector cannot simply attach to an arbitrary terminal script. Demo 2.2 starts Toolkit's local OTLP collector, runs `demos/day5/assets/module-2-demo/foundry_tracing_toolkit.py`, and inspects its local trace. The local collector does not instrument code automatically, does not upload its database to Application Insights, and does not make the Foundry model local. Use only synthetic prompts when content capture is enabled. Keep separate captured, labeled walkthroughs as fallbacks.
-
-**Scope discipline:** the live centerpieces are local protocol inspection and local OpenTelemetry trace inspection. Catalog, Agent Builder, Tool Catalog, and skills are brief orientation stops, not separate end-to-end demos. Detailed workflow visualization and emitted trace content vary by language, instrumentation, and installed Toolkit version; rehearse the exact Python environment before promising either view.
-
-**Documentation correction:** do not present local prompt structured-output controls or dataset evaluation as universal Agent Builder features for saved Foundry agents. The latter's Evaluation tab scaffolds evaluation code or links to Foundry; the generated scaffold must be checked for version selection. Toolbox attachment to prompt agents is a separate preview opt-in. Keep these distinctions brief and use preconfigured resources rather than demonstrate opt-in/setup live. [T6]
-
-**Excluded:** hosted-agent deployment, provisioning, container packaging, fine-tuning, local Windows model optimization, and an exhaustive playground tour. Installation is preflight, not live content. [T5]
-
-## Module 3 - Identity and security
+## Module 2 - Identity and security
 
 **Outcome:** map developer, application/agent, and end-user identity to the actual permissions needed for model, tool, knowledge, and telemetry access.
 
@@ -159,7 +122,7 @@ The flow is intentional: understand telemetry, inspect it in the developer envir
 | Least-privilege permission matrix | 7 | Define roles and scopes. Separate Foundry author/consumer permissions, model access, Search access, and document permissions; include telemetry read access from Module 1. [I8], [I4], [I5], [O3] |
 | MCP trust and credential hygiene | 5 | Tool approval is not OAuth consent or downstream authorization. Shared workload credentials do not preserve end-user context; explain the documented OAuth passthrough constraints. Never put personal credentials in shared project connections. [I1] |
 | Session and retrieval isolation | 6 | Authenticate ownership of continued sessions; scope tenant/user/workspace state. For IQ and custom RAG, carry permissions into retrieval and chunks, and account for permission refresh. [I3], [I4], [I5] |
-| **Demo 3.1: An approved action can still be denied** | 7 | Use the Alice/Bob checkpoint with prepared retrieval and session-ownership evidence. Identify the principal and enforcement point, not just the error message; no attendee permissions or lab output required. [I1], [I3], [I4], [I5] |
+| **Demo 2.1: An approved action can still be denied** | 7 | Use the Alice/Bob checkpoint with prepared retrieval and session-ownership evidence. Identify the principal and enforcement point, not just the error message; no attendee permissions or lab output required. [I1], [I3], [I4], [I5] |
 
 **Demo design:** use redacted, rehearsed evidence from a controlled presenter environment. No live role changes, OAuth consent walkthrough, or token display. If authentic captures are unavailable, use explicitly labeled expected outcomes and Microsoft's permission tables, not fabricated "observed" results.
 
@@ -167,7 +130,7 @@ The flow is intentional: understand telemetry, inspect it in the developer envir
 
 **Boundary:** do not promise automatic user isolation from a project managed identity or a session ID. Foundry IQ integration and native Search document-level controls have API/preview distinctions; the custom-RAG security-filter pattern is a separate approach. The MAF hosting reference is used only for its application-owned authentication/session-security guidance, not to reintroduce deployment.
 
-## Module 4 - Responsible AI
+## Module 3 - Responsible AI
 
 **Outcome:** distinguish content filtering, injection defenses, grounding checks, and authorization, then choose a safe response when a control triggers.
 
@@ -192,8 +155,8 @@ The flow is intentional: understand telemetry, inspect it in the developer envir
 | Direct and indirect prompt injection | 4 | User-input attacks versus instructions in retrieved documents/tool output. Explain detection versus filtering; do not claim Prompt Shields eliminates injection. [S3] |
 | Runtime groundedness versus evaluation | 4 | Distinguish supplying evidence, checking groundedness, and evaluating safety risks. Neither a supported answer nor a low risk score establishes authorization or universal truth. [S1], [S4], [S6] |
 | Define the safe response contract | 3 | Workshop design choices: block a disallowed action, acknowledge insufficient evidence, or route to an application-owned human-review path. Do not imply Foundry automatically implements escalation. [I4], [S1], [S5] |
-| **Demo 4.1: Detection, filtering, and evidence** | 6 | Use the detected-versus-filtered checkpoint with prepared model annotations and a separate groundedness evaluation. Choose the application's response; no attendee agent or evaluation results required. [S1], [S3], [S4] |
-| Red teaming and residual risk | 4 | Define Attack Success Rate and its tested population. Explain supported targets/tools and why a scan is not exhaustive assurance or certification; hand the test cases to Module 6. [S5] |
+| **Demo 3.1: Detection, filtering, and evidence** | 6 | Use the detected-versus-filtered checkpoint with prepared model annotations and a separate groundedness evaluation. Choose the application's response; no attendee agent or evaluation results required. [S1], [S3], [S4] |
+| Red teaming and residual risk | 4 | Define Attack Success Rate and its tested population. Explain supported targets/tools and why a scan is not exhaustive assurance or certification; hand the test cases to Module 5. [S5] |
 
 **Demo design:** use synthetic content and prepared model-level annotations or Microsoft's published examples. Keep an offline evaluator result visibly separate from a serving-time filter. No adversarial scan or attack against customer systems is part of the live demonstration.
 
@@ -201,7 +164,7 @@ The flow is intentional: understand telemetry, inspect it in the developer envir
 
 **Boundary:** no safety guarantee, invented approval API, or assertion that the Day 4 workflow is fully protected merely because its model has a content filter. The Foundry red-teaming service also has target/runtime restrictions; do not promise a supported scan of that arbitrary workflow.
 
-## Module 5 - Cost, latency, and model routing
+## Module 4 - Cost, latency, and model routing
 
 **Outcome:** make a defensible quality/cost/latency trade-off and identify where a workload must stop, defer, or escalate.
 
@@ -226,7 +189,7 @@ The flow is intentional: understand telemetry, inspect it in the developer envir
 | Caching without conflating features | 5 | Supported-model prompt caching and stable prefixes versus an application-owned response cache. Discuss freshness and authorization before reusing answers as an architecture decision, not an automatic Toolkit/Foundry feature. Model-specific cache behavior and charges must be cited, not generalized. [C2], [I5] |
 | Model choice and routing | 6 | Fixed model versus managed routing versus application-owned escalation; note history portability. Use measured workload outcomes, not self-reported confidence as a calibrated score. [C3], [C5], [C6], [C7] |
 | Batch versus interactive work | 4 | Batch API for asynchronous workloads, not a promise of lower interactive latency. No live batch submission or new deployment. [C4] |
-| **Demo 5.1: Read the cost of another revision** | 5 | Compare captured bounded runs on the same question: usage, elapsed time, outcome, and why execution stopped. Identify the trade-off, not a guaranteed saving. [O1], [O2], [E2] |
+| **Demo 4.1: Read the cost of another revision** | 5 | Compare captured bounded runs on the same question: usage, elapsed time, outcome, and why execution stopped. Identify the trade-off, not a guaranteed saving. [O1], [O2], [E2] |
 | Set budgets and preserve correctness | 5 | Explain the provided revision/turn bound; propose token/time/tool limits and a deliberate partial-answer or escalation policy. Include evaluation/telemetry overhead and the cheaper-per-success checkpoint. [E1], [E2], [O4], [C7] |
 
 **Demo design:** use the existing Day 4 golden-set and guardrail concepts, not a new routing implementation. A small comparison of recorded results keeps this module independent of extra model deployments. If monetary estimates are shown later, document model/version, input/output/cache rates, currency, and pricing date separately from raw token counts.
@@ -235,68 +198,80 @@ The flow is intentional: understand telemetry, inspect it in the developer envir
 
 **Runtime qualification:** the MAF runtime-routing Concepts page currently documents an experimental .NET routing client and explicitly says Python support is unavailable. It is conceptual guidance here, not a promised Python demo or a limitation on calling Foundry's model router. Foundry also documents optional Chat Completions session affinity (preview); do not claim every turn must select a different model or that affinity guarantees cache hits. These are notes, not additional features to demonstrate. [C6], [C5]
 
-## Module 6 - Evaluation in production
+## Module 5 - AI evaluations for agentic systems
 
-**Outcome:** design a repeatable feedback loop connecting sampled traffic, curated test data, regression evidence, and an accountable response to degradation.
+**Outcome:** select an evaluator bundle for an application's failure modes, interpret each result on its documented scale, and place representative evaluation evidence across development, pre-production, and production.
 
 ### Concepts to establish
 
 | Concept | Explanation to teach | Conceptual grounding |
 | --- | --- | --- |
-| Evaluator, score, and threshold | An evaluator applies criteria to supplied data. It may use deterministic checks, a judge model, or a service. Its score is not automatically a probability; interpret the scale, pass threshold, inputs, and limitations before aggregating results. | [E6], evaluator families; [E7], "Using agent evaluators"; [E2] |
-| System/process and turn/conversation | System evaluation assesses outcomes; process evaluation assesses steps. Turn/conversation describes the interaction length being scored. These are different axes: checking the final answer alone does not validate tool use. | [E7], "System evaluation" and "Process evaluation"; [E6], "Evaluation levels" |
-| Golden set and ground truth | A golden set is the workshop's curated, reusable test dataset. Ground truth records reviewed expected answers or actions where the evaluator needs them; a saved model answer is not automatically truth. | [E5], "Do you need an evaluation dataset?"; [E7], "Task navigation efficiency" |
-| Offline, continuous, and scheduled evaluation | Offline checks compare changes against a stable set. Continuous evaluation samples production interactions. Scheduled evaluation reruns a dataset over time. Sampling misses some traffic; it is not an inline safety gate. | [E1], "The three stages of AI application lifecycle evaluation" |
-| Regression, drift, and a quality gate | Regression is worse behavior relative to a baseline; drift is a change observed over time and may reflect changed traffic or data. A quality gate is an application/pipeline acceptance decision based on results, not a guarantee from the SDK. | [E1]; [E2]; [C7], "Read the tradeoffs together" and "Monitor and repeat the evaluation" |
+| Deterministic tests and behavioral evaluation | Keep tests for code, schemas, permissions, and tool contracts. Add evaluation for probabilistic quality, task behavior, and safety; neither replaces the other. | [E1], "What are evaluators?"; [E2], "Evaluation" |
+| Evaluation dimensions and evaluator selection | Response quality, task completion, safety/content risk, and adversarial resilience require different evidence. Use the module's five practical lanes as a selection aid, not an exhaustive Foundry taxonomy. | [E6]; [E8]; [E9]; [E10]; [E11] |
+| System and process evaluation | System evaluation assesses the overall outcome. Process evaluation inspects retrieval or tool-use steps. A successful tool call does not establish task completion, and a good final response does not establish a sound process. | [E7], "System evaluation" and "Process evaluation"; [E9] |
+| Native scales and application thresholds | Scores are not automatically probabilities and cannot be averaged safely across incompatible scales. Preserve the evaluator, judge/deployment where applicable, scale, threshold, reason, and raw result. Application owners set acceptance policy. | [E8]; [E10]; [E7] |
+| Custom evaluators and scenario bundles | Use code-, prompt-, or endpoint-based custom evaluators for application-specific requirements. Build a small bundle from architecture and failure modes rather than run every evaluator. | [E11]; [E6] |
+| Representative evaluation data and lifecycle feedback | Reusable, reviewed, versioned datasets support comparison and regression work. Development checks, pre-production automation, sampled/scheduled production evaluation, and curated trace-derived cases form one feedback loop. | [E1]; [E2]; [E5]; [E12]; [E13]; [E14] |
 
-**Example/checkpoint:** show an interaction whose tool calls return successfully but whose final answer omits a required part of the task. Ask whether run success establishes task completion. Expected answer: no; choose an outcome evaluator as well as process evidence. Confirm the chosen evaluator supports the interaction level, tool types, and required data.
+**Example/checkpoint:** show an interaction whose tool calls return successfully but whose final answer omits a required part of the task. Ask whether run success establishes task completion. Expected answer: no; pair process evidence with a relevant system evaluator, then verify the evaluator supports the target, evaluation level, tool types, and required inputs.
 
 ### Teaching sequence
 
 | Teaching beat | Minutes | Proposed content and grounding |
 | --- | ---: | --- |
-| Three complementary loops | 3 | Define the golden set, baseline, and offline/sampled/scheduled loops. Use a prepared example rather than assume attendees ran Day 4's evaluation. [E1], [E5] |
-| Sampling, visibility, and cost | 4 | Define evaluator inputs, interaction level, score/threshold, eligible traffic, and alert ownership. Account for preview scope and extra evaluator/model cost. [E6], [E7], [E3], [E4] |
-| Drift, feedback, and adversarial coverage | 4 | Examine segments and repeated results, not one changed average; turn reviewed user feedback and failures into golden-set candidates. Carry forward the safety module's adversarial coverage and residual-risk discussion. [E1], [E2], [E5], [S5] |
-| **Demo 6.1: A regression blocks acceptance** | 5 | Compare baseline/candidate results, identify a failing case, and inspect the proposed gate decision and saved evidence. The gate is workshop logic using documented evaluation outputs. [E2], [E4], [E5] |
-| Close the loop | 4 | Use the successful-tools/incomplete-task checkpoint, assign triage ownership, change one thing, and retain versions/results. Carry the distinction into charter success criteria. [E1], [E2], [E7] |
+| Why evaluation and what to measure | 3 | Contrast deterministic tests with probabilistic behavior; separate response quality, task completion, safety/content risk, and adversarial resilience. [E1], [E2], [E6] |
+| General-purpose and RAG evidence | 4 | Compare coherence with fluency, then separate retrieval-process metrics from groundedness, relevance, and completeness of the response. [E8], [E9] |
+| Agent outcomes and tool-use process | 4 | Distinguish system evaluators from process evaluators and use the successful-tools/incomplete-task checkpoint. [E7] |
+| Safety, scales, and thresholds | 3 | Map selected content, security, privacy, and agent-action risks; read each native output correctly and identify application-owned acceptance decisions. [E10], [S5] |
+| Custom evaluators and scenario bundles | 3 | Choose code-, prompt-, or endpoint-based custom evaluation and assemble a focused starting bundle for RAG, tool-using agents, assistants, endpoints, or translation. [E11], [E6] |
+| Lifecycle, datasets, and adoption | 3 | Connect local checks, versioned pre-production evidence, sampled/scheduled production evaluation, trace curation, and a phased operating model. [E1], [E2], [E5], [E12], [E13], [E14] |
 
-**Demo design:** show a small local regression-gate wrapper and saved Foundry evaluation results, with a clearly labeled captured pipeline run if available. Do not require a new CI service connection, pipeline provisioning, or a cloud evaluation finishing live. Missing, errored, or unsupported evaluations must be visible and must not be represented as passes; the proposed workshop gate blocks acceptance when required evidence is unavailable. Explain each metric's own scale and acceptance rule rather than compare unlike raw scores. The Day 4 harness is a starting point, not an already-integrated CI gate.
+**Delivery design:** this owner-supplied replacement is a concise reference module rather than a live demonstration and is delivered as PPTX only. The existing regression-gate runbook remains available as optional extension material, but Demo 5.1 is not part of the scheduled Day 5 roster. Do not add a CI connection, wait for a cloud evaluation, or present a workshop threshold as a Microsoft default during the 20-minute module.
 
-**Boundary:** recap enough vocabulary to interpret the supplied evidence, without repeating Day 4's evaluator catalog. Do not imply continuous evaluation of a portal-managed agent automatically monitors every arbitrary local MAF workflow; identify the supported target and telemetry/data source. The agent-evaluators Concepts page lists tool-specific limitations; general availability of an evaluator does not establish compatibility with every search/tool integration. [E7]
+**Boundary:** the four content-safety evaluators use a documented 0-7 severity scale and default passing threshold of 3 or lower; do not generalize that scale to every safety evaluator. Prohibited Actions and Sensitive Data Leakage are preview and agent-only, while Indirect Attack is model-only. Continuous evaluation samples eligible production traffic rather than inspecting every interaction. The Foundry GitHub Action and trace-to-dataset workflow are preview. Evaluator availability does not establish compatibility with every target, tool, region, or data shape. [E7], [E10], [E12], [E14]
 
-## Module 7 - Capstone briefing
+## Module 6 - Foundry Toolkit for VS Code
 
-**Outcome:** each attendee has a team and understands the required evidence, realistic scope, and demo-day expectations.
-
-These are **workshop requirements from v0.7 and the owner's decisions**, not Microsoft product requirements.
+**Outcome:** recognize the important Toolkit features and use the right surface for a short agent-development investigation.
 
 ### Concepts to establish
 
 | Concept | Explanation to teach | Conceptual grounding |
 | --- | --- | --- |
-| Agent versus workflow | An agent can choose its next tools using a model; a workflow defines explicit paths between agents or other code. More agents are not automatically a better solution, and explicit control flow does not make model outputs deterministic. | [F5], [F6], MAF Concepts; [F9], "Choosing the right pattern" |
-| Model grounding versus enterprise knowledge | Using a Foundry-deployed model selects the inference service. RAG retrieves relevant content into the input; it is that evidence, not merely the model's location, that grounds an answer in enterprise knowledge. | [F2]; [F8], "What is RAG?" |
-| Knowledge base versus knowledge source | A Foundry IQ knowledge base specifies sources and retrieval behavior; sources connect to indexed or remote content. A custom RAG pipeline implements retrieval differently. Either approach needs usable, current evidence and appropriate permissions. | [F7], "Components"; [F8], "Known limitations" |
-| Deliverable versus evidence | Working software, an architecture diagram, and evaluation/trace evidence answer different questions. The ten-item minimum, team size, and demo format are workshop policy, not a Microsoft readiness standard. | [E5], [E7], [O5]; v0.7 and this plan for logistics |
+| Toolkit versus Toolbox | Toolkit is the VS Code development extension. A Toolbox is a reusable Foundry tool collection exposed through a managed MCP endpoint. Browsing a tool does not attach it or authorize its use. | [T1], official overview; [F3], "The tool lifecycle" |
+| Model, agent, and conversation | A model performs inference; an agent adds reusable behavior and tools; a conversation supplies history. Model Playground tests model interactions; agent inspection also needs to show tool/runtime behavior. | [F2], runtime component model; [T1], "Work with models" |
+| Local versus saved Foundry configuration | "Local" can mean the prompt is stored locally while inference still calls a cloud model. A saved Foundry agent version and a local prompt have different tool, structured-output, history, and evaluation options. | [T6], "Choose where to save" and "Work with local prompts" |
+| Draft, version, and diagnostic evidence | A draft is an experiment; a saved version identifies a configuration. Save before relying on version-linked conversations or generated client code, and check what a generated evaluation actually targets. Local Inspector is not the cloud agent endpoint. | [F4], "Save changes as versions"; [T6], evaluation/client-code sections; [T3] |
+| Skills versus tools | A Foundry coding skill supplies reusable guidance for development tasks; MCP tools perform operations. Skills in Copilot's development environment are not automatically skills attached to the customer-facing agent. | [T2], official explanatory guide; [F3], "Skills (preview)" |
+| Agent Inspector versus local tracing | Agent Inspector exposes live HTTP/SSE protocol activity. Toolkit Tracing receives OpenTelemetry spans from instrumented code through a local OTLP collector and keeps separate local trace history. Neither surface proves local inference or cloud trace export. | [T3]; [T7], "Collect local traces" |
 
-**Example/checkpoint:** consider a single MAF agent with one read-only tool, a knowledge source, and evaluation/trace evidence. Ask whether it must become a three-agent workflow to qualify. Expected answer: no; the stated capstone requirements and the user need determine scope, not the Day 4 reference topology.
+**Example/checkpoint:** show a locally stored prompt that uses an existing cloud model. Ask whether its data necessarily stays on the laptop and whether its evaluation view is identical to a saved Foundry agent's. Expected answer: neither follows from local storage; inspect the model endpoint and the configuration type.
 
 ### Teaching sequence
 
-| Teaching beat | Minutes | Proposed content |
+| Teaching beat | Minutes | Proposed content and grounding |
 | --- | ---: | --- |
-| Frame the assignment | 3 | A reviewed, useful deliverable in 2-3 weeks; coaching, not a hackathon or competition |
-| Required elements | 6 | Explain model, tool, knowledge, and evidence as separate requirements; distinguish the product concepts from the workshop checklist |
-| An achievable scope | 5 | Use the single-agent checkpoint: one user problem, a small tool/knowledge boundary, a measurable outcome, and one failure path; multi-agent is not mandatory |
-| Milestones and demo-day format | 5 | Working spike, first evaluation, iteration, rehearsal, and shared demo; exact demo date TBD |
-| Team formation and working-session handoff | 6 | Teams of 2-3, everyone included; capture a candidate scenario and open the charter |
+| Orient and select context | 1 | My Resources, Developer Tools, the active Foundry project, and local versus Foundry resource location. Toolkit is distinct from Foundry Toolbox. [T1], [T6], [F3] |
+| Discover and compare models | 2 | Model Catalog and Model Playground: where to compare a prompt, model, and parameters. Use existing resources; do not deploy models. [T1] |
+| Configure an agent and discover tools | 2 | Agent Builder's model, instructions, and tools; distinguish local prompt options from saved Foundry agent options. Identify Tool Catalog/MCP/toolboxes without rebuilding Day 2. [T1], [T6], [F3] |
+| **Demo 6.1: Inspect the familiar workflow locally** | 6 | Use Agent Inspector for streaming responses and tool activity; show workflow visualization where supported by the prepared configuration. [T1], [T3], [T4] |
+| Orient to tracing resources | 2 | Locate local Tracing under Developer Tools > Monitor and distinguish it from Agent Inspector and cloud telemetry. [T1], [T3], [T7] |
+| **Demo 6.2: Trace local code in Toolkit** | 6 | Start the local OTLP collector, run the prepared Agent Framework WeatherAgent code, refresh the trace list, and inspect automatic/custom spans. [T7], [O1] |
+| Copilot skills and surface selection | 2 | Explain Foundry-specific coding skills and review a proposed action; use the storage-versus-inference checkpoint above to confirm the surface distinction. [T2], [T6] |
 
-**Visual plan:** use a requirements matrix, a relative milestone timeline, and a worked charter excerpt rather than a dense administrative deck. Product-related examples cite the relevant MAF/Foundry sources; team size, deadlines, and rubric cite the workshop plan.
+**Demo design:** Demo 6.1 requires a preconfigured local HTTP/SSE agent wrapper; Agent Inspector cannot simply attach to an arbitrary terminal script. Demo 6.2 starts Toolkit's local OTLP collector, runs `demos/day5/assets/module-6-demo/foundry_tracing_toolkit.py`, and inspects its local trace. The local collector does not instrument code automatically, does not upload its database to Application Insights, and does not make the Foundry model local. Use only synthetic prompts when content capture is enabled. Keep separate captured, labeled walkthroughs as fallbacks.
 
-## Module 8 - Capstone scoping working session
+**Scope discipline:** the live centerpieces are local protocol inspection and local OpenTelemetry trace inspection. Catalog, Agent Builder, Tool Catalog, and skills are brief orientation stops, not separate end-to-end demos. Detailed workflow visualization and emitted trace content vary by language, instrumentation, and installed Toolkit version; rehearse the exact Python environment before promising either view.
+
+**Documentation correction:** do not present local prompt structured-output controls or dataset evaluation as universal Agent Builder features for saved Foundry agents. The latter's Evaluation tab scaffolds evaluation code or links to Foundry; the generated scaffold must be checked for version selection. Toolbox attachment to prompt agents is a separate preview opt-in. Keep these distinctions brief and use preconfigured resources rather than demonstrate opt-in/setup live. [T6]
+
+**Excluded:** hosted-agent deployment, provisioning, container packaging, fine-tuning, local Windows model optimization, and an exhaustive playground tour. Installation is preflight, not live content. [T5]
+
+## Module 7 - Capstone scoping working session
 
 **Outcome:** each team leaves with a reviewed charter and architecture sketch, explicit evidence to collect, and owners for unresolved dependencies.
+
+This is a customer-run module. The customer controls its duration, breaks, and internal pacing.
 
 ### Concepts to establish
 
@@ -311,18 +286,18 @@ These are **workshop requirements from v0.7 and the owner's decisions**, not Mic
 
 ### Working sequence
 
-| Activity | Minutes | Output |
-| --- | ---: | --- |
-| Define the user problem and narrow the scenario | 10 | Problem, users, in-scope task, explicit non-goals |
-| Sketch the five-layer architecture | 12 | Model, Runtime, Actions, Knowledge, Ops; identify trust boundaries |
-| Define success and the golden-set outline | 10 | 3-5 measurable signals; at least 10 planned cases and ground-truth sources |
-| Assign roles, milestones, and risks | 10 | Team ownership, spike/eval/rehearsal milestones, data/quota assumptions |
-| Peer challenge and Jim's coaching | 10 | Test the design against one failure path and one cost or permission risk |
-| Record review disposition and next steps | 8 | Charter sign-off, or explicitly tracked unresolved items; individual 30-day next steps |
+| Activity | Output |
+| --- | --- |
+| Define the user problem and narrow the scenario | Problem, users, in-scope task, explicit non-goals |
+| Sketch the five-layer architecture | Model, Runtime, Actions, Knowledge, Ops; identify trust boundaries |
+| Define success and the golden-set outline | 3-5 measurable signals; at least 10 planned cases and ground-truth sources |
+| Assign roles, milestones, and risks | Team ownership, spike/eval/rehearsal milestones, data/quota assumptions |
+| Peer challenge and facilitator coaching | Test the design against one failure path and one cost or permission risk |
+| Record review disposition and next steps | Charter sign-off, or explicitly tracked unresolved items; individual 30-day next steps |
 
-Jim should circulate throughout the hour, not start reviewing every team in the final eight minutes. The goal remains a signed-off charter for every team. Confirm cohort size and coaching capacity before promising that outcome; unresolved charters must be labeled as needing review, not silently counted as approved.
+Facilitators should circulate throughout the session rather than postponing every team review until the closing activity. The goal remains a signed-off charter for every team. Confirm cohort size and coaching capacity before promising that outcome; unresolved charters must be labeled as needing review, not silently counted as approved.
 
-Use only a few facilitator slides: instructions, timing, charter prompts, and the review checklist. Use the concept prompts during coaching within the allotted activities; there is no new technical lecture in this module. Teams need a scenario and a way to edit/sketch the charter, not a completed lab or functioning agent.
+Use only a few facilitator slides: instructions, charter prompts, and the review checklist. Follow the sequence at the pace the customer chooses; there is no new technical lecture in this module. Teams need a scenario and a way to edit/sketch the charter, not a completed lab or functioning agent.
 
 ## Proposed demonstration roster
 
@@ -331,20 +306,18 @@ All demonstrations have presenter runbooks. Their times are already included abo
 | ID | Minutes | Planned evidence | Mode and fallback |
 | --- | ---: | --- | --- |
 | 1.1 - Compare client-side and server-side traces | 8 | WeatherAgent client-side automatic/custom spans plus a Prompt-agent server-side trace in Foundry | Live run/inspect; separate dated captures if export or ingestion is delayed |
-| 2.1 - Inspect locally | 6 | Local agent traffic, tool calls, and a supported workflow view | Live Toolkit; recording from the pinned extension/runtime if the UI or graph is unavailable |
-| 2.2 - Trace local code in Toolkit | 6 | Toolkit local OTLP trace with custom and automatic Agent Framework spans | Live local collection; dated capture from the same script and pinned Toolkit version if collection fails |
-| 3.1 - Identity boundary | 7 | Principal/permission matrix, user-scoped retrieval results, and a denied approved action | Prepared access evidence; official tables and labeled expected outcomes if captures are unavailable |
-| 4.1 - Safety boundary | 6 | Model-level detection/filter annotation versus offline groundedness evaluation | Prepared results or Microsoft's published examples; no live adversarial scan |
-| 5.1 - Another revision | 5 | Side-by-side outcome, usage, duration, and stop reason | Captured comparison; no new model/router deployment |
-| 6.1 - Regression gate | 5 | Baseline/candidate case results, gate outcome, and evidence | Local/saved results; captured pipeline walkthrough instead of waiting for cloud jobs |
-
-Total demonstration/walkthrough time: **43 minutes within the 156-minute technical block** (Modules 1-6).
+| 2.1 - Identity boundary | 7 | Principal/permission matrix, user-scoped retrieval results, and a denied approved action | Prepared access evidence; official tables and labeled expected outcomes if captures are unavailable |
+| 3.1 - Safety boundary | 6 | Model-level detection/filter annotation versus offline groundedness evaluation | Prepared results or Microsoft's published examples; no live adversarial scan |
+| 4.1 - Another revision | 5 | Side-by-side outcome, usage, duration, and stop reason | Captured comparison; no new model/router deployment |
+| 6.1 - Inspect locally | 6 | Local agent traffic, tool calls, and a supported workflow view | Live Toolkit; recording from the pinned extension/runtime if the UI or graph is unavailable |
+| 6.2 - Trace local code in Toolkit | 6 | Toolkit local OTLP trace with custom and automatic Agent Framework spans | Live local collection; dated capture from the same script and pinned Toolkit version if collection fails |
+Total demonstration/walkthrough time: **38 minutes within the 156-minute technical block** (Modules 1-6).
 
 Each future runbook must include placement, time box, source URLs, setup, narration, expected observations, failure/fallback path, and teaching payoff, matching the existing `demos/day4/` convention. Never present recorded data, a simulated denial, or a local check as a live cloud result.
 
 ## Optional production-readiness exercise
 
-**Proposed duration: 30 minutes, optional and outside the live budget.** A guided evidence checklist, not a coding lab, deployment task, or certification of production readiness.
+**Proposed duration: 30 minutes, optional and outside the instructor-led technical block.** A guided evidence checklist, not a coding lab, deployment task, or certification of production readiness.
 
 | Step | Minutes | Attendee action |
 | --- | ---: | --- |
@@ -381,16 +354,16 @@ Paths below are proposed locations, not links to files that already exist.
 
 | Artifact | Proposed location and scope |
 | --- | --- |
-| Day overview and module sources | `slides/day5/README.md` and eight `module-N-*.md` files using the names/order above |
-| Delivery decks | Eight module decks under `decks/day5/`, assembled directly from the approved Markdown content and notes |
+| Day overview and module sources | `slides/day5/README.md` and seven `module-N-*.md` files using the names/order above |
+| Delivery decks | Seven module decks under `decks/day5/`, assembled directly from the approved Markdown content and notes |
 | Deck assembly | No persistent Day 5 generator; preserve the Day 4 theme, source footers, notes, and demo markers in the directly delivered PPTX files |
 | Demonstrations | `demos/day5/README.md`, six runbooks, and only the small presenter implementations/evidence needed for those runbooks |
 | Optional exercise | `labs/day5/README.md` and `production-readiness-checklist.md`, with a provided evidence pack; no student starter TODOs |
 | Capstone materials | `labs/day5/capstone-charter-template.md`, `capstone-checklist.md`, `demo-day-guide.md`, and `30-day-next-steps-template.md` |
-| Resources | Expand `docs/resources.md` with the approved Day 5 official documentation, keeping it the source for the resources slide |
+| Resources | Expand `docs/resources.md` with the approved Day 5 official documentation and keep it as the workshop's curated index |
 | Release information | Record actual Python, SDK, Toolkit, and relevant API/model versions in the delivery manifest after rehearsal |
 
-Use approximately 7-9 concise content/demo slides per substantive technical module, about 5-6 for Toolkit plus its demo marker, a short capstone briefing, and a minimal facilitation deck. Counts are an authoring guide, not permission to add lecture time.
+Use approximately 7-9 concise content/demo slides per substantive technical module, about 5-6 for Toolkit plus its demo marker, and a minimal customer-run facilitation deck. Counts are an authoring guide, not permission to add lecture time.
 
 ## Grounding and authoring contract
 
@@ -401,7 +374,7 @@ Use approximately 7-9 concise content/demo slides per substantive technical modu
 5. **Ground examples and diagrams.** Use official documentation and its linked Microsoft SDK samples. Record the exact sample/version and explain adaptations. Attribute source diagrams, and label workshop-authored architecture sketches as illustrative.
 6. **Make limitations visible.** Call out preview, model, region, permission, and runtime requirements where they affect the lesson or demo. Recheck volatile features before September 21.
 7. **Keep Markdown as the editable content record.** The owner directed direct PPTX delivery for this release rather than a repository generator. Preserve the Day 4 theme, notes, source footers, and demo markers, and check Markdown-to-deck parity after every deck update.
-8. **Accept artifacts only after content and presentation review.** Inspect reference coverage, module/demo timing, source-to-deck parity, runnable presenter paths, and rendered slides for truncation, overlap, and unreadable citations.
+8. **Accept artifacts only after content and presentation review.** Inspect reference coverage, pacing for Modules 1-6, source-to-deck parity, runnable presenter paths, and rendered slides for truncation, overlap, and unreadable citations.
 
 The current Day 4 generator demonstrates the required discipline: reject missing sources/notes and emit source footers plus grounding notes. Apply the same checks to the directly assembled Day 5 files, while treating workshop-policy slides honestly as policy rather than technical documentation.
 
@@ -409,7 +382,6 @@ The current Day 4 generator demonstrates the required discipline: reject missing
 
 | Risk or dependency | Planned handling before content is finalized |
 | --- | --- |
-| Five-minute buffer is insufficient for a normal break | Approve the pacing option above; do not silently compress the capstone hour |
 | No completed prior labs | Provide a complete bounded example, glossary-level recaps, and evidence pack; no attendee code, resources, traces, or scores required for Day 5 |
 | Toolkit/Python/visualizer compatibility | Pin and rehearse the installed extension and local wrapper; preserve a genuine capture of any platform-specific view |
 | Foundry trace visibility or ingestion delays | Confirm the existing project/Application Insights connection and read access; have a matched trace capture ready |
@@ -430,7 +402,7 @@ The repository overview now links this draft and reflects Day 5's revised format
 | --- | --- |
 | `slides/day1/module-1-landscape.md` | Remove deployment from the Day 5 preview |
 | `slides/day1/module-2-foundry-portal.md` | Remove the promise that Day 5 deployment instruction leads with CLI/azd |
-| `labs/day4/README.md` | Remap budget guardrails from Day 5 Module 4 to Module 5, and production evaluation/CI from Module 5 to Module 6 |
+| `labs/day4/README.md` | Keep budget guardrails aligned to Day 5 Module 4 and production evaluation/CI aligned to Module 5 |
 | `docs/resources.md` | Add the official references used by the authored Day 5 modules |
 | New Day 5/capstone materials | Use September 21 kickoff and a relative 2-3-week demo window; no stale October/November schedule |
 
@@ -506,6 +478,13 @@ The module-level concept tables connect explanations to specific pages and relev
 | E5 | [Evaluation datasets in Foundry][E5] | Versioned golden sets, trace-derived datasets and CI/regression use |
 | E6 | [Built-in evaluators][E6] | Concept/reference: scoring families and turn/conversation levels |
 | E7 | [Agent evaluators][E7] | Concept: system/process evaluation, input requirements, thresholds, and supported tools |
+| E8 | [General-purpose evaluators][E8] | Coherence/fluency inputs, 1-5 scales, default thresholds, judge deployment, and language support |
+| E9 | [RAG evaluators][E9] | Retrieval/process versus response/system evaluators, inputs, outputs, and preview boundaries |
+| E10 | [Risk and safety evaluators][E10] | Content-severity scales, direct pass/fail outputs, target restrictions, and preview boundaries |
+| E11 | [Custom evaluators][E11] | Code-, prompt-, and endpoint-based evaluator contracts and sandbox constraints |
+| E12 | [Evaluation in GitHub Actions][E12] | Preview pre-production agent evaluation, reports, inputs, and cost guidance |
+| E13 | [Generate a synthetic evaluation dataset][E13] | Synthetic generation workflow, minimum batch size, review, and reuse |
+| E14 | [Convert traces into evaluation datasets][E14] | Preview workflow for curating production traces into reusable evaluation cases |
 
 [F1]: https://learn.microsoft.com/azure/foundry/concepts/architecture
 [F2]: https://learn.microsoft.com/azure/foundry/agents/concepts/runtime-components
@@ -557,3 +536,10 @@ The module-level concept tables connect explanations to specific pages and relev
 [E5]: https://learn.microsoft.com/azure/foundry/observability/how-to/evaluation-datasets
 [E6]: https://learn.microsoft.com/azure/foundry/concepts/built-in-evaluators
 [E7]: https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/agent-evaluators
+[E8]: https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/general-purpose-evaluators
+[E9]: https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/rag-evaluators
+[E10]: https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/risk-safety-evaluators
+[E11]: https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/custom-evaluators
+[E12]: https://learn.microsoft.com/azure/foundry/how-to/evaluation-github-action
+[E13]: https://learn.microsoft.com/azure/foundry/observability/how-to/evaluation-dataset-synthetic
+[E14]: https://learn.microsoft.com/azure/foundry/observability/how-to/traces-to-dataset

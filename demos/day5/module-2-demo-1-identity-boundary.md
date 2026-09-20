@@ -1,4 +1,4 @@
-# Module 3 · Demo 1 — Identity boundary: an approved action can still be denied
+# Module 2 · Demo 1 — Identity boundary: an approved action can still be denied
 
 ## Objective
 
@@ -14,7 +14,7 @@ an earlier lab.
 ## Placement and time
 
 **Placement:** After **slide 7 — "Session state and documents need their own
-boundaries"** (Module 3).
+boundaries"** (Module 2).
 
 **Time:** ~7 minutes total.
 
@@ -28,7 +28,7 @@ boundaries"** (Module 3).
 
 ## Prerequisites
 
-- Module 3 slides open at slide 7.
+- Module 2 slides open at slide 7.
 - This runbook open at **Prepared inputs**; the embedded tables are the
   required fallback and need no network access.
 - Presenter display set to hide notifications and unrelated applications.
@@ -40,7 +40,7 @@ boundaries"** (Module 3).
 
 ## Exact setup
 
-1. Put the Module 3 deck on the presentation display and this runbook on the
+1. Put the Module 2 deck on the presentation display and this runbook on the
    presenter display.
 2. Rehearse the sequence using the three prepared inputs below; do not
    substitute live tenant data.
@@ -181,7 +181,7 @@ The embedded tables are the primary offline-safe fallback.
   unreadable, do not describe it as observed. Show Inputs A–C and retain the
   **EXPECTED** label.
 - If the display fails, narrate the four checkpoint questions from the
-  Module 3 takeaways slide.
+  Module 2 takeaways slide.
 - If asked for tenant-specific roles or output, state that this demo proves a
   reasoning method only; validate the customer's actual principal, role,
   scope, document control, and API version separately.
@@ -192,7 +192,7 @@ document lookup.
 ## Cleanup
 
 1. Close any optional local capture.
-2. Return to the Module 3 takeaways slide.
+2. Return to the Module 2 takeaways slide.
 3. Confirm no portal, consent, or token window was opened and no cloud state
    changed.
 4. Remove no resources; there are none to clean up.

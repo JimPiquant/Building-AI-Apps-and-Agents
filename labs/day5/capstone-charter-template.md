@@ -1,6 +1,6 @@
 # Capstone team charter
 
-Use this template during the 60-minute Day 5 scoping session. Keep unknowns
+Use this template during the customer-run Day 5 scoping session. Keep unknowns
 visible and assign them. A reviewed charter is a scope agreement—not evidence
 that the system is implemented, safe, supported, or production ready.
 

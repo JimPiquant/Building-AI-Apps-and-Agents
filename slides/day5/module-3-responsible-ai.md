@@ -1,12 +1,12 @@
 ---
 title: Responsible AI Boundaries
 subtitle: Configure controls, interpret their evidence, and preserve authorization
-eyebrow: DAY 5 · MODULE 4 · 25 MIN
-tag: Day 5 · Module 4
-deck: module-4-responsible-ai.pptx
+eyebrow: DAY 5 · MODULE 3 · 25 MIN
+tag: Day 5 · Module 3
+deck: module-3-responsible-ai.pptx
 ---
 
-# Module 4 — Responsible AI
+# Module 3 — Responsible AI
 
 ## Responsible AI Boundaries
 <!-- layout: title -->
@@ -103,10 +103,10 @@ Risks are flagged by classification models designed to detect harmful content.
 
 A grounded or low-risk answer can still come from an **unauthorized** action.
 
-## DEMO 4.1 — Detection, filtering, and evidence
+## DEMO 3.1 — Detection, filtering, and evidence
 <!-- layout: demo -->
 <!-- demo-time: ~6 min -->
-<!-- demo-reference: Runbook: demos/day5/module-4-demo-1-safety-boundary.md -->
+<!-- demo-reference: Runbook: demos/day5/module-3-demo-1-safety-boundary.md -->
 <!-- source: https://learn.microsoft.com/azure/foundry/guardrails/guardrails-overview | https://learn.microsoft.com/azure/foundry/openai/concepts/content-filter-prompt-shields | https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/rag-evaluators -->
 <!-- notes: Use the runbook's synthetic handbook excerpt, the documented model-level detected/filtered fields, and a separately labeled illustrative offline groundedness result. None is a live adversarial scan or customer result. Ask the room what the annotation proves, then choose the application's response without implying an automatic escalation API. End with “the reference agent we examined.” -->
 

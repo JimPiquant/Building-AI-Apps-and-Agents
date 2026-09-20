@@ -7,7 +7,7 @@
 # ]
 # ///
 # Run with any PEP 723 compatible runner, e.g.:
-#   uv run demos/day5/assets/module-2-demo/foundry_tracing_toolkit.py
+#   uv run demos/day5/assets/module-6-demo/foundry_tracing_toolkit.py
 
 # Copyright (c) Microsoft. All rights reserved.
 

@@ -8,7 +8,7 @@ Professional developers, senior engineers, and solution architects with working 
 ## Format
 - 5 days total, split **2 + 2 + 1**, with time between blocks to apply the material
 - Days 1–4: ~4 hours live + ~2 hours lab
-- Day 5: ~4 hours live, including capstone scoping, plus a short optional production-readiness checklist exercise
+- Day 5: 156 minutes of instructor-led technical content, followed by customer-timed capstone scoping and a short optional production-readiness checklist exercise
 - Content and reference implementations are **Python-primary**; C# is provided where the MAF .NET surface is stable
 
 ## Weekly arc
@@ -18,7 +18,7 @@ Professional developers, senior engineers, and solution architects with working 
 | 2 | Grounding & Tools | A grounded, tool-using docs assistant with a Foundry IQ knowledge source |
 | 3 | MAF Single Agent Deep Dive + MCP | The same agent, production-shaped, using the official Azure DevOps MCP server against real ADO work items |
 | 4 | Multi-Agent Patterns + Evaluation | A planner + retriever + critic workflow with a trajectory eval |
-| 5 | Production + Capstone Kickoff | Observability, Foundry Toolkit for VS Code, identity, RAI, cost, production evaluation; capstone scoping |
+| 5 | Production + Capstone Kickoff | Observability, identity, RAI, cost, production evaluation, Foundry Toolkit for VS Code; capstone scoping |
 
 **Day 5 — September 21, 2026:** see the [approved plan](docs/day5-plan.md), [slide sources](slides/day5/), [delivered decks](decks/day5/), [presenter demonstrations](demos/day5/), and [optional checklist and capstone materials](labs/day5/). Completion of prior labs is not required to participate in Day 5.
 

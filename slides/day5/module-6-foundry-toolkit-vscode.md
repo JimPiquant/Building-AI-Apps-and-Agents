@@ -1,14 +1,14 @@
 ---
 title: Foundry Toolkit for VS Code
 subtitle: Pick the right development surface without confusing storage, inference, or runtime capabilities
-eyebrow: DAY 5 · MODULE 2 · 21 MIN
-tag: Day 5 · Module 2
-deck: module-2-foundry-toolkit-vscode.pptx
+eyebrow: DAY 5 · MODULE 6 · 21 MIN
+tag: Day 5 · Module 6
+deck: module-6-foundry-toolkit-vscode.pptx
 ---
 
 <!-- additional module grounding: https://code.visualstudio.com/docs/intelligentapps/overview -->
 
-# Module 2 — Foundry Toolkit for VS Code
+# Module 6 — Foundry Toolkit for VS Code
 
 ## Foundry Toolkit for VS Code
 <!-- layout: title -->
@@ -59,19 +59,19 @@ deck: module-2-foundry-toolkit-vscode.pptx
   - Tools and evaluation options follow Foundry-agent capabilities
   - Save before version-linked conversations, tracing, evaluation, or generated client code
 
-## DEMO 2.1 — Inspect the reference workflow locally
+## DEMO 6.1 — Inspect the reference workflow locally
 <!-- layout: demo -->
 <!-- demo-time: ~6 min -->
-<!-- demo-reference: Runbook: demos/day5/module-2-demo-1-inspect-locally.md -->
+<!-- demo-reference: Runbook: demos/day5/module-6-demo-1-inspect-locally.md -->
 <!-- source: https://learn.microsoft.com/azure/foundry/agents/how-to/agent-inspector | https://learn.microsoft.com/azure/foundry/agents/how-to/vs-code-agents-workflow-pro-code | https://learn.microsoft.com/azure/foundry/how-to/develop/get-started-projects-visual-studio-code | https://code.visualstudio.com/docs/intelligentapps/overview -->
 <!-- notes: Allow 6 minutes. Agent Inspector is a preview, browser-based view of a presenter-prepared local HTTP/SSE agent. Show streaming response and tool activity, and show workflow visualization only if the rehearsed language and installed Toolkit version support it. The localhost target is not a deployed endpoint, and opening Inspector does not automatically export the cloud trace seen in Module 1. -->
 
 Open the preview Agent Inspector against the prepared agent on localhost. Send the same synthetic scenario, inspect streaming and tool activity, and show workflow visualization only where rehearsed support exists. Keep the boundary explicit: local HTTP/SSE inspection is not a deployed Foundry endpoint or automatic cloud trace export.
 
-## DEMO 2.2 — Trace local code in Toolkit
+## DEMO 6.2 — Trace local code in Toolkit
 <!-- layout: demo -->
 <!-- demo-time: ~6 min -->
-<!-- demo-reference: Runbook: demos/day5/module-2-demo-2-trace-local-code.md -->
+<!-- demo-reference: Runbook: demos/day5/module-6-demo-2-trace-local-code.md -->
 <!-- source: https://code.visualstudio.com/docs/intelligentapps/tracing | https://learn.microsoft.com/agent-framework/agents/observability -->
 <!-- notes: Allow 6 minutes. Open Developer Tools > Monitor > Tracing and start the Toolkit's local OTLP collector before running the prepared Agent Framework WeatherAgent sample. The sample exports to the collector on localhost:4317; refresh the trace list and inspect the Weather Agent Chat trace, automatic agent/model/tool spans, durations, status, and metadata. Content capture is enabled only for the synthetic weather prompts used in this controlled demonstration. Local trace storage is separate from Application Insights, and the configured Foundry model still performs inference remotely. Stop the collector and remove the local demo traces during cleanup. -->
 

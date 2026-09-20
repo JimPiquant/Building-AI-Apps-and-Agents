@@ -1,4 +1,4 @@
-# Module 2 · Demo 1 — Inspect the reference workflow locally
+# Module 6 · Demo 1 — Inspect the reference workflow locally
 
 ## Objective
 

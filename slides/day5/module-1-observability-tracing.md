@@ -126,7 +126,7 @@ Compare what Foundry records automatically with the application context added by
 ## Takeaways
 <!-- layout: takeaways -->
 <!-- source: https://learn.microsoft.com/azure/foundry/concepts/observability | https://learn.microsoft.com/azure/foundry/observability/concepts/trace-agent-concept | https://learn.microsoft.com/agent-framework/agents/observability?pivots=programming-language-python | https://learn.microsoft.com/agent-framework/workflows/observability -->
-<!-- notes: Allow 2 minutes. Ask for the four-part operational story: instrument, propagate context, export, inspect. Then ask which evidence answers latency versus quality. Close by handing off to Module 2: the telemetry contract stays the same, but the next question is which VS Code surface should an architect use during development. -->
+<!-- notes: Allow 2 minutes. Ask for the four-part operational story: instrument, propagate context, export, inspect. Then ask which evidence answers latency versus quality. Close by handing off to Module 2: the telemetry contract stays the same, but the next question is which identity crosses each resource boundary. -->
 
 - Observability explains behavior; monitoring watches signals over time; evaluation judges quality or safety.
 - A trace contains spans, and spans carry attributes that describe recorded operations.
